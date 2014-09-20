@@ -27,7 +27,7 @@
       }
     </style> 
     
-    <script src="http://js.arcgis.com/3.9/"></script>
+    <script src="http://js.arcgis.com/3.10/"></script>
     <script> 
     
       var map;
@@ -37,7 +37,7 @@
         "esri/graphic", "esri/geometry/webMercatorUtils", "esri/symbols/SimpleMarkerSymbol", 
         "esri/symbols/SimpleLineSymbol", "esri/dijit/Geocoder", "dojo/_base/Color", 
         "dojo/dom", "dojo/number", "esri/layers/ArcGISTiledMapServiceLayer",
-        "esri/layers/FeatureLayer",
+        "esri/layers/FeatureLayer", 
         "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/TitlePane",
         "dojo/domReady!"
       ], function(
@@ -157,9 +157,9 @@
                 + "YMax: " + dojo.number.format(map.extent.ymax, {places : 4}) + "<br>"
             
                 + "<br><b>Geographic Coordinate</b>" + "<br>"
-                + "center: " + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "<br>"
-                + "XMin:   " + dojo.number.format(pointed4326.xmin, {places : 4}) + ",<br>"
-                + "YMin:   " + dojo.number.format(pointed4326.ymin, {places : 4}) + ",<br>"
+                + "center: " + dojo.number.parse(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "<br>"
+                + "XMin:   " + dojo.number.parse(pointed4326.xmin, {places : 4}) + ",<br>"
+                + "YMin:   " + dojo.number.parse(pointed4326.ymin, {places : 4}) + ",<br>"
                 + "XMax:   " + dojo.number.format(pointed4326.xmax, {places : 4}) + ",<br>"
                 + "YMax:   " + dojo.number.format(pointed4326.ymax, {places : 4}) + "<br>"
                 
@@ -210,7 +210,7 @@
            data-dojo-props="region:'left'">
       <div>
         <p>
-		 this is a tool to help you determine a good extent and zoom level for constructing a new map</br></br>
+		 this is a tool to help you determine a more better extent, zoom level, and basemap for constructing a new map</br></br>
 		</p>
 		<p>
           <span id="center"></span>
