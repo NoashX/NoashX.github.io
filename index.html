@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
     <style> 
 
-      p {text-indent: 50px;}
+      p {text-indent: 5px;}
       
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       #map{
@@ -154,8 +154,8 @@
                 + "map = new Map(" + "'map'" + ", {" + "<br>" 
                 + "<p> basemap: " + '"' + basemapString + '"' + "," + "<br>"
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "<tab to=t1>center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
-                + "<tab to=t1>zoom: " + map.getZoom() + "<br>"
+                + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
+                + "<p> zoom: " + map.getZoom() + "<br>"
                 + "});" + "<br>"
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
