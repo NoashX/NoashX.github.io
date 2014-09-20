@@ -12,6 +12,12 @@
     <style> 
 
       p {text-indent: 5px;}
+
+      #t1 {
+            -moz-tab-size: 4; /* Code for Firefox */
+            -o-tab-size: 4; /* Code for Opera 10.6-12.1 */
+            tab-size: 4;
+      }
       
       html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       #map{
@@ -152,7 +158,8 @@
             s = 
             "<b>map parameters:</b>" + "<br>" 
                 + "map = new Map(" + "'map'" + ", {" 
-                + "<p> basemap: " + '"' + basemapString + '"' + ","
+
+                + "<pre id='t1'>basemap: </pre>" + '"' + basemapString + '"' + ","
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
                 + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," 
                 + "<p> zoom: " + map.getZoom() + "<br>"
