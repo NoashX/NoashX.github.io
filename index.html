@@ -27,7 +27,7 @@
       }
     </style> 
     
-    <script src="http://js.arcgis.com/3.9/"></script>
+    <script src="http://js.arcgis.com/3.10/"></script>
     <script> 
     
       var map;
@@ -162,7 +162,8 @@
                 + "});" + "<br>"
 */
 
-                + "<br>" + "<b>Web Mercator</b>" + "<br>"
+//                + "<br>" + "<b>Web Mercator</b>" + "<br>"
+                "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
   	   	        + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4}) + "," + "<br>"
