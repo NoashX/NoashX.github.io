@@ -157,15 +157,14 @@
           } else
               basemapString = 'satellite';
 
-
           	var s = "";
             s = 
             "<b>map parameters:</b>" + "<br>" 
-                + "map = new Map(" + "'map'" + ", {" 
-                + "<li>basemap: " + '"' + basemapString + '"' + ","
+                + "map = new Map(" + "'map'" + ", {" + "<br>" 
+                + "basemap: " + '"' + basemapString + '"' + "," + "<br>" 
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," 
-                + "<p> zoom: " + map.getZoom() + "<br>"
+                + "center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],"  + "<br>" 
+                + "zoom: " + map.getZoom() + "<br>"
                 + "});</li>" + "<br>"
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
