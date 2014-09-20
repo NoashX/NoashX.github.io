@@ -143,12 +143,23 @@
           } else
               basemapString = 'satellite';
 
+
+            map = new Map("map", {
+              basemap: "gray",
+              center: [-98.57, 39.82],
+              zoom: 4
+            });
+
+
           	var s = "";
             s = "<b>map parameters:</b>" + "<br>" 
-                + "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
-                + "zoom: " + map.getZoom() + "<br>"
-            
+                + "map = new Map('map', {" + "<br>" 
+                + "  basemap: " + '"' + basemapString + '"' + "," + "<br>"
+                //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
+                + "  center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
+                + "  zoom: " + map.getZoom() + "<br>"
+                + "});" + "<br>"
+
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 //old way with decimal places, was necessary to format the number to set the decimal places, then parese the nubmer to remove the commas with a known number of decimal places previously defined
@@ -211,7 +222,7 @@
            data-dojo-props="region:'left'">
       <div>
         <p>
-		 this is a tool to help you determine a more better extent, zoom level, and basemap for constructing a new map</br></br>
+		 this is a tool to help determine a more better extent, zoom level, and basemap for constructing a new map</br></br>
 		</p>
 		<p>
           <span id="center"></span>
