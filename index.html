@@ -151,7 +151,7 @@
             
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 var num1 = dojo.number.format(map.extent.xmin, {places : 4});
-                var num2 = number.parse(num1, {places: 4});
+                var num2 = dojo.number.parse(num1, {places: 4});
                 + "XMin: " + num2 + "<br>"
 //	   	        + "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 + "YMin: " + dojo.number.format(map.extent.ymin, {places : 4}) + "<br>"
