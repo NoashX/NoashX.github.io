@@ -144,13 +144,7 @@
               basemapString = 'satellite';
 
 
-            map = new Map("map", {
-              basemap: "gray",
-              center: [-98.57, 39.82],
-              zoom: 4
-            });
-
-
+           
           	var s = "";
             s = 
             "<b>map parameters:</b>" + "<br>" 
@@ -161,7 +155,7 @@
                 + "  zoom: " + map.getZoom() + "<br>"
                 + "});" + "<br>"
 
-/*
+
 //                + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
@@ -182,7 +176,7 @@
                 + "<br>"
                 + "<br>"
                 + "<br>"
-                // more content coming soon...\*/
+                // more content coming soon...\
 
             dojo.byId("center").innerHTML = s;
         }
