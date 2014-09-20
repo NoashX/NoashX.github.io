@@ -153,13 +153,11 @@
               basemapString = 'satellite';
 
 
-           
           	var s = "";
             s = 
             "<b>map parameters:</b>" + "<br>" 
                 + "map = new Map(" + "'map'" + ", {" 
-
-                + "<pre id='t1'>basemap: </pre>" + '"' + basemapString + '"' + ","
+                + "&nbsp basemap: " + '"' + basemapString + '"' + ","
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
                 + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," 
                 + "<p> zoom: " + map.getZoom() + "<br>"
