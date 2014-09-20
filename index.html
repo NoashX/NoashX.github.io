@@ -149,13 +149,13 @@
             s = 
             "<b>map parameters:</b>" + "<br>" 
                 + "map = new Map(" + "'map'" + ", {" + "<br>" 
-                + "  basemap: " + '"' + basemapString + '"' + "," + "<br>"
+                + "<tab to=t1>basemap: " + '"' + basemapString + '"' + "," + "<br>"
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "  center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
-                + "  zoom: " + map.getZoom() + "<br>"
+                + "<tab to=t1>center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
+                + "<tab to=t1>zoom: " + map.getZoom() + "<br>"
                 + "});" + "<br>"
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
-                + "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
+                //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
   	   	        + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4}) + "," + "<br>"
                 + "YMin: " + dojo.number.parse((dojo.number.format(map.extent.ymin, {places : 4})), {places : 4}) + "," + "<br>"
