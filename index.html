@@ -162,8 +162,8 @@
 
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
-                //old way with decimal places, was necessary to format the number to set the decimal places, then parese the nubmer to remove the commas with a known number of decimal places previously defined
-  	   	        + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4}) + "," + "<br>"
+                //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
+  	   	        //+ "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4}) + "," + "<br>"
                 + "YMin: " + dojo.number.parse((dojo.number.format(map.extent.ymin, {places : 4})), {places : 4}) + "," + "<br>"
                 + "XMax: " + dojo.number.parse((dojo.number.format(map.extent.xmax, {places : 4})), {places : 4}) + "," + "<br>"
                 + "YMax: " + dojo.number.parse((dojo.number.format(map.extent.ymax, {places : 4})), {places : 4}) + "<br>"
