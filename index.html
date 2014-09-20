@@ -151,10 +151,10 @@
           	var s = "";
             s = 
             "<b>map parameters:</b>" + "<br>" 
-                + "map = new Map(" + "'map'" + ", {" + "<br>" 
-                + "<p> basemap: " + '"' + basemapString + '"' + "," + "<br>"
+                + "map = new Map(" + "'map'" + ", {" 
+                + "<p> basemap: " + '"' + basemapString + '"' + ","
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," +  "<br>"
+                + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," 
                 + "<p> zoom: " + map.getZoom() + "<br>"
                 + "});" + "<br>"
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
