@@ -13,6 +13,11 @@
 
       p {text-indent: 5px;}
 
+      li {
+        text-indent: -25px;
+        padding-left: 25px;
+      }
+
       #t1 {
             -moz-tab-size: 4; /* Code for Firefox */
             -o-tab-size: 4; /* Code for Opera 10.6-12.1 */
@@ -157,11 +162,11 @@
             s = 
             "<b>map parameters:</b>" + "<br>" 
                 + "map = new Map(" + "'map'" + ", {" 
-                + "&nbsp basemap: " + '"' + basemapString + '"' + ","
+                + "<li>basemap: " + '"' + basemapString + '"' + ","
                 //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
                 + "<p> center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "]," 
                 + "<p> zoom: " + map.getZoom() + "<br>"
-                + "});" + "<br>"
+                + "});</li>" + "<br>"
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
