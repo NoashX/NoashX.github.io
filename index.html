@@ -150,10 +150,7 @@
                 + "zoom: " + map.getZoom() + "<br>"
             
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
-                var num1 = dojo.number.format(map.extent.xmin, {places : 4});
-                var num2 = dojo.number.parse(num1, {places: 4});
-                + "XMin1: " + num2 + "<br>"
-  	   	        + "XMin2: " + dojo.number.format(dojo.number.format(map.extent.xmin, {places : 4}), {places : 4});+ "<br>"
+  	   	        + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4});+ "," + "<br>"
                 + "YMin: " + dojo.number.format(map.extent.ymin, {places : 4}) + "<br>"
                 + "XMax: " + dojo.number.format(map.extent.xmax, {places : 4}) + "<br>"
                 + "YMax: " + dojo.number.format(map.extent.ymax, {places : 4}) + "<br>"
