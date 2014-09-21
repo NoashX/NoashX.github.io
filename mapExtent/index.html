@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
 
 
-    <link rel="stylesheet" href="/mapExtent/css/styles/default.css">
+    <!--<link rel="stylesheet" href="/mapExtent/css/styles/default.css">
+    <link rel="stylesheet" href="/mapExtent/css/styles/atelier-forest.dark.css">
     <script src="/mapExtent/javascript/highlight.pack.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script>hljs.initHighlightingOnLoad();</script>-->
 
     <style> 
 
@@ -22,6 +23,10 @@
       li {
         text-indent: -25px;
         padding-left: 25px;
+      }
+
+      code {
+        font-size: 12px;
       }
 
       #t1 {
@@ -42,7 +47,7 @@
         left: 250px;
       }
       #leftPane{
-        width:190px;
+        width:240px;
         font-size:16px;
       }
     </style> 
@@ -167,12 +172,12 @@
             s = 
             "<b>map parameters:</b>" + "<br>" 
            
-           
-                + "<pre><code class='html'> map = new Map(" + "'map'" + ", {" 
-                + "basemap: " + '"' + basemapString + '"' + "," 
-                + "center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],"  
-                + "zoom: " + map.getZoom() + 
-                + "});</code></pre>" 
+
+                + "<pre><code class='hljs javascript'>map = new Map(" + "'map'" + ", {\n" 
+                + "  basemap: " + '"' + basemapString + '"' + ",\n" 
+                + "  center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],\n"  
+                + "  zoom: " + map.getZoom() + "\n"
+                + "});\n</code></pre>" 
 
 
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
