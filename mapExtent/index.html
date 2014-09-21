@@ -9,6 +9,12 @@
 
     <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css">    
     <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+
+
+    <link rel="stylesheet" href="/mapExtent/css/styles/default.css">
+    <script src="/mapExtent/javascript/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
     <style> 
 
       p {text-indent: 5px;}
@@ -160,12 +166,15 @@
           	var s = "";
             s = 
             "<b>map parameters:</b>" + "<br>" 
-                + "map = new Map(" + "'map'" + ", {" + "<br>" 
-                + "basemap: " + '"' + basemapString + '"' + "," + "<br>" 
-                //+ "basemap: " + '"' + basemapString + '"' + "," + "<br>"
-                + "center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],"  + "<br>" 
-                + "zoom: " + map.getZoom() + "<br>"
-                + "});</li>" + "<br>"
+           
+           
+                + "<pre><code class='html'> map = new Map(" + "'map'" + ", {" 
+                + "basemap: " + '"' + basemapString + '"' + "," 
+                + "center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],"  
+                + "zoom: " + map.getZoom() + 
+                + "});</code></pre>" 
+
+
                 + "<br>" + "<b>Web Mercator</b>" + "<br>"
                 //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
                 //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
