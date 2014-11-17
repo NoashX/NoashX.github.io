@@ -41,6 +41,12 @@
         map = new esri.Map("map", {
           basemap: "streets"
         });
+        
+        map = new Map("map", {
+        basemap: "streets"
+        zoom: 20,
+        slider: true
+      });
         dojo.connect(map, "onLoad", initFunc);
       }
 
