@@ -37,14 +37,10 @@
         window.addEventListener(orientationEvent, function() {
           orientationChanged();
         }, false);
-
-        map = new esri.Map("map", {
-          basemap: "streets"
-        });
         
         map = new Map("map", {
         basemap: "streets"
-        zoom: 20,
+        zoom: 18,
         slider: true
       });
         dojo.connect(map, "onLoad", initFunc);
