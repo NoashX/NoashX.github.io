@@ -51,6 +51,7 @@
     require([
       "esri/map", "esri/layers/ArcGISDynamicMapServiceLayer",
       "esri/layers/DynamicLayerInfo", "esri/layers/LayerDataSource",
+      "esri/layers/LayerMapSource",
       "esri/layers/LayerDrawingOptions", "esri/layers/TableDataSource",
       "esri/Color", "esri/renderers/SimpleRenderer",
       "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
@@ -63,6 +64,7 @@
       Map, ArcGISDynamicMapServiceLayer, 
       DynamicLayerInfo, LayerDataSource, 
       LayerDrawingOptions, TableDataSource,
+      LayerMapSource,
       Color, SimpleRenderer, 
       SimpleFillSymbol, SimpleLineSymbol, 
       dom, domConstruct, domStyle, 
@@ -73,9 +75,9 @@
       parser.parse();
 
       map = new Map("map", {
-        basemap: "topo",
+        basemap: "gray",
         center: [-93.636, 46.882],
-        zoom: 3,
+        zoom: 13,
         slider: false
       });
 
@@ -84,63 +86,66 @@
         updateScale();  
       });
         
-      usaLayer1 = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
-        "id": "usa1"
+        
+       usaLayer = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
+        "id": "usa"
       });
-      usaLayer2 = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
-        "id": "usa2"
-      });
-      usaLayer3 = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
-        "id": "usa3"
-      });
-      usaLayer4 = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
-        "id": "usa4"
-      });
+      
+      //sets the visibility for all 4 layers in the map service
+	  usaLayer.setVisibleLayers([0,1,2,3]); 
+      
+      var dynamicLayerInfos = [];
+     
+     //need to define dynamicLayerInfos for layers 0 and 1 or else the above visibility will be overridden
+     //default minScale for blue points is 99,999
+     //this is changed to 72,000 and now you have to zoom in once to see the layer (was visible on load by default)
+      var dynamicLayerInfo0 = new DynamicLayerInfo({
+            "id":0,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":72000,
+            "parentLayerId":-1
+            });
+            
+      var dynamicLayerInfo1 = new DynamicLayerInfo({
+            "id":1,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":72000,
+            "parentLayerId":-1
+            });
+      var dynamicLayerInfo2 = new DynamicLayerInfo({
+            "id":2,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":0,
+            "parentLayerId":-1
+            });
+      var dynamicLayerInfo3 = new DynamicLayerInfo({
+            "id":3,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":0,
+            "parentLayerId":-1
+            });
+            
+      dynamicLayerInfos.push(dynamicLayerInfo0);
+      dynamicLayerInfos.push(dynamicLayerInfo1);
+      dynamicLayerInfos.push(dynamicLayerInfo2);
+      dynamicLayerInfos.push(dynamicLayerInfo3);
+                          
+      usaLayer.setDynamicLayerInfos(dynamicLayerInfos, true);
 
-      usaLayer1.on("load", load1);
-      map.addLayer(usaLayer1);
-      
-      usaLayer2.on("load", load2);
-      map.addLayer(usaLayer2);
-      
-      usaLayer3.on("load", load3);
-      map.addLayer(usaLayer3);
-      
-      usaLayer4.on("load", load4);
-      map.addLayer(usaLayer4);
-      
-      
-      function load1 (evt) {
-        //console.log("load1");
-        usaLayer1.setVisibleLayers([0]);  
-        usaLayer1.maxScale = 19999;  
-        usaLayer1.minScale = 99999; 
+
+      usaLayer.on("load", load);
+      map.addLayer(usaLayer);
+     
+      function load (evt) {
+        console.log("loaded");
       }
  
-      function load2 (evt) {
-        //console.log("load2");
-        usaLayer2.setVisibleLayers([1]);  
-        usaLayer2.maxScale = 1999;  
-        usaLayer2.minScale = 99999; 
-      }
-      
-      function load3 (evt) {
-        //console.log("load3");
-        usaLayer3.setVisibleLayers([2]);  
-        usaLayer3.maxScale = 10000000;  
-        usaLayer3.minScale = 20000000; 
-      }
- 
-      function load4 (evt) {
-        //console.log("load4");
-        usaLayer4.setVisibleLayers([3]);  
-        usaLayer4.maxScale = 1000000;  
-        usaLayer4.minScale = 20000000; 
-        //console.log(usaLayer4);
-      }
 
       function updateScale() {  
-        //console.log("update scale");
         dojo.byId("map-scale").innerHTML = dojo.number.format(parseInt(map.getScale()));  
       }  
       
@@ -159,9 +164,9 @@
   
         <div id="feedback" class="shadow">  
           <b>Map scale: <span id="map-scale">unknown</span></b></br></br>    
-          States = 20,000,000 to 1,000,000</br>
-          Counties = 20,000,000 to 10,000,000</br>
-          Points = 99,999 to 19,999
+          States = 0 to 0</br>
+          Counties = 0 to 0</br>
+          Points = 72,000 to 0
         </div>  
       </div>  
     </div>  
