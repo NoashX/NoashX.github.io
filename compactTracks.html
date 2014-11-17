@@ -38,11 +38,10 @@
           orientationChanged();
         }, false);
         
-        map = new Map("map", {
-        basemap: "streets",
-        zoom: 18,
-        slider: true
-      });
+        map = new esri.Map("map", {
+          basemap: "streets",
+          zoom: 18
+        });
         dojo.connect(map, "onLoad", initFunc);
       }
 
