@@ -50,7 +50,7 @@
 
     require([
       "esri/map", "esri/layers/ArcGISDynamicMapServiceLayer",
-      "esri/layers/ArcGISTiledMapServiceLayer",
+      "esri/layers/ArcGISTiledMapServiceLayer", "esri/renderers/SimpleRenderer",
       "esri/layers/DynamicLayerInfo", "esri/layers/LayerDataSource",
       "esri/layers/LayerMapSource",
       "esri/layers/LayerDrawingOptions", "esri/layers/TableDataSource",
@@ -63,7 +63,7 @@
       "dijit/form/Button", "dojo/domReady!"
     ], function(
       Map, ArcGISDynamicMapServiceLayer, 
-      ArcGISTiledMapServiceLayer,
+      ArcGISTiledMapServiceLayer, SimpleRenderer,
       DynamicLayerInfo, LayerDataSource, 
       LayerDrawingOptions, TableDataSource,
       LayerMapSource,
@@ -80,7 +80,7 @@
         //basemap: "gray",
         center: [-93.636, 46.882],
         zoom: 3,
-        slider: false
+        sliderStyle: 'small'
       });
 
       //use the new dark gray tiles for the basemap
