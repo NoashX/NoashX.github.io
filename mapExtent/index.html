@@ -51,6 +51,8 @@
     }
     #extent {
         left: 250px;
+        height: 2em;
+        font-size: 100%;
     }
     #search,
     #extent {
@@ -63,6 +65,9 @@
         width: 240px;
         font-size: 16px;
     }
+    #infoText {
+        word-wrap: break-word;
+    }
     </style>
 
     <script src="http://js.arcgis.com/3.12/"></script>
@@ -72,7 +77,8 @@
     require([
         "esri/map", "esri/dijit/BasemapGallery", "esri/arcgis/utils", "dojo/parser",
         "esri/graphic", "esri/geometry/webMercatorUtils", "esri/symbols/SimpleMarkerSymbol",
-        "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/dijit/Geocoder", "dojo/_base/Color",
+        "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/geometry/Point",
+        "esri/dijit/Geocoder", "dojo/_base/Color", "dojo/_base/json",
         "dojo/dom", "dojo/number", "esri/layers/ArcGISTiledMapServiceLayer",
         "esri/layers/FeatureLayer", "esri/toolbars/draw",
         "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/TitlePane",
@@ -80,17 +86,22 @@
     ], function(
         Map, BasemapGallery, arcgisUtils, parser,
         Graphic, webMercatorUtils, SimpleMarkerSymbol,
-        SimpleLineSymbol, SimpleFillSymbol, Geocoder, Color,
+        SimpleLineSymbol, SimpleFillSymbol, Point,
+        Geocoder, Color, Json,
         dom, number, ArcGISTiled, FeatureLayer, DrawToolbar
     ) {
-        var tb, map;
-
+        var tb;
         parser.parse();
 
         map = new Map("map", {
             basemap: "satellite",
             center: [-71.6072, 43.8185],
             zoom: 6
+        });
+
+        map.on("load", function() {
+            map.infoWindow.resize(600, 400);
+            console.log(map);
         });
 
         // add the basemap gallery, in this case we'll display maps from ArcGIS.com
@@ -125,14 +136,6 @@
             map.centerAt(evt.mapPoint);
         }
 
-
-
-
-
-
-
-
-
         // fill symbol used for extent
         var fillSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
             new SimpleLineSymbol(
@@ -142,71 +145,55 @@
             ), new Color([111, 0, 255, 0.15])
         );
 
-        /**/
+        // load the draw toolbar used to draw the extent via a button
         map.on("load", initToolbar);
 
         function initToolbar() {
             tb = new DrawToolbar(map);
             tb.on("draw-end", addGraphic);
-            //tb.on("draw-end", updateValues);
             var extentButton = document.getElementById("extent");
             extentButton.onclick = function() {
                 console.log("hi");
                 tb.activate("extent");
             };
-
         }
 
+        // add the graphic, determine its extent and display the popup
         function addGraphic(evt) {
             //deactivate the toolbar and clear existing graphics 
-            //tb.deactivate();
+            tb.deactivate();
             map.enableMapNavigation();
             map.graphics.add(new Graphic(evt.geometry, fillSymbol));
-            console.log(evt.geometry);
+
+            var extentWebMerc = evt.geometry;
+            var JSONWebMerc = Json.toJson(extentWebMerc.toJson());
+            var extentLatLong = webMercatorUtils.webMercatorToGeographic(evt.geometry);
+            var JSONLatLong = Json.toJson(extentLatLong.toJson());
+            console.log(extentLatLong);
+
+            map.infoWindow.setTitle("JSON Extent: ");
+            map.infoWindow.setContent("<div id=\"infoText\">Web Mercator: " + JSONWebMerc + "<br><br>Geographic Coordinates: " + JSONLatLong + "</div>");
+
+            var point = new Point();
+            var xMid = (evt.geometry.xmin + evt.geometry.xmax) / 2;
+            var yMid = (evt.geometry.ymin + evt.geometry.ymax) / 2;
+            point.spatialReference.wkid = 3857;
+            point.x = xMid;
+            point.y = yMid;
+
+            //console.log(point);
+
+            map.infoWindow.show(point);
+            map.on("extent-change", function() {
+                map.infoWindow.hide();
+
+            });
+
+
         }
 
-
-
-
-        // create toolbar
-        //function createToolbar(map) {
-        //   drawToolbar = new esri.toolbars.Draw(map);
-        //    dojo.connect(drawToolbar, "onDrawEnd", addToMap);
-        // }
-
-        // create extent graphic
-
-        // capture extent from graphic
-
-        // convert extent to legible form
-
-        // change sidebar content
-
-
-
-
-
-
-
-
-
-        // when the extent changes, including on start-up, this function gets and shows all attribute information         
-        function showAttributes() {
-            map.graphics.clear();
-
-            var point102100 = map.extent.getCenter();
-            var point4326 = webMercatorUtils.webMercatorToGeographic(point102100);
-
-            var point = map.extent.getCenter();
-            var point4326 = esri.geometry.webMercatorToGeographic(point);
-
-            var pointed = map.extent;
-            var pointed4326 = esri.geometry.webMercatorToGeographic(pointed);
-
-            var graphic = new Graphic(point102100, symbol);
-            map.graphics.add(graphic);
-
-            var basemapString;
+        // display the basemap's name in the map parameters
+        function displayBMapString() {
 
             if (basemapGallery.getSelected()) {
                 var basemapTitle = basemapGallery.getSelected().title
@@ -244,13 +231,37 @@
                     default:
                         basemapString = "unlisted";
                 }
-
             } else
                 basemapString = 'satellite';
+            return basemapString;
+        }
+
+
+
+
+
+
+        // when the extent changes, including on start-up, this function gets and shows all attribute information         
+        function showAttributes() {
+            map.graphics.clear();
+
+            var point102100 = map.extent.getCenter();
+            var point4326 = webMercatorUtils.webMercatorToGeographic(point102100);
+
+            var point = map.extent.getCenter();
+            var point4326 = webMercatorUtils.webMercatorToGeographic(point);
+
+            var pointed = map.extent;
+            var pointed4326 = webMercatorUtils.webMercatorToGeographic(pointed);
+
+            var graphic = new Graphic(point102100, symbol);
+            map.graphics.add(graphic);
+
+            var basemapString = displayBMapString();
 
             var s = "";
             s =
-                "<b>map parameters:</b>" + "<br>"
+                "<b>Map Parameters:</b>" + "<br>"
 
 
             + "<pre><code class='hljs javascript'>map = new Map(" + "'map'" + ", {\n" + "  basemap: " + '"' + basemapString + '"' + ",\n" + "  center:  " + "[" + dojo.number.format(point4326.x, {
@@ -260,7 +271,7 @@
             }) + "],\n" + "  zoom: " + map.getZoom() + "\n" + "});\n</code></pre>"
 
 
-            + "<br>" + "<b>Geographic Coordinate</b>" + "<br>"
+            + "<br>" + "<b>Geographic Coordinates:</b>" + "<br>"
             //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
             //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
             + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {
@@ -281,7 +292,7 @@
                 places: 4
             }) + "<br>"
 
-            + "<br><b>Web Mercator</b>" + "<br>" + "center: " + dojo.number.format(point4326.x, {
+            + "<br><br><b>Web Mercator Coordinates:</b>" + "<br>" + "center: " + dojo.number.format(point4326.x, {
                 places: 4
             }) + ", " + dojo.number.format(point4326.y, {
                 places: 4
@@ -295,8 +306,15 @@
                 places: 4
             }) + "<br>"
 
-            + "<br>" + "<br>" + "<br>" + "<br>"
-            // more content coming soon...
+            + "<br>" + "<br>" + "<br>" + "<br>" + "<span> </span>";
+
+
+
+
+
+
+
+
 
             dojo.byId("center").innerHTML = s;
         }
@@ -333,10 +351,10 @@
 
         <div id="leftPane" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'left'">
             <div>
-                <p>
-                    this is a tool to help determine a more better extent, zoom level, and basemap for constructing a new map</br>
-                    </br>
-                </p>
+                <h1>Extent Helper</h1> This is a tool to help determine an extent, zoom level, and basemap for constructing a new map.</br>
+                </br>The extent can be derived from either the full map or from a bounding box via the "Draw an Extent" button.</br>
+                </br>
+
                 <p>
                     <span id="center"></span>
                 </p>
