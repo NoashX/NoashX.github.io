@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-  <html>  
-  <head> 
+<html>
+
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <!--The viewport meta tag is used to improve the presentation and behavior of the samples 
       on iOS devices-->
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
     <title>map helper</title>
 
-    <link rel="stylesheet" href="http://js.arcgis.com/3.12/dijit/themes/claro/claro.css">    
+    <link rel="stylesheet" href="http://js.arcgis.com/3.12/dijit/themes/claro/claro.css">
     <link rel="stylesheet" href="http://js.arcgis.com/3.12/esri/css/esri.css">
 
     <!--<link rel="stylesheet" href="/mapExtent/css/styles/default.css">
@@ -15,244 +16,352 @@
     <script src="/mapExtent/javascript/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>-->
 
-    <style> 
-
-      p {text-indent: 5px;}
-
-      li {
+    <style>
+    p {
+        text-indent: 5px;
+    }
+    li {
         text-indent: -25px;
         padding-left: 25px;
-      }
-
-      code {
+    }
+    code {
         font-size: 12px;
-      }
-
-      #t1 {
-            -moz-tab-size: 4; /* Code for Firefox */
-            -o-tab-size: 4; /* Code for Opera 10.6-12.1 */
-            tab-size: 4;
-      }
-      
-      html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
-      #map{
-        padding:0;
-      }
-      #search {
+    }
+    #t1 {
+        -moz-tab-size: 4;
+        /* Code for Firefox */
+        
+        -o-tab-size: 4;
+        /* Code for Opera 10.6-12.1 */
+        
+        tab-size: 4;
+    }
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #map {
+        padding: 0;
+    }
+    #search {
+        left: 400px;
+    }
+    #extent {
+        left: 250px;
+        height: 2em;
+        font-size: 100%;
+    }
+    #search,
+    #extent {
         display: block;
         position: absolute;
         z-index: 2;
         top: 10px;
-        left: 250px;
-      }
-      #leftPane{
-        width:240px;
-        font-size:16px;
-      }
-    </style> 
-    
+    }
+    #leftPane {
+        width: 240px;
+        font-size: 16px;
+    }
+    #infoText {
+        word-wrap: break-word;
+    }
+    </style>
+
     <script src="http://js.arcgis.com/3.12/"></script>
-    <script> 
-    
-      var map;
-      
-      require([
+    <script>
+    var map;
+
+    require([
         "esri/map", "esri/dijit/BasemapGallery", "esri/arcgis/utils", "dojo/parser",
-        "esri/graphic", "esri/geometry/webMercatorUtils", "esri/symbols/SimpleMarkerSymbol", 
-        "esri/symbols/SimpleLineSymbol", "esri/dijit/Geocoder", "dojo/_base/Color", 
+        "esri/graphic", "esri/geometry/webMercatorUtils", "esri/symbols/SimpleMarkerSymbol",
+        "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/geometry/Point",
+        "esri/dijit/Geocoder", "dojo/_base/Color", "dojo/_base/json",
         "dojo/dom", "dojo/number", "esri/layers/ArcGISTiledMapServiceLayer",
-        "esri/layers/FeatureLayer", 
+        "esri/layers/FeatureLayer", "esri/toolbars/draw",
         "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/TitlePane",
         "dojo/domReady!"
-      ], function(
+    ], function(
         Map, BasemapGallery, arcgisUtils, parser,
-        Graphic, webMercatorUtils, SimpleMarkerSymbol, 
-        SimpleLineSymbol, Geocoder, Color, 
-        dom, number, ArcGISTiled, FeatureLayer
-      ) {
-        
+        Graphic, webMercatorUtils, SimpleMarkerSymbol,
+        SimpleLineSymbol, SimpleFillSymbol, Point,
+        Geocoder, Color, Json,
+        dom, number, ArcGISTiled, FeatureLayer, DrawToolbar
+    ) {
+        var tb;
         parser.parse();
 
         map = new Map("map", {
-           basemap: "satellite",
-           center: [-71.6072, 43.8185],
-           zoom: 6
+            basemap: "satellite",
+            center: [-71.6072, 43.8185],
+            zoom: 6
         });
 
-// add the basemap gallery, in this case we'll display maps from ArcGIS.com
+        map.on("load", function() {
+            map.infoWindow.resize(600, 400);
+            console.log(map);
+        });
+
+        // add the basemap gallery, in this case we'll display maps from ArcGIS.com
         var basemapGallery = new BasemapGallery({
-           showArcGISBasemaps: true,
-           map: map
+            showArcGISBasemaps: true,
+            map: map
         }, "basemapGallery");
         basemapGallery.startup();
-        
-// add the nice looking custom location point symbol
-        symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20,
-           new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-           new Color([255,0,0]), 1.5),
-           new Color([0,255,0,0.25]));
 
-// add and start the geocoding widget           
+        // add the nice looking custom location point symbol
+        symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 20,
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([255, 0, 0]), 1.5),
+            new Color([0, 255, 0, 0.25]));
+
+        // add and start the geocoding widget           
         geocoder = new Geocoder({
-           map: map,
-           autoComplete: false
+            map: map,
+            autoComplete: false
         }, "search");
         geocoder.startup();
- 
-// event handlers using the new non-Dojo On Style 
+
+        // event handlers using the new non-Dojo On Style 
         map.on("click", drawCenter);
         map.on("extent-change", showAttributes);
         basemapGallery.on("selection-change", showAttributes);
-        
-// when user clicks, this function adds a customized symbol, then pans to, the point of clicking         
+
+        // when user clicks, this function adds a customized symbol, then pans to, the point of clicking         
         function drawCenter(evt) {
-           map.graphics.clear();			
-           map.graphics.add(new Graphic(evt.mapPoint, symbol));
-           map.centerAt(evt.mapPoint);
-        }  
-          
- // when the extent changes, including on start-up, this function gets and shows all attribute information         
+            map.graphics.clear();
+            map.graphics.add(new Graphic(evt.mapPoint, symbol));
+            map.centerAt(evt.mapPoint);
+        }
+
+        // fill symbol used for extent
+        var fillSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+            new SimpleLineSymbol(
+                SimpleLineSymbol.STYLE_SOLID,
+                new Color('#000'),
+                1
+            ), new Color([111, 0, 255, 0.15])
+        );
+
+        // load the draw toolbar used to draw the extent via a button
+        map.on("load", initToolbar);
+
+        function initToolbar() {
+            tb = new DrawToolbar(map);
+            tb.on("draw-end", addGraphic);
+            var extentButton = document.getElementById("extent");
+            extentButton.onclick = function() {
+                console.log("hi");
+                tb.activate("extent");
+            };
+        }
+
+        // add the graphic, determine its extent and display the popup
+        function addGraphic(evt) {
+            //deactivate the toolbar and clear existing graphics 
+            tb.deactivate();
+            map.enableMapNavigation();
+            map.graphics.add(new Graphic(evt.geometry, fillSymbol));
+
+            var extentWebMerc = evt.geometry;
+            var JSONWebMerc = Json.toJson(extentWebMerc.toJson());
+            var extentLatLong = webMercatorUtils.webMercatorToGeographic(evt.geometry);
+            var JSONLatLong = Json.toJson(extentLatLong.toJson());
+            console.log(extentLatLong);
+
+            map.infoWindow.setTitle("JSON Extent: ");
+            map.infoWindow.setContent("<div id=\"infoText\">Web Mercator: " + JSONWebMerc + "<br><br>Geographic Coordinates: " + JSONLatLong + "</div>");
+
+            var point = new Point();
+            var xMid = (evt.geometry.xmin + evt.geometry.xmax) / 2;
+            var yMid = (evt.geometry.ymin + evt.geometry.ymax) / 2;
+            point.spatialReference.wkid = 3857;
+            point.x = xMid;
+            point.y = yMid;
+
+            //console.log(point);
+
+            map.infoWindow.show(point);
+            map.on("extent-change", function() {
+                map.infoWindow.hide();
+
+            });
+
+
+        }
+
+        // display the basemap's name in the map parameters
+        function displayBMapString() {
+
+            if (basemapGallery.getSelected()) {
+                var basemapTitle = basemapGallery.getSelected().title
+                switch (basemapTitle) {
+                    case "Streets":
+                        basemapString = "streets";
+                        break;
+                    case "Imagery":
+                        basemapString = "satellite";
+                        break;
+                    case "Imagery with Labels":
+                        basemapString = "hybrid";
+                        break;
+                    case "Topographic":
+                        basemapString = "topo";
+                        break;
+                    case "Light Gray Canvas":
+                        basemapString = "gray";
+                        break;
+                    case "Oceans":
+                        basemapString = "oceans";
+                        break;
+                    case "National Geographic":
+                        basemapString = "national-geographic";
+                        break;
+                    case "OpenStreetMap":
+                        basemapString = "osm";
+                        break;
+                    case "Dark Gray Canvas":
+                        basemapString = "dark-gray";
+                        break;
+                    case "Terrain with Labels":
+                        basemapString = "terrain";
+                        break;
+                    default:
+                        basemapString = "unlisted";
+                }
+            } else
+                basemapString = 'satellite';
+            return basemapString;
+        }
+
+
+
+
+
+
+        // when the extent changes, including on start-up, this function gets and shows all attribute information         
         function showAttributes() {
-          map.graphics.clear();
+            map.graphics.clear();
 
-          var point102100 = map.extent.getCenter();
-          var point4326 = webMercatorUtils.webMercatorToGeographic(point102100);
+            var point102100 = map.extent.getCenter();
+            var point4326 = webMercatorUtils.webMercatorToGeographic(point102100);
 
-          var point = map.extent.getCenter();
-		  var point4326 = esri.geometry.webMercatorToGeographic(point);
-		
-		  var pointed = map.extent;
-		  var pointed4326 = esri.geometry.webMercatorToGeographic(pointed);
-        
-          var graphic = new Graphic(point102100, symbol);
-          map.graphics.add(graphic);
+            var point = map.extent.getCenter();
+            var point4326 = webMercatorUtils.webMercatorToGeographic(point);
 
-          var basemapString;
+            var pointed = map.extent;
+            var pointed4326 = webMercatorUtils.webMercatorToGeographic(pointed);
 
-          if (basemapGallery.getSelected()) {
-              var basemapTitle = basemapGallery.getSelected().title
-                  switch (basemapTitle) {
-                  case "Streets":
-                      basemapString = "streets";
-                      break;
-                  case "Imagery":
-                      basemapString = "satellite";
-                      break;
-                  case "Imagery with Labels":
-                      basemapString = "hybrid";
-                      break;
-                  case "Topographic":
-                      basemapString = "topo";
-                      break;
-                  case "Light Gray Canvas":
-                      basemapString = "gray";
-                      break;
-                  case "Oceans":
-                      basemapString = "oceans";
-                      break;
-                  case "National Geographic":
-                      basemapString = "national-geographic";
-                      break;
-                  case "OpenStreetMap":
-                      basemapString = "osm";
-                      break;
-                  case "Dark Gray Canvas":
-                      basemapString = "dark-gray";
-                      break;
-                  case "Terrain with Labels":
-                      basemapString = "terrain";
-                      break;
-                  default:
-                      basemapString = "unlisted";
-                  }
+            var graphic = new Graphic(point102100, symbol);
+            map.graphics.add(graphic);
 
-          } else
-              basemapString = 'satellite';
+            var basemapString = displayBMapString();
 
-          	var s = "";
-            s = 
-            "<b>map parameters:</b>" + "<br>" 
-           
-
-                + "<pre><code class='hljs javascript'>map = new Map(" + "'map'" + ", {\n" 
-                + "  basemap: " + '"' + basemapString + '"' + ",\n" 
-                + "  center:  " + "[" + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "],\n"  
-                + "  zoom: " + map.getZoom() + "\n"
-                + "});\n</code></pre>" 
+            var s = "";
+            s =
+                "<b>Map Parameters:</b>" + "<br>"
 
 
-                + "<br>" + "<b>Geographic Coordinate</b>" + "<br>"
-                //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
-                //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
-  	   	        + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {places : 4})), {places : 4}) + "," + "<br>"
-                + "YMin: " + dojo.number.parse((dojo.number.format(map.extent.ymin, {places : 4})), {places : 4}) + "," + "<br>"
-                + "XMax: " + dojo.number.parse((dojo.number.format(map.extent.xmax, {places : 4})), {places : 4}) + "," + "<br>"
-                + "YMax: " + dojo.number.parse((dojo.number.format(map.extent.ymax, {places : 4})), {places : 4}) + "<br>"
+            + "<pre><code class='hljs javascript'>map = new Map(" + "'map'" + ", {\n" + "  basemap: " + '"' + basemapString + '"' + ",\n" + "  center:  " + "[" + dojo.number.format(point4326.x, {
+                places: 4
+            }) + ", " + dojo.number.format(point4326.y, {
+                places: 4
+            }) + "],\n" + "  zoom: " + map.getZoom() + "\n" + "});\n</code></pre>"
 
-                + "<br><b>Web Mercator</b>" + "<br>"
-                + "center: " + dojo.number.format(point4326.x, {places : 4}) + ", " + dojo.number.format(point4326.y, {places : 4})+ "<br>"
-                + "XMin:   " + dojo.number.format(pointed4326.xmin, {places : 4}) + ",<br>"
-                + "YMin:   " + dojo.number.format(pointed4326.ymin, {places : 4}) + ",<br>"
-                + "XMax:   " + dojo.number.format(pointed4326.xmax, {places : 4}) + ",<br>"
-                + "YMax:   " + dojo.number.format(pointed4326.ymax, {places : 4}) + "<br>"
-                
-                + "<br>"
-                + "<br>"
-                + "<br>"
-                + "<br>"
-                // more content coming soon...
+
+            + "<br>" + "<b>Geographic Coordinates:</b>" + "<br>"
+            //+ "XMin: " + dojo.number.format(map.extent.xmin, {places : 4}) + "<br>"
+            //old way with decimal places, was necessary to format the number to set the decimal places, then parse the nubmer to remove the commas with a known number of decimal places previously defined
+            + "XMin: " + dojo.number.parse((dojo.number.format(map.extent.xmin, {
+                places: 4
+            })), {
+                places: 4
+            }) + "," + "<br>" + "YMin: " + dojo.number.parse((dojo.number.format(map.extent.ymin, {
+                places: 4
+            })), {
+                places: 4
+            }) + "," + "<br>" + "XMax: " + dojo.number.parse((dojo.number.format(map.extent.xmax, {
+                places: 4
+            })), {
+                places: 4
+            }) + "," + "<br>" + "YMax: " + dojo.number.parse((dojo.number.format(map.extent.ymax, {
+                places: 4
+            })), {
+                places: 4
+            }) + "<br>"
+
+            + "<br><br><b>Web Mercator Coordinates:</b>" + "<br>" + "center: " + dojo.number.format(point4326.x, {
+                places: 4
+            }) + ", " + dojo.number.format(point4326.y, {
+                places: 4
+            }) + "<br>" + "XMin:   " + dojo.number.format(pointed4326.xmin, {
+                places: 4
+            }) + ",<br>" + "YMin:   " + dojo.number.format(pointed4326.ymin, {
+                places: 4
+            }) + ",<br>" + "XMax:   " + dojo.number.format(pointed4326.xmax, {
+                places: 4
+            }) + ",<br>" + "YMax:   " + dojo.number.format(pointed4326.ymax, {
+                places: 4
+            }) + "<br>"
+
+            + "<br>" + "<br>" + "<br>" + "<br>" + "<span> </span>";
+
+
+
+
+
+
+
+
 
             dojo.byId("center").innerHTML = s;
         }
 
-//basemap gallery widget error handling 
+        //basemap gallery widget error handling 
         basemapGallery.on("error", function(msg) {
-          console.log("lame basemap gallery error:  ", msg);
+            console.log("lame basemap gallery error:  ", msg);
         });
-        
-//basemap gallery widget error handling 
+
+        //basemap gallery widget error handling 
         geocoder.on("error", function(msg) {
-          console.log("lame geocoder error:  ", msg);
+            console.log("lame geocoder error:  ", msg);
         });
-       
-      });
-    </script> 
-  </head> 
 
-  <body class="claro"> 
-    <div data-dojo-type="dijit/layout/BorderContainer" 
-         data-dojo-props="design:'headline', gutters:false" 
-         style="width:100%;height:100%;margin:0;">
+    });
+    </script>
+</head>
 
-      <div id="map" 
-           data-dojo-type="dijit/layout/ContentPane" 
-           data-dojo-props="region:'center'" 
-           style="padding:0;">
-           <div id="search"></div>
-           
-        <div style="position:absolute; right:20px; top:10px; z-Index:999;">
-          <div data-dojo-type="dijit/TitlePane" 
-               data-dojo-props="title:'Switch Basemap', closable:false,  open:false">
-            <div data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
-            <div id="basemapGallery" ></div></div>
-          </div>
+<body class="claro">
+    <div data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline', gutters:false" style="width:100%;height:100%;margin:0;">
+
+        <div id="map" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" style="padding:0;">
+            <div id="search"></div>
+            <button id="extent">Draw an Extent</button>
+
+            <div style="position:absolute; right:20px; top:10px; z-Index:999;">
+                <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Switch Basemap', closable:false,  open:false">
+                    <div data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
+                        <div id="basemapGallery"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <div id="leftPane" data-dojo-type="dijit.layout.ContentPane" 
-           data-dojo-props="region:'left'">
-      <div>
-        <p>
-		  this is a tool to help determine a more better extent, zoom level, and basemap for constructing a new map</br></br>
-		</p>
-		<p>
-          <span id="center"></span>
-        </p> 
-      </div>
-      </div>
-      
-    </div>
-  </body> 
 
-  </html>
- 
+        <div id="leftPane" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region:'left'">
+            <div>
+                <h1>Extent Helper</h1> This is a tool to help determine an extent, zoom level, and basemap for constructing a new map.</br>
+                </br>The extent can be derived from either the full map or from a bounding box via the "Draw an Extent" button.</br>
+                </br>
+
+                <p>
+                    <span id="center"></span>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
