@@ -21,14 +21,14 @@
 <div id="map"></div>
 
 <script>
-  var map = L.map('map').setView([37.75, -122.23], 10);
+  var map = L.map('map').setView([37.75, -122.23], 5);
   console.log(L, L.esri);
   L.esri.basemapLayer('DarkGray', {
     detectRetina: true
   }).addTo(map);
 
   L.esri.featureLayer('http://services.arcgis.com/Wl7Y1m92PbjtJs5n/ArcGIS/rest/services/BirthStuffSDK/FeatureServer/0').addTo(map);
-  
+
 </script>
 
 </body>
