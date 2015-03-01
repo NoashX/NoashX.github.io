@@ -27,7 +27,8 @@
 
 
     <script src="http://js.arcgis.com/3.12/"></script>
-    
+     <script>
+      var map;
 
       require([ 
        "esri/request",
@@ -92,7 +93,7 @@
           dom.byId("title").innerHTML = response.itemInfo.item.title;
           dom.byId("subtitle").innerHTML = response.itemInfo.item.snippet;
 
-          var map = response.map;
+          map = response.map;
 
 
 
