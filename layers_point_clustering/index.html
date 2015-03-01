@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
     <title>Create web map from id</title>
 
     <link rel="stylesheet" href="http://js.arcgis.com/3.12/dijit/themes/claro/claro.css">
     <link rel="stylesheet" href="http://js.arcgis.com/3.12/esri/css/esri.css">
-    <link rel="stylesheet" href="http://developers.arcgis.com/javascript/samples/ags_createwebmapid/css/layout.css     ">
+    <link rel="stylesheet" href="http://developers.arcgis.com/javascript/samples/ags_createwebmapid/css/layout.css">
 
+    <style>
+      html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+      #map{ margin: 0; padding: 0; }
 
-    <script src="http://js.arcgis.com/3.12/"></script>
+      /* center the image in the popup */
+      .esriViewPopup .gallery { margin: 0 auto !important; }
+    </style>
+
     <script>
-
      var dojoConfig = { 
             paths: {
               extras: location.pathname.replace(/\/[^/]+$/, "") + "/extras"
             }
           };
+    </script>
 
+
+    <script src="http://js.arcgis.com/3.12/"></script>
+    
 /*
       require([
         "dojo/parser",
