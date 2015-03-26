@@ -7,8 +7,8 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
     <title>map helper</title>
 
-    <link rel="stylesheet" href="http://js.arcgis.com/3.12/dijit/themes/claro/claro.css">    
-    <link rel="stylesheet" href="http://js.arcgis.com/3.12/esri/css/esri.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.13/dijit/themes/claro/claro.css">    
+    <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
 
     <!--<link rel="stylesheet" href="/mapExtent/css/styles/default.css">
     <link rel="stylesheet" href="/mapExtent/css/styles/atelier-forest.dark.css">
@@ -51,7 +51,7 @@
       }
     </style> 
     
-    <script src="http://js.arcgis.com/3.12/"></script>
+    <script src="http://js.arcgis.com/3.13/"></script>
     <script> 
     
       var map;
@@ -78,6 +78,7 @@
            center: [-71.6072, 43.8185],
            zoom: 6
         });
+        map.setMapCursor("url(https://NoashX.github.io/NewFolder/cursor.cur),auto");
 
 // add the basemap gallery, in this case we'll display maps from ArcGIS.com
         var basemapGallery = new BasemapGallery({
