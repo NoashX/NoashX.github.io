@@ -88,6 +88,15 @@
     border: 2px solid #ccc;
   }
 
+  #environmentDiv {
+    position: absolute;
+    top: 12px;
+    right: 255px;
+    padding: 12px;
+    background-color: rgba(100, 100, 100, 1);
+    color: white;
+  }
+
 </style>
 
 <link rel="stylesheet" href="https://js.arcgis.com/4.0beta1/esri/css/esri.css">
@@ -114,7 +123,7 @@
 
     //Create map
     map = new Map({
-      basemap: "hybrid"
+      basemap: "gray"
     });
 
     //Create SceneView
@@ -130,10 +139,19 @@
       scale: 15000
     });
 
+    //Set the environment in SceneView
+    view.environment = {
+      lighting: {
+        directShadows: false,
+        date: new Date("Sun Mar 15 2015 17:00:00 GMT+0100 (CET)")
+      },
+      atmosphere: {enabled: true}
+    };
+
     //create a basemap toggle widget to change the perspective of the map (e.g. terrain)
     var toggle = new BasemapToggle({
       map: map,
-      basemap: "gray"
+      basemap: "hybrid"
     }, "BasemapToggleDiv");
     toggle.startup();
 
@@ -174,7 +192,7 @@
         };
 
         //set a delay of 1 second (1,000 milliseconds)
-        var options = {delay: 500}
+        var options = {delay: 1000}
 
         view.animateTo(target, options); 
     }
@@ -192,6 +210,23 @@
 
     //Add the renderer to sceneLayer
     sceneLayer.renderer = new SimpleRenderer(symbol);
+
+    //for lighting changes throughout the day
+    //Register the events to controls
+    on(dom.byId("timeOfDaySelect"), "change", updateTimeOfDay);
+    on(dom.byId("directShadowsInput"), "change", updateDirectShadows);
+
+    //Create the event's callback functions
+    function updateTimeOfDay(ev) {
+      var select = ev.target;
+      var date = select.options[select.selectedIndex].value;
+
+      view.environment.lighting.date = new Date(date);
+    }
+    function updateDirectShadows(ev) {
+      view.environment.lighting.directShadows = !!ev.target.checked;
+    }
+
   });
 
 </script>
@@ -201,6 +236,25 @@
   <div id="searchDiv"></div>
   <div id="viewDiv">
     <div id="BasemapToggleDiv" title="not a basemap gallery"></div>
+  </div>
+  <div id="environmentDiv">
+    <table>
+      <tr>
+        <td>Time of day:</td>
+        <td>
+          <select id="timeOfDaySelect">
+            <option value="Sun Mar 15 2015 17:00:00 GMT+0100 (CET)">Morning</option>
+            <option value="Sun Mar 15 2015 22:00:00 GMT+0100 (CET)">Noon</option>
+            <option value="Sun Mar 15 2015 01:00:00 GMT+0100 (CET)">Afternoon</option>
+            <option value="Sun Mar 15 2015 09:00:00 GMT+0100 (CET)">Evening</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Direct shadows:</td>
+        <td><input id="directShadowsInput" type="checkbox"></td>
+      </tr>
+    </table>
   </div>
   <div id="buttonsDiv">
       <button id="buttonButton" title="make the map come alive!"><center><b>4.0 for PDX button</b></center></button>
