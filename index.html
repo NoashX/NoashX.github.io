@@ -71,8 +71,10 @@
    
 
 
-      <div id="map" style="width: 850px; height: 400px; position: center;">
-      <!--<div id="map" style="position: absolute; top:500; bottom:0; right:0; left:0; width: 850px;">-->
+      <div id="map" style="width: 850px; height: 600px; position: absolute; top:500; bottom:0; right:25; left:25;">
+      <!--<div id="map" style="position: absolute; top:500; bottom:0; right:0; left:0; width: 850px;">
+      <div id="map" style="width: 850px; height: 800px; position: center;">-->
+
         <script>
           var map = L.map('map').setView([39.5247, -97.7083], 4);
           map.addLayer(new L.StamenTileLayer("watercolor", {detectRetina: true}));
