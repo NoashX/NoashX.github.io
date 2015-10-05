@@ -15,9 +15,15 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet" type="text/css" media="all">
 
-    <!-- Map!!! -->  
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css"/>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+    <!-- Load Leaflet from CDN-->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />
+    <script src="//cdn.jsdelivr.net/leaflet/0.7.3/leaflet.js"></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="//cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
+
+    <!-- Stamen -->
+    <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
    
 
 
@@ -48,7 +54,7 @@
               <h3>Hello World; I'm Noah</h3>
 
               <p>
-                I'm a <a href="http://www.noahsager.net">Teacher/Writer/Programmer</a> based in sunny Southern California. I enjoy GIS, writing, and the great outdoors. 
+                I'm a <a href="http://www.noahsager.net">Teacher/Writer/Programmer</a> based in sunny Southern California. I enjoy GIS, football, and the great outdoors. 
               </p>
 
               <p>
@@ -65,7 +71,17 @@
    
 
 
-    <div id="map" style="width: 850px; height: 300px; position: center;">
+      <!--<div id="map" style="width: 850px; height: 400px; position: center;">-->
+      <div id="map" style="position: absolute; top:500; bottom:0; right:0; left:0; width: 850px;">
+        <script>
+          var map = L.map('map').setView([39.5247, -97.7083], 4);
+          map.addLayer(new L.StamenTileLayer("watercolor", {detectRetina: true}));
+          //L.esri.basemapLayer('Topographic').addTo(map);
+
+        </script>
+
+        <!--
+    <div id="map" style="width: 850px; height: 400px; position: center;">
             <script>
             var map = L.map('map').setView([35, 10], 2);
 
@@ -97,8 +113,9 @@
           }
 
           map.on('click', onMapClick);*/
-    
+   
             </script>
+             -->
         </div>
     </div>
 
