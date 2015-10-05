@@ -69,34 +69,34 @@
             <script>
             var map = L.map('map').setView([35, 10], 2);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
                 
             var LeafIcon = L.Icon.extend({
-      options: {
-        iconSize:[35, 35]
-      }
-    });    
+              options: {
+                iconSize:[35, 35]
+              }
+            });    
                 
-      //var esri = new LeafIcon({iconUrl: '/images/esri.png'}),
-      //school = new LeafIcon({iconUrl: '/images/ua.png'}),
-      //hometown = new LeafIcon({iconUrl: '/images/hometown.png'});
+          //var esri = new LeafIcon({iconUrl: '/images/esri.png'}),
+          //school = new LeafIcon({iconUrl: '/images/ua.png'}),
+          //hometown = new LeafIcon({iconUrl: '/images/hometown.png'});
 
-    //L.marker([34.056313, -117.189231], {icon: esri}).bindPopup("This is where I work.").addTo(map);
-    //L.marker([33.214028, -87.539083], {icon: school}).bindPopup("Roll Tide!").addTo(map);
-    //L.marker([36.070341, 120.379130], {icon: hometown}).bindPopup("My hometown and Tsingdao Beer").addTo(map);
-                
-        var popup = L.popup();
+           //L.marker([34.056313, -117.189231], {icon: esri}).bindPopup("This is where I work.").addTo(map);
+          //L.marker([33.214028, -87.539083], {icon: school}).bindPopup("Roll Tide!").addTo(map);
+          //L.marker([36.070341, 120.379130], {icon: hometown}).bindPopup("My hometown and Tsingdao Beer").addTo(map);
+                    
+          /*var popup = L.popup();
 
-    function onMapClick(e) {
-      popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
-    }
+          function onMapClick(e) {
+            popup
+              .setLatLng(e.latlng)
+              .setContent("You clicked the map at " + e.latlng.toString())
+              .openOn(map);
+          }
 
-    map.on('click', onMapClick);
+          map.on('click', onMapClick);*/
     
             </script>
         </div>
