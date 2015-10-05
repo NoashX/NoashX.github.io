@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>JavaScript Events</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/tundra/tundra.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
+    <style>
+            html, body { height: 100%; width: 100%; margin: 0; padding: 0; }  
+      h3 { margin: 0 0 5px 0; border-bottom: 1px solid #444; text-align: center }  
+      .shadow {  
+        -moz-box-shadow: 0 0 5px #888;  
+        -webkit-box-shadow: 0 0 5px #888;  
+        box-shadow: 0 0 5px #888;  
+      }  
+      #map{ margin: 0; padding: 0; }  
+      #feedback {  
+        background: #fff;  
+        color: #444;  
+        position: absolute;  
+        font-family: arial;  
+        height: 85px;  
+        left: 30px;  
+        margin: 5px;  
+        padding: 10px;  
+        bottom: 44px;  
+        text-align: center;  
+        width: 300px;  
+        z-index: 40;  
+      }  
+      .note { font-size: 80%; padding: 0 0 10px 0; }  
+      #slider {  
+        color: #666;   
+        margin: 5px auto;  
+        padding: 3px;  
+      }  
+      #appSliderLabel { padding: 0 0 10px 0; }  
+      #maxLabel { display: inline-block; margin: 0 0 0 -30px;}  
+      #minLabel { display: inline-block; margin: 0 0 0 30px;}  
+      #breakInfo { padding: 20px 0 0 0; }  
+        
+    </style>
+
+    <script src="http://js.arcgis.com/3.11/"></script>
+    <script>
+    // the infos object is used to track layer visibility and position
+    var map, usaLayer, infos = {};
+
+    require([
+      "esri/map", "esri/layers/ArcGISDynamicMapServiceLayer",
+      "esri/layers/ArcGISTiledMapServiceLayer", "esri/renderers/SimpleRenderer",
+      "esri/layers/DynamicLayerInfo", "esri/layers/LayerDataSource",
+      "esri/layers/LayerMapSource",
+      "esri/layers/LayerDrawingOptions", "esri/layers/TableDataSource",
+      "esri/Color", "esri/renderers/SimpleRenderer",
+      "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
+      "dojo/dom", "dojo/dom-construct", "dojo/dom-style", 
+      "dojo/query", "dojo/on",
+      "dojo/parser", "dojo/_base/array", "dojo/dnd/Source", "dijit/registry",
+      "dijit/layout/BorderContainer", "dijit/layout/ContentPane", 
+      "dijit/form/Button", "dojo/domReady!"
+    ], function(
+      Map, ArcGISDynamicMapServiceLayer, 
+      ArcGISTiledMapServiceLayer, SimpleRenderer,
+      DynamicLayerInfo, LayerDataSource, 
+      LayerDrawingOptions, TableDataSource,
+      LayerMapSource,
+      Color, SimpleRenderer, 
+      SimpleFillSymbol, SimpleLineSymbol, 
+      dom, domConstruct, domStyle, 
+      query, on, 
+      parser, arrayUtils, Source, registry
+    ) {
+      
+      parser.parse();
+
+      map = new Map("map", {
+        //basemap: "gray",
+        center: [-93.636, 46.882],
+        zoom: 3,
+        sliderStyle: 'small'
+      });
+
+      //use the new dark gray tiles for the basemap
+      var darkGray = new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer");
+      map.addLayer(darkGray);
+  
+     map.on("load", function() {  
+        map.on("zoom-end", updateScale);
+        updateScale();  
+        map.on("pan-end", updateExtent);
+        map.on("zoom-start", updateOldLevel);
+        map.on("zoom-end", updateNewLevel);
+        //updateExtent();
+      });
+
+        
+       usaLayer = new ArcGISDynamicMapServiceLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer", {
+        "id": "usa"
+      });
+      
+      //sets the visibility for all 4 layers in the map service
+	  usaLayer.setVisibleLayers([0,1,2,3]); 
+      
+      var dynamicLayerInfos = [];
+     
+     //need to define dynamicLayerInfos for layers 0 and 1 or else the above visibility will be overridden
+     //default minScale for blue points is 99,999
+     //this is changed to 72,000 and now you have to zoom in once to see the layer (was visible on load by default)
+      var dynamicLayerInfo0 = new DynamicLayerInfo({
+            "id":0,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":75000,
+            "parentLayerId":-1
+            });      
+      var dynamicLayerInfo1 = new DynamicLayerInfo({
+            "id":1,
+            "defaultVisibility":true,
+            "maxScale":0,
+            "minScale":75000,
+            "parentLayerId":-1
+            });
+      var dynamicLayerInfo2 = new DynamicLayerInfo({
+            "id":2,
+            "defaultVisibility":true,
+            "maxScale":75000,
+            "minScale":72000000,
+            "parentLayerId":-1
+            });
+      var dynamicLayerInfo3 = new DynamicLayerInfo({
+            "id":3,
+            "defaultVisibility":true,
+            "maxScale":5000000,
+            "minScale":100000000,
+            "parentLayerId":-1
+            });
+      
+      //push the dynamic layer info to the dynamic map service      
+      dynamicLayerInfos.push(dynamicLayerInfo0);
+      dynamicLayerInfos.push(dynamicLayerInfo1);
+      dynamicLayerInfos.push(dynamicLayerInfo2);
+      dynamicLayerInfos.push(dynamicLayerInfo3);
+                          
+      usaLayer.setDynamicLayerInfos(dynamicLayerInfos, true);
+
+      
+      usaLayer.on("load", load);
+      map.addLayer(usaLayer);
+
+      //when layer is added, fire this event
+      function load (evt) {
+        console.log("layer 1 minScale: " + evt.layer.dynamicLayerInfos[0].minScale);
+        console.log("layer 2 minScale: " + evt.layer.dynamicLayerInfos[1].minScale);
+        console.log("layer 3 minScale: " + evt.layer.dynamicLayerInfos[2].minScale);
+        console.log("layer 4 minScale: " + evt.layer.dynamicLayerInfos[3].minScale);
+      }
+
+      //when the map is loaded, and whenever the map is zoomed, fire this event
+      function updateScale() {  
+        dojo.byId("map-scale").innerHTML = dojo.number.format(parseInt(map.getScale()));  
+        console.log("Map scale: " + dojo.number.format(parseInt(map.getScale())));
+        
+      }  
+      
+      //when the map is panned, fire this event
+      function updateExtent(evt) { 
+        console.log("Map extent");
+        console.log(" XMin: " + evt.extent.xmin);
+        console.log(" YMin: " + evt.extent.ymin);
+        console.log(" XMax: " + evt.extent.xmax);
+        console.log(" YMax: " + evt.extent.ymax);
+      } 
+ 
+       //when the map zoom starts, fire this event
+      function updateOldLevel(evt) { 
+        console.log("Map zoom level was: " + evt.level);  
+      } 
+      
+      //when the map zoom ends, fire this event
+      function updateNewLevel(evt) { 
+        console.log("Map zoom level is: " + evt.level);  
+      } 
+      
+      
+      
+    });
+    </script>
+  </head>
+
+   <body class="tundra">  
+    <div data-dojo-type="dijit/layout/BorderContainer"  
+         data-dojo-props="design:'headline',gutters:false"  
+         style="width: 100%; height: 100%; margin: 0;">  
+      <div id="map"  
+           data-dojo-type="dijit/layout/ContentPane"  
+           data-dojo-props="region:'center'">  
+  
+        <div id="feedback" class="shadow">  
+          <b>Map scale: <span id="map-scale">unknown</span></b></br></br>    
+          States: 5,000,000 to 100,000,000</br>
+          Counties: 75,000 to 72,000,000</br>
+          Points: 0 to 75,0000
+        </div>  
+      </div>  
+    </div>  
+  </body>  
+</html>  
