@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Noah Sager</title>
-    <meta name="description" content="Noah Sager's website">
-    <meta name="author" content="Noah Sager">
-
-    <!-- Enable responsive viewport -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Lock viewport to prevent scaling -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="Bootstrap Starter">
+  <meta name="author" content="">
+  <link rel="icon" href="http://www.esri.com/favicon.ico">
+  <title>Bootstrap Starter</title>
 
     <!-- Les styles -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/custom.css" rel="stylesheet" type="text/css" media="all">
+    <link href="css/custom.css" rel="stylesheet" type="text/css" media="all">
 
     <!-- Load Leaflet from CDN-->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />
@@ -24,104 +25,310 @@
 
     <!-- Stamen -->
     <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
-   
 
+  <!-- Bootstrap core CSS -->
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"
+  media="screen">
+  <!-- ArcGIS CSS -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.0beta1/esri/css/esri.css">
+  <style>
+    /* Move content down because we have a fixed navbar that is 50px */
+    
+    body {
+      padding-top: 50px;
+    }
+    /* Set the min and max height of the map, otherwise will expand to full screen */
+    
+    #mapViewDiv,
+    #sceneViewDiv {
+      /*min-height: 100px;
+    max-height: 1500px;*/
+    }
+    /* Search widget styling to fit navbar */
+    
+    #searchDiv {
+      padding-right: 15px;
+    }
+    
+    .esriSearch .esriContainer .esriInput {
+      width: 150px;
+    }
+    
+    .tooltip-inner {
+      white-space: nowrap;
+    }
+    /* Search widget styling for smaller screens */
+    
+    @media (max-width: 767px) {
+      #searchDiv {
+        padding-right: 0;
+      }
+      #searchInput.esriInput {
+        width: calc(100%);
+      }
+      .esriSearch .esriExpandContainer {
+        width: calc(100% - 47px);
+      }
+      .esriSearch .esriInputContainer {
+        width: 100%;
+      }
+      .esriSearch .esriContainer .esriInput {
+        width: calc(100% - 30px) !important;
+      }
+      .esriSearch .esriMenu {
+        position: inherit !important;
+      }
+    }
+    
+    @media (max-width: 850px) {
+      .esriSearch .esriContainer .esriInput {
+        width: 125px;
+      }
+    }
+  </style>
+</head>
+<body>
 
-    <!-- google analytics 
-    <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-46830328-1', 'noashx.github.io');
-    ga('send', 'pageview');
-    </script>
-    -->
+  <!-- Navbar - fluid container to consume full width of screen -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="fluid-container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+        aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" data-toggle="modal" title="About Me" class="active" aria-controls="Noah" href="#Noah" role="tab" data-target="#myModal">Noah Sager</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <!-- Add the Search widget -->
+        <form class="navbar-form navbar-right">
+          <div id="searchDiv"></div>
+        </form>
+        <!-- Add nav elements with some tooltips -->
+        <ul class="nav navbar-nav navbar-right">
+          <li data-toggle="tooltip" title="Show 2D View" data-placement="bottom">
+            <a href="#2dTab" class="active" aria-controls="2Dtab" role="tab" data-toggle="tab">2D Map</a>
+          </li>
+          <!-- 3D not supported on mobile and iPad devices -->
+          <li data-toggle="tooltip" title="Show 3D View" data-placement="bottom">
+            <a href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab">3D Scene</a>
+          </li>
+        </ul>
+      </div>
+      <!--/.nav-collapse -->
+    </div>
+  </nav>
+  <!--/.navbar -->
 
-  </head>
-
-  <body>
-
-    <div class="content">
-        <div class="row-fluid">
-
-            <div class="col-sm-3 col-sm-offset-1" id="face">
-                <!--<img src="/img/face.JPG">-->
-                <img src="img/face.JPG">
-            </div>
-
-            <div class="col-sm-7">
-              <h3>Hello World; I'm Noah</h3>
-
-              <p>
-                I'm a <a href="http://www.noahsager.net">Teacher/Writer/Programmer</a> based in sunny Southern California. I enjoy GIS, football, and the great outdoors. 
+  <!-- Modal Window - example of a modal window -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Hello World; I'm Noah</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            <p>
+                I'm a <a href="http://www.noahsager.net" target="_blank">Teacher/Writer/Programmer</a> based in sunny Southern California. I enjoy GIS, football, and the great outdoors. 
               </p>
 
               <p>
-                I work at <a href="http://www.esri.com">Esri</a>, where I play with code and help people.
+                I work at <a href="http://www.esri.com" target="_blank">Esri</a>, where I play with code and help people.
               </p>
 
               <h2 id="social-icons">
-                <a href="https://twitter.com/noashx"><i class="fa fa-fw fa-twitter"></i></a>&nbsp
-                <a href="https://github.com/noashx"><i class="fa fa-fw fa-github"></i></a>&nbsp
-                <a href="https://www.linkedin.com/pub/noah-sager/29/139/605"><i class="fa fa-fw fa-linkedin"></i></a>&nbsp
+                <a href="https://twitter.com/noashx" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>&nbsp
+                <a href="https://github.com/noashx" target="_blank"><i class="fa fa-fw fa-github"></i></a>&nbsp
+                <a href="https://www.linkedin.com/pub/noah-sager/29/139/605" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a>
               </h2>
-            </div>
+          </p>
+           <p>
+            This sample illustrates how I build simple responsive apps with the
+            <a href="https://developers.arcgis.com/javascript/beta/" target="_blank">ArcGIS API for JavaScript 4.0 beta 1</a> and <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>.&nbsp
+          </p>
+          <p>
+            <p><br>
+            <center><a href="http://www.noahsager.net/resume.html" target="_blank">Learn more about me here</a></center>
+          </p>
+          </p>
         </div>
-   
-
-
-      <div id="map" style="position: absolute; top:400px; right:100px; width: 850px; height: 600px;">
-      <!--<div id="map" style="position: absolute; top:500; bottom:0; right:0; left:0; width: 850px;">
-      <div id="map" style="width: 850px; height: 800px; position: center;">-->
-
-        <script>
-          var map = L.map('map').setView([39.5247, -97.7083], 4);
-          map.addLayer(new L.StamenTileLayer("watercolor", {detectRetina: true}));
-          //L.esri.basemapLayer('Topographic').addTo(map);
-
-        </script>
-
-        <!--
-    <div id="map" style="width: 850px; height: 400px; position: center;">
-            <script>
-            var map = L.map('map').setView([35, 10], 2);
-
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-                
-            var LeafIcon = L.Icon.extend({
-              options: {
-                iconSize:[35, 35]
-              }
-            });    
-                
-          //var esri = new LeafIcon({iconUrl: '/images/esri.png'}),
-          //school = new LeafIcon({iconUrl: '/images/ua.png'}),
-          //hometown = new LeafIcon({iconUrl: '/images/hometown.png'});
-
-           //L.marker([34.056313, -117.189231], {icon: esri}).bindPopup("This is where I work.").addTo(map);
-          //L.marker([33.214028, -87.539083], {icon: school}).bindPopup("Roll Tide!").addTo(map);
-          //L.marker([36.070341, 120.379130], {icon: hometown}).bindPopup("My hometown and Tsingdao Beer").addTo(map);
-                    
-          /*var popup = L.popup();
-
-          function onMapClick(e) {
-            popup
-              .setLatLng(e.latlng)
-              .setContent("You clicked the map at " + e.latlng.toString())
-              .openOn(map);
-          }
-
-          map.on('click', onMapClick);*/
-   
-            </script>
-             -->
-        </div>
+      </div>
     </div>
+  </div>
+  <!--/.modal -->
 
-  </body>
+  <!-- Container - fluid container to consume full width of screen -->
+  <div class="fluid-container" style="background: #777">
+    <div id="tabContainer" class="tab-content">
+      <div class="tab-pane fade in active" role="tabpanel" id="2dTab">
+        <div id="mapViewDiv"></div>
+      </div>
+      <div class="tab-pane fade" role="tabpanel" id="3dTab">
+        <div id="sceneViewDiv"></div>
+      </div>
+      <div class="tab-pane fade in active" role="tabpanel" id="Noah">
+    </div>
+  </div>
+  <!-- /.container -->
+
+  <script>
+    var isMobile = false;
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent)) {
+      isMobile = true;
+    }
+  </script>
+
+  <!-- ArcGIS API library -->
+  <script src="https://js.arcgis.com/4.0beta1/"></script>
+  <script>
+    var map, mapView, sceneView, searchWidget, activeView;
+
+    require(["esri/Map",
+      "esri/views/SceneView",
+      "esri/views/MapView",
+      "esri/Basemap",
+      "dojo/dom",
+      "esri/widgets/Search",
+      "esri/core/watchUtils",
+      "esri/config",
+      "esri/layers/WebTiledLayer",
+      "dojo/domReady!"
+    ], function(Map, SceneView, MapView, Basemap, dom, Search, watchUtils, esriConfig, WebTiledLayer) {
+
+      esriConfig.request.corsEnabledServers.push("a.tile.stamen.com", "b.tile.stamen.com", "c.tile.stamen.com", "d.tile.stamen.com");
+
+      // Map
+      map = new Map({
+        //basemap: "streets"
+      });
+
+      // Map View
+      mapView = new MapView({
+        container: "mapViewDiv",
+        map: map,
+        //center: [-40, 40],
+        center: [-97.7083, 39.5247], 
+        //zoom: 3
+        //scale: 123456789
+        scale: 39456789
+      });
+
+      activeView = mapView;
+
+      // Scene View
+      sceneView = new SceneView({
+        container: "sceneViewDiv",
+        map: map,
+        center: [-40, 40],
+        zoom: 3
+      });
+
+      tiledLayer = new WebTiledLayer({
+        urlTemplate: "http://${subDomain}.tile.stamen.com/watercolor/${level}/${col}/${row}.png",
+        subDomains: ["a", "b", "c", "d"],
+        copyright: [
+          "Map tiles by <a href=\"http://stamen.com/\">Stamen Design</a>, " +
+          "under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. " +
+          "Data by <a href=\"http://openstreetmap.org/\">OpenStreetMap</a>, " +
+          "under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
+        ]
+      });
+
+      map.add(tiledLayer);
+
+      //the stamen watercolor does not seem to transition to 3d easily, so setting basemap to dark grey
+      function changeBasemap (){map.basemap = "dark-gray"};
+
+      /****************************************************
+       * Adds copyright text to the view. In future 
+       * releases, this text will be added to the view
+       * by default. You will also be able to control
+       * the text through the Attribution widget.
+       ****************************************************/
+      tiledLayer.then(function() {
+        dom.byId("attDiv").innerHTML = tiledLayer.copyright;
+      });
+
+      // Search
+      searchWidget = new Search({
+        view: activeView,
+        //showPopupOnSelect: false,
+        enableHighlight: false
+      }, "searchDiv");
+      searchWidget.startup();
+
+      // Set active view
+      searchWidget.watch(function(property, oldValue, newValue) {
+        if (property === "searchResults") {
+          searchWidget.view = activeView;
+        }
+      });
+
+      // Use jQuery here for UI handlers, can also use dojoBootstrap (http://xsokev.github.io/Dojo-Bootstrap/index.html)
+      $(document).ready(function() {
+
+        // View change
+        $("li a[data-toggle='tab']").click(function(e) {
+          switch (e.target.text) {
+            case "Map":
+              activeView = mapView;
+              break;
+            case "Scene":
+              //changeBasemap();
+              activeView = sceneView;
+              break;
+          }
+        });
+
+
+        // Tooltips toggle
+        if (!isMobile) {
+          $('[data-toggle="tooltip"]').tooltip({
+            delay: {
+              "show": 100,
+              "hide": 100
+            },
+            trigger: "hover"
+          });
+          $(window).resize(function() {
+            setTips();
+          });
+
+          function setTips() {
+            if ($(window).width() <= 767) {
+              $('[data-toggle="tooltip"]').tooltip('disable');
+            } else {
+              $('[data-toggle="tooltip"]').tooltip('enable');
+            }
+          }
+          setTips();
+        }
+
+        // Limited to 2D on mobile devices, no need for tabs
+        if (isMobile) {
+          $("a[aria-controls='2Dtab'], a[aria-controls='3Dtab']").addClass(
+            "hidden");
+        }
+
+      }); 
+    }); 
+  </script>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- jQuery (for Bootstrap's JavaScript plugins). NOTE: You can also use pure Dojo. See examples. -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- Include all  plugins or individual files as needed -->
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <!--script src="../../assets/js/ie10-viewport-bug-workaround.js"></script-->
+</body>
 </html>
-
-
