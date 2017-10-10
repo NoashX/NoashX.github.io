@@ -31,7 +31,7 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"
   media="screen">
   <!-- ArcGIS CSS -->
-  <link rel="stylesheet" href="https://js.arcgis.com/4.0beta2/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css">
   <style>
     /* Move content down because we have a fixed navbar that is 50px */
     
@@ -186,90 +186,109 @@
   </script>
 
   <!-- ArcGIS API library -->
-  <script src="https://js.arcgis.com/4.0beta2/"></script>
+  <script src="https://js.arcgis.com/4.5/"></script>
   <script>
-    var map, mapView, sceneView, searchWidget, activeView;
-
-    require(["esri/Map",
-      "esri/views/SceneView",
+    require([
+      "esri/Map",
       "esri/views/MapView",
-      "esri/Basemap",
-      "dojo/dom",
-      "esri/widgets/Search",
-      "esri/core/watchUtils",
+      "esri/views/SceneView",
       "esri/config",
-      "esri/layers/WebTiledLayer",
+      "esri/request",
+      "esri/Color",
+      "esri/widgets/LayerList",
+      "esri/layers/WebTileLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/Graphic",
+      "esri/geometry/Point",
       "dojo/domReady!"
-    ], function(Map, SceneView, MapView, Basemap, dom, Search, watchUtils, esriConfig, WebTiledLayer) {
+    ], function(Map, MapView, SceneView, esriConfig, esriRequest, Color,
+                LayerList, WebTileLayer, GraphicsLayer, Graphic, Point) {
 
-      esriConfig.request.corsEnabledServers.push("a.tile.stamen.com", "b.tile.stamen.com", "c.tile.stamen.com", "d.tile.stamen.com");
+      // Add stamen url to the list of servers known to support CORS specification.
+      esriConfig.request.corsEnabledServers
+        .push("a.tile.stamen.com", "b.tile.stamen.com", "c.tile.stamen.com",
+          "d.tile.stamen.com");
 
-      // Map
-      map = new Map({
-        //basemap: "streets"
-      });
-
-      // Map View
-      mapView = new MapView({
-        container: "mapViewDiv",
-        map: map,
-        //center: [-40, 40],
-        center: [-97.7083, 39.5247], 
-        //zoom: 3
-        //scale: 123456789
-        scale: 39456789
-      });
-
-      activeView = mapView;
-
-      // Scene View
-      sceneView = new SceneView({
-        container: "sceneViewDiv",
-        map: map,
-        center: [-40, 40],
-        zoom: 3
-      });
-
-      tiledLayer = new WebTiledLayer({
-        urlTemplate: "http://${subDomain}.tile.stamen.com/watercolor/${level}/${col}/${row}.png",
+      // Create a new instance of the WebTileLayer and set its properties
+      var stamenLayer = new WebTileLayer({
+        urlTemplate: "http://{subDomain}.tile.stamen.com/watercolor/{level}/{col}/{row}.png",
         subDomains: ["a", "b", "c", "d"],
-        copyright: [
-          "Map tiles by <a href=\"http://stamen.com/\">Stamen Design</a>, " +
+        copyright: "Map tiles by <a href=\"http://stamen.com/\">Stamen Design</a>, " +
           "under <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a>. " +
           "Data by <a href=\"http://openstreetmap.org/\">OpenStreetMap</a>, " +
           "under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>."
-        ]
       });
 
-      map.add(tiledLayer);
 
-      //the stamen watercolor does not seem to transition to 3d easily, so setting basemap to dark grey
-      function changeBasemap (){map.basemap = "dark-gray"};
+      var switchButton = document.getElementById("switch-btn");
 
-      /****************************************************
-       * Adds copyright text to the view. In future 
-       * releases, this text will be added to the view
-       * by default. You will also be able to control
-       * the text through the Attribution widget.
-       ****************************************************/
-      tiledLayer.then(function() {
-        dom.byId("attDiv").innerHTML = tiledLayer.copyright;
+      var appConfig = {
+        mapView: null,
+        sceneView: null,
+        activeView: null,
+        container: "viewDiv" // use same container for views
+      };
+
+      var map = new Map({
+        layers: [stamenLayer],
+        ground: "world-elevation"
       });
 
-      // Search
-      searchWidget = new Search({
-        view: activeView,
-        //showPopupOnSelect: false,
-        enableHighlight: false
-      }, "searchDiv");
-      searchWidget.startup();
+      var initialViewParams = {
+        map: map,
+        zoom: 4,
+        center: [15, 65],
+        container: appConfig.container
+      };
 
-      // Set active view
-      searchWidget.watch(function(property, oldValue, newValue) {
-        if (property === "searchResults") {
-          searchWidget.view = activeView;
+      // create 2D view and and set active
+      appConfig.mapView = createView(initialViewParams, "2d");
+      appConfig.activeView = appConfig.mapView;
+
+      // create 3D view, won't initialize until container is set
+      initialViewParams.container = null;
+      appConfig.sceneView = createView(initialViewParams, "3d");
+
+      // switch the view between 2D and 3D each time the button is clicked
+      switchButton.addEventListener("click", function() {
+        switchView();
+      });
+
+      // Switches the view from 2D to 3D and vice versa
+      function switchView() {
+        var is3D = appConfig.activeView.type === "3d";
+
+        // remove the reference to the container for the previous view
+        appConfig.activeView.container = null;
+
+        if (is3D) {
+          // if the input view is a SceneView, set the viewpoint on the
+          // mapView instance. Set the container on the mapView and flag
+          // it as the active view
+          appConfig.mapView.viewpoint = appConfig.activeView.viewpoint.clone();
+          appConfig.mapView.container = appConfig.container;
+          appConfig.activeView = appConfig.mapView;
+          switchButton.value = "3D";
+        } else {
+          appConfig.sceneView.viewpoint = appConfig.activeView.viewpoint.clone();
+          appConfig.sceneView.container = appConfig.container;
+          appConfig.activeView = appConfig.sceneView;
+          switchButton.value = "2D";
         }
-      });
+      }
+
+      // convenience function for creating a 2D or 3D view
+      function createView(params, type) {
+        var view;
+        var is2D = type === "2d";
+        if (is2D) {
+          view = new MapView(params);
+          return view;
+        } else {
+          view = new SceneView(params);
+        }
+        return view;
+      }
 
       // Use jQuery here for UI handlers, can also use dojoBootstrap (http://xsokev.github.io/Dojo-Bootstrap/index.html)
       $(document).ready(function() {
@@ -334,6 +353,10 @@
 <body>
   <div id="viewDiv"></div>
   <div id="attDiv"></div>
+  <div id="infoDiv">
+    <input class="esri-component esri-widget-button esri-widget esri-interactive" type="button"
+      id="switch-btn" value="3D">
+  </div>
 </body>
 <!--</body>-->
 </html>
