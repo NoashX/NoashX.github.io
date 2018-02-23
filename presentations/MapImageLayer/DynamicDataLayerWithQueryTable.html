@@ -32,9 +32,10 @@
       "esri/Map",
       "esri/views/MapView",
       "esri/layers/MapImageLayer",
+      "esri/Basemap",
       "dojo/domReady!"
     ], function(
-      Map, MapView, MapImageLayer
+      Map, MapView, MapImageLayer, Basemap
     ) {
 
       // helper function to create a symbol
@@ -116,7 +117,11 @@
        *****************************************************************/
 
       var map = new Map({
-        basemap: "gray",
+        basemap: new Basemap({
+          portalItem: { // autocasts as new PortalItem()
+            id: "00c8181753cd4673810a1ede1f52a922"
+          }
+        }),
         layers: [layer]
       });
 

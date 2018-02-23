@@ -30,13 +30,9 @@
           type: "simple", // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-            size: 15,
-            color: {a: 1, b: 128, g: 0, r: 0},
-            style: "circle"/*,
-            outline: {
-              width: 0.5,
-              color: "gray"
-            }*/
+            size: 14,
+            color: {a: 1, b: 200, g: 0, r: 0},
+            style: "circle"
           },
           label: "Cities"
         };
@@ -46,13 +42,24 @@
           symbol: {
             type: "simple-fill", // autocasts as new SimpleFillSymbol()
             style: "solid",
-            color: {a: 1, b: 0, g: 168, r: 56},
+            color: {a: 1, b: 0, g: 0, r: 0},
             outline: {
               width: 2,
-              color: {a: 0, b: 0, g: 115, r: 38}
+              color: {a: 1, b: 0, g: 200, r: 0}
             }
           },
           label: "State boundaries"
+        };
+
+        var highwaysRenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-line", // autocasts as new SimpleLineSymbol()
+            style: "solid",
+            width: 1.5,
+            color: {a: 1, b: 100, g: 100, r: 100}
+          },
+          label: "Interstate highway"
         };
 
         var countiesRenderer = {
@@ -67,18 +74,6 @@
             }
           },
           label: "County boundaries"
-        };
-
-
-        var highwaysRenderer = {
-          type: "simple", // autocasts as new SimpleRenderer()
-          symbol: {
-            type: "simple-line", // autocasts as new SimpleLineSymbol()
-            style: "solid",
-            width: 1,
-            color: {a: 0.15, b: 0, g: 0, r: 0}
-          },
-          label: "Interstate highway"
         };
 
 

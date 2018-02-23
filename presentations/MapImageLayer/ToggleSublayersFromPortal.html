@@ -16,11 +16,12 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/MapImageLayer",
+        "esri/Basemap",
         "dojo/on",
         "dojo/domReady!"
       ],
       function(
-        Map, MapView, MapImageLayer, on
+        Map, MapView, MapImageLayer, Basemap, on 
       ) {
 
 
@@ -34,7 +35,7 @@
           symbol: {
             type: "simple-line",  // autocasts as new SimpleLineSymbol()
             color: [255, 255, 255, 0.5],
-            width: 0.75,
+            width: 1.5,
             style: "long-dash-dot-dot"
           },
           label: "Railroad"
@@ -44,13 +45,9 @@
           type: "simple", // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-            size: 5,
+            size: 8,
             color: {a: 1, b: 128, g: 0, r: 0},
-            style: "circle"/*,
-            outline: {
-              width: 0.5,
-              color: "gray"
-            }*/
+            style: "circle"
           },
           label: "Cities"
         };
@@ -62,7 +59,7 @@
             style: "solid",
             color: {a: 0, b: 0, g: 168, r: 56},
             outline: {
-              width: 0.9,
+              width: 3,
               color: {a: 1, b: 0, g: 115, r: 38}
             }
           },
@@ -74,7 +71,7 @@
           symbol: {
             type: "simple-line", // autocasts as new SimpleLineSymbol()
             style: "solid",
-            width: 0.4,
+            width: 2.5,
             color: {a: 0.75, b: 168, g: 77, r: 0}
           },
           label: "Interstate highway"
@@ -127,14 +124,18 @@
          * Add the layer to a map
          *****************************************************************/
         var map = new Map({
-          basemap: "dark-gray",
+          basemap: new Basemap({
+            portalItem: { // autocasts as new PortalItem()
+              id: "fe0039092fb548a5a20c0b56c5275108"
+            }
+          }),
           layers: [layer]
         });
 
         var view = new MapView({
           container: "viewDiv",
           map: map,
-          zoom: 4,
+          zoom: 5,
           center: [-99, 39]
         });
 

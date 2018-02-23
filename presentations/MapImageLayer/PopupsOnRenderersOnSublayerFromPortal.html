@@ -24,10 +24,11 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/MapImageLayer",
+        "esri/Basemap",
         "dojo/domReady!"
       ],
       function(
-        Map, MapView, MapImageLayer
+        Map, MapView, MapImageLayer, Basemap
       ) {
 
         /*****************************************************************
@@ -38,8 +39,8 @@
           type: "simple", // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-            size: 7,
-            color: {a: 1, b: 128, g: 0, r: 0},
+            size: 14,
+            color: {a: 1, b: 200, g: 0, r: 0},
             style: "circle"
           },
           label: "Cities"
@@ -50,10 +51,10 @@
           symbol: {
             type: "simple-fill", // autocasts as new SimpleFillSymbol()
             style: "solid",
-            color: {a: 0, b: 0, g: 168, r: 56},
+            color: {a: 1, b: 0, g: 0, r: 0},
             outline: {
-              width: 3,
-              color: {a: 1, b: 0, g: 115, r: 38}
+              width: 2,
+              color: {a: 1, b: 0, g: 200, r: 0}
             }
           },
           label: "State boundaries"
@@ -64,10 +65,24 @@
           symbol: {
             type: "simple-line", // autocasts as new SimpleLineSymbol()
             style: "solid",
-            width: 2,
-            color: {a: 0.75, b: 168, g: 77, r: 0}
+            width: 1.5,
+            color: {a: 1, b: 100, g: 100, r: 100}
           },
           label: "Interstate highway"
+        };
+
+        var countiesRenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-fill", // autocasts as new SimpleFillSymbol()
+            style: "solid",
+            color: {a: 1, b: 26, g: 26, r: 26},
+            outline: {
+              width: 0.4,
+              color: {a: 1, b: 71, g: 71, r: 71}
+            }
+          },
+          label: "County boundaries"
         };
 
         /*****************************************************************
@@ -82,31 +97,33 @@
           },
           sublayers: [
           {
-            id: 0,
-            renderer: citiesRenderer,
-            opacity: 0.6,
-            popupTemplate: {
-              title: "{areaname}",
-              content: "{pop2000} people call the city of {areaname}, {st} home"
-            }
-          },
-          {
-            id: 1,
-            renderer: highwaysRenderer,
-            opacity: 0.8,
-            popupTemplate: {
-              title: "{route}",
-              content: "This {admn_class} is {length} miles long"
-            }
+            id: 3,
+            visible: false,
+            renderer: countiesRenderer
           },
           {
             id: 2,
+            visible: true,
             renderer: statesRenderer,
-            opacity: 0.7,
             popupTemplate: {
               title: "{state_name}",
               content: "{pop2000} people live in {state_abbr}"
             }
+          },
+          {
+            id: 1,
+            visible: true,
+            renderer: highwaysRenderer,
+          },
+          {
+            id: 0,
+            visible: true,
+            renderer: citiesRenderer,
+            popupTemplate: {
+              title: "{areaname}",
+              content: "{pop2000} people call the city of {areaname}, {st} home"
+            },
+            definitionExpression: "pop2000 > 100000"
           }]
         });
 
@@ -115,15 +132,19 @@
          *****************************************************************/
 
         var map = new Map({
-          basemap: "gray",
+          basemap: new Basemap({
+            portalItem: { // autocasts as new PortalItem()
+              id: "00c8181753cd4673810a1ede1f52a922"
+            }
+          }),
           layers: [layer]
         });
 
         var view = new MapView({
           container: "viewDiv",
           map: map,
-          center:  [-116.5120, 33.8233],
-          zoom: 8
+          zoom: 4,
+          center: [-99, 39]
         });
 
       });
