@@ -62,21 +62,6 @@
           label: "Interstate highway"
         };
 
-        var countiesRenderer = {
-          type: "simple", // autocasts as new SimpleRenderer()
-          symbol: {
-            type: "simple-fill", // autocasts as new SimpleFillSymbol()
-            style: "solid",
-            color: {a: 1, b: 26, g: 26, r: 26},
-            outline: {
-              width: 0.4,
-              color: {a: 1, b: 71, g: 71, r: 71}
-            }
-          },
-          label: "County boundaries"
-        };
-
-
         /*****************************************************************
          * Create a MapImageLayer instance pointing to a Map Service
          * containing data about US Cities, Counties, States and Highways.
@@ -88,22 +73,25 @@
           },
           sublayers: [
           {
-            id: 3,
-            visible: false,
-            renderer: countiesRenderer
-          },
-          {
             id: 2,
+            title: "States",
             visible: true,
             renderer: statesRenderer
           },
           {
+            id: 3,
+            title: "Counties",
+            visible: false
+          },
+          {
             id: 1,
+            title: "Highways",
             visible: true,
             renderer: highwaysRenderer
           },
           {
             id: 0,
+            title: "Cities",
             visible: true,
             renderer: citiesRenderer,
             definitionExpression: "pop2000 > 100000",
