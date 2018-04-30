@@ -88,16 +88,18 @@
           sublayers: [
           {
             id: 2,
+            title: "States",
             visible: true,
             renderer: statesRenderer
           }, {
             id: 1,
+            title: "Highways",
             visible: true,
             renderer: highwaysRenderer
           }, {
             id: 4,
-            visible: false,
             title: "Railroads",
+            visible: false,
             renderer: railroadsRenderer,
             source: {
               // indicates the source of the sublayer is a dynamic data layer
@@ -114,6 +116,7 @@
             }
           }, {
             id: 0,
+            title: "Cities",
             visible: true,
             renderer: citiesRenderer,
             definitionExpression: "pop2000 > 50000"
