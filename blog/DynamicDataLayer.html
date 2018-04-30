@@ -5,7 +5,8 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <title>Dynamic Data Layer</title>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/themes/dark/main.css">
+
   <script src="https://js.arcgis.com/4.7/"></script>
 
   <script>
@@ -16,12 +17,13 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/MapImageLayer",
+        "esri/widgets/Legend",
         "esri/Basemap",
         "dojo/on",
         "dojo/domReady!"
       ],
       function(
-        Map, MapView, MapImageLayer, Basemap, on 
+        Map, MapView, MapImageLayer, Legend, Basemap, on 
       ) {
 
 
@@ -140,6 +142,14 @@
           map: map,
           zoom: 4,
           center: [-99, 39]
+        });
+
+        view.when(function() {
+          var legend = new Legend({
+            view: view
+          });
+          // Add Legend widget to the bottom left corner of the view
+          view.ui.add(legend, "bottom-left");
         });
 
         /*****************************************************************
