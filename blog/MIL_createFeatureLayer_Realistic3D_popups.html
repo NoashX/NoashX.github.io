@@ -25,16 +25,15 @@
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/MapImageLayer",
-        "esri/renderers/smartMapping/creators/size",
         "dojo/domReady!"
       ],
       function(
-        Map, SceneView, MapImageLayer, sizeRendererCreator
+        Map, SceneView, MapImageLayer
       ) {
 
         /*****************************************************************
          * Create a MapImageLayer instance pointing to a Map Service
-         * containing data about World Cities and States.
+         * containing data about World Cities.
          *****************************************************************/
 
         const mlayer = new MapImageLayer({
@@ -153,7 +152,7 @@
                 label: "Metropolis"
               }],
               visualVariables: [{
-                type: "size",
+                type: "size",  // SizeVisualVariable
                 field: "POP",
                 axis: "height",
                 minDataValue: 1000,
@@ -161,7 +160,7 @@
                 maxDataValue: 5000000,
                 maxSize: 400000
               },{
-                type: "size",
+                type: "size",  // SizeVisualVariable
                 field: "POP",
                 axis: "width",
                 minDataValue: 1000,

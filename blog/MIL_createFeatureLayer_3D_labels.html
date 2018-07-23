@@ -25,19 +25,16 @@
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/MapImageLayer",
-        "esri/layers/support/LabelClass",
         "esri/widgets/Legend",
-        "esri/renderers/smartMapping/creators/size",
         "dojo/domReady!"
       ],
       function(
-        Map, SceneView, MapImageLayer, LabelClass, Legend, sizeRendererCreator
+        Map, SceneView, MapImageLayer, Legend
       ) {
 
         /*****************************************************************
          * Create a MapImageLayer instance pointing to a Map Service
          * containing data about US Cities and States.
-         * Define sublayers with visibility for each layer in Map Service.
          *****************************************************************/
 
         const mlayer = new MapImageLayer({
@@ -53,9 +50,6 @@
           }]
         });
 
-        /*****************************************************************
-         * Add the layer to a map
-         *****************************************************************/
         const map = new Map({
           basemap: {  // autocasts as new Basemap()
             portalItem: {  // autocasts as new PortalItem()
@@ -111,7 +105,7 @@
               label: "Population",
               visualVariables: [
                 {
-                  type: "size",
+                  type: "size",  // SizeVisualVariable
                   field: "pop2000",
                   stops: [
                     {
@@ -125,7 +119,7 @@
                   ],
                   axis: "height"
                 }, {
-                  type: "color",
+                  type: "color",  // ColorVisualVariable
                   field: "pop2000",
                   stops: [
                     {
@@ -144,11 +138,12 @@
                 }
               ]
             };
-            const labelClass1 = new LabelClass({
+
+            const labelClass1 = ({  // autocasts as new LabelClass()
               symbol: {
-                type: "label-3d", // autocasts as new LabelSymbol3D()
+                type: "label-3d",  // autocasts as new LabelSymbol3D()
                 symbolLayers: [{
-                  type: "text", // autocasts as new TextSymbol3DLayer()
+                  type: "text",  // autocasts as new TextSymbol3DLayer()
                   material: {
                     color: "white"
                   },
@@ -164,7 +159,8 @@
                 expression: "IIF($feature.pop2000 > 1000000, $feature.areaname, '')"
               }
             });
-            const labelClass2 = new LabelClass({
+
+            const labelClass2 = ({  // autocasts as new LabelClass()
               symbol: {
                 type: "label-3d", // autocasts as new LabelSymbol3D()
                 symbolLayers: [{
@@ -186,7 +182,8 @@
             });
             mSublayerFeatureLayer.labelingInfo = [labelClass1, labelClass2];
           });
-          var legend = new Legend({
+
+          const legend = new Legend({
             view: view,
             layerInfos: [{
               layer: mSublayerFeatureLayer,
