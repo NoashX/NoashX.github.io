@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>3D MapImageLayer w/ Labels</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/themes/dark/main.css">
+  <script src="https://js.arcgis.com/4.8/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/MapImageLayer",
+        "esri/layers/support/LabelClass",
+        "esri/widgets/Legend",
+        "esri/renderers/smartMapping/creators/size",
+        "dojo/domReady!"
+      ],
+      function(
+        Map, SceneView, MapImageLayer, LabelClass, Legend, sizeRendererCreator
+      ) {
+
+        /*****************************************************************
+         * Create a MapImageLayer instance pointing to a Map Service
+         * containing data about US Cities and States.
+         * Define sublayers with visibility for each layer in Map Service.
+         *****************************************************************/
+
+        const mlayer = new MapImageLayer({
+          url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+          sublayers: [
+          {
+            id: 2,
+            visbile: true
+          },
+          {
+            id: 0,
+            visbile: true
+          }]
+        });
+
+        /*****************************************************************
+         * Add the layer to a map
+         *****************************************************************/
+        const map = new Map({
+          basemap: {  // autocasts as new Basemap()
+            portalItem: {  // autocasts as new PortalItem()
+              id: "fe0039092fb548a5a20c0b56c5275108"
+            }
+          }
+        });
+
+        const view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          zoom: 5,
+          camera: {
+            heading: 219.85,
+            fov: 55,
+            tilt: 33.52638,
+            position: [
+              -64.135685, // lon
+              71.12471,   // lat
+              4143333.23  // elevation in meters
+            ]
+          },
+          environment: {
+            starsEnabled: false,
+            atmosphereEnabled: false
+          }
+        });
+
+
+        view.when(function() {
+
+          const mSublayer = mlayer.findSublayerById(0);
+          const mSublayerFeatureLayer = mSublayer.createFeatureLayer();
+   
+          map.add(mSublayerFeatureLayer);
+
+          mSublayerFeatureLayer.load().then(function (){
+
+            mSublayerFeatureLayer.renderer = {
+              type: "simple", // autocasts as new SimpleRenderer()
+              symbol: {
+                type: "point-3d", // autocasts as new PointSymbol3D()
+                symbolLayers: [
+                  {
+                    type: "object", // autocasts as new ObjectSymbol3DLayer()
+                    resource: {
+                      primitive: "cylinder"
+                    },
+                    width: 25000 // width of the symol in meters
+                  }
+                ]
+              },
+              label: "Population",
+              visualVariables: [
+                {
+                  type: "size",
+                  field: "pop2000",
+                  stops: [
+                    {
+                      value: 1000,
+                      size: 25000
+                    },
+                    {
+                      value: 2000000,
+                      size: 1000000
+                    }
+                  ],
+                  axis: "height"
+                }, {
+                  type: "color",
+                  field: "pop2000",
+                  stops: [
+                    {
+                      value: 1000,
+                      color: "yellow"
+                    },
+                    {
+                      value: 2000000,
+                      color: "red"
+                    }
+                  ]
+                }, {
+                  type: "size",
+                  axis: "width-and-depth",
+                  useSymbolValue: true // uses the width value defined in the symbol layer (50,000)
+                }
+              ]
+            };
+            const labelClass1 = new LabelClass({
+              symbol: {
+                type: "label-3d", // autocasts as new LabelSymbol3D()
+                symbolLayers: [{
+                  type: "text", // autocasts as new TextSymbol3DLayer()
+                  material: {
+                    color: "white"
+                  },
+                  halo: {
+                    color: "black",
+                    size: 1
+                  },
+                  size: 16
+                }]
+              },
+              labelPlacement: "above-center",
+              labelExpressionInfo: {
+                expression: "IIF($feature.pop2000 > 1000000, $feature.areaname, '')"
+              }
+            });
+            const labelClass2 = new LabelClass({
+              symbol: {
+                type: "label-3d", // autocasts as new LabelSymbol3D()
+                symbolLayers: [{
+                  type: "text", // autocasts as new TextSymbol3DLayer()
+                  material: {
+                    color: "white"
+                  },
+                  halo: {
+                    color: "black",
+                    size: 1
+                  },
+                  size: 8
+                }]
+              },
+              labelPlacement: "above-center",
+              labelExpressionInfo: {
+                expression: "IIF($feature.pop2000 > 400000 && $feature.pop2000 < 1000000, $feature.areaname, '')"
+              }
+            });
+            mSublayerFeatureLayer.labelingInfo = [labelClass1, labelClass2];
+          });
+          var legend = new Legend({
+            view: view,
+            layerInfos: [{
+              layer: mSublayerFeatureLayer,
+              title: "US Cities"
+            }]
+          });
+          // Add Legend widget to the bottom left corner of the view
+          view.ui.add(legend, "bottom-left");
+        });
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>

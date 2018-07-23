@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>3D MapImageLayer w/ Popups</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.7/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/MapImageLayer",
+        "esri/renderers/smartMapping/creators/size",
+        "dojo/domReady!"
+      ],
+      function(
+        Map, SceneView, MapImageLayer, sizeRendererCreator
+      ) {
+
+        /*****************************************************************
+         * Create a MapImageLayer instance pointing to a Map Service
+         * containing data about World Cities and States.
+         *****************************************************************/
+
+        const mlayer = new MapImageLayer({
+          url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/SampleWorldCities/MapServer",
+          sublayers: [
+          {
+            id: 0,
+            opacity: 1,
+            visible: true,
+            title: "Cities"
+          }]
+        });
+
+        const template = {
+          title: "{CITY_NAME}",
+          content: "There are {POP} people living in {CITY_NAME}, with a Population Rank of {POP_RANK}."
+        };
+
+        const map = new Map({
+          basemap: {  // autocasts as new Basemap()
+            portalItem: {  // autocasts as new PortalItem()
+              id: "fe0039092fb548a5a20c0b56c5275108"
+            }
+          }
+        });
+
+        view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          zoom: 10,
+          camera: {  // autocasts as new Camera()
+            heading: 338.21,
+            fov: 55,
+            tilt: 21.372,
+            position: [  // autocasts as new Point()
+              66.591,    // lon
+              10.616,    // lat
+              8392143    // elevation in meters
+            ]
+          }
+        });
+
+        view.ui.remove([ "navigation-toggle", "compass", "zoom" ]);
+
+        view.when(function() {
+
+          const mSublayer = mlayer.findSublayerById(0);
+          const mSublayerFeatureLayer = mSublayer.createFeatureLayer();
+          map.add(mSublayerFeatureLayer);
+
+          mSublayerFeatureLayer.load().then(function (){    
+            mSublayerFeatureLayer.popupTemplate = template;
+
+            function rankByPop(feature){
+              // a number field representing total population
+              const population = feature.attributes.POP;
+              // var used to classify features by population
+              var rank;
+
+              if(population < 500000){
+                rank = "low";
+              } else if (population > 500000 && population < 2000000){
+                rank = "medium";
+              } else if (population > 2000000 && population < 7000000){
+                rank = "high";
+              } else if (population > 7000000){
+                rank = "very_high";
+              }
+              return rank;
+            };
+
+            // Esri Web Style Symbols
+            // https://developers.arcgis.com/javascript/latest/guide/esri-web-style-symbols/index.html
+
+            const fiestaSym = {
+              type: "web-style",  // autocasts as new WebStyleSymbol()
+              name: "Ford_Fiesta",
+              styleName: "EsriRealisticTransportationStyle"
+            };
+
+            const fusionSym = {
+              type: "web-style",  // autocasts as new WebStyleSymbol()
+              name: "Ford_Fusion",
+              styleName: "EsriRealisticTransportationStyle"
+            };
+
+            const f150Sym = {
+              type: "web-style",  // autocasts as new WebStyleSymbol()
+              name: "Ford_F-150",
+              styleName: "EsriRealisticTransportationStyle"
+            };
+
+            const vanSym = {
+              type: "web-style",  // autocasts as new WebStyleSymbol()
+              name: "Ford_Transit_Commercial_Van",
+              styleName: "EsriRealisticTransportationStyle"
+            };
+
+            const carRenderer = {
+              type: "unique-value",  // autocasts as new UniqueValueRenderer()
+              field: rankByPop,
+
+              uniqueValueInfos: [{
+                value: "low",
+                symbol: fiestaSym,
+                label: "Town"
+              }, {
+                value: "medium",
+                symbol: fusionSym,
+                label: "City"
+              }, {
+                value: "high",
+                symbol: f150Sym,
+                label: "Big City"
+              }, {
+                value: "very_high",
+                symbol: vanSym,
+                label: "Metropolis"
+              }],
+              visualVariables: [{
+                type: "size",
+                field: "POP",
+                axis: "height",
+                minDataValue: 1000,
+                minSize: 50000,
+                maxDataValue: 5000000,
+                maxSize: 400000
+              },{
+                type: "size",
+                field: "POP",
+                axis: "width",
+                minDataValue: 1000,
+                minSize: 50000,
+                maxDataValue: 5000000,
+                maxSize: 400000
+              }]
+            };
+
+            mSublayerFeatureLayer.renderer = carRenderer;
+            
+          });
+        });
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
