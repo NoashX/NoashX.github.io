@@ -5,7 +5,7 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <title>3D MapImageLayer w/ Popups</title>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.7/esri/themes/dark/main.css">
   <script src="https://js.arcgis.com/4.7/"></script>
 
   <style>
@@ -61,7 +61,7 @@
           }
         });
 
-        view = new SceneView({
+        const view = new SceneView({
           container: "viewDiv",
           map: map,
           zoom: 10,
@@ -76,8 +76,6 @@
             ]
           }
         });
-
-        view.ui.remove([ "navigation-toggle", "compass", "zoom" ]);
 
         view.when(function() {
 
