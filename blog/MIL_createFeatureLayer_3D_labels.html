@@ -89,16 +89,16 @@
           mSublayerFeatureLayer.load().then(function (){
 
             mSublayerFeatureLayer.renderer = {
-              type: "simple", // autocasts as new SimpleRenderer()
+              type: "simple",  // autocasts as new SimpleRenderer()
               symbol: {
-                type: "point-3d", // autocasts as new PointSymbol3D()
+                type: "point-3d",  // autocasts as new PointSymbol3D()
                 symbolLayers: [
                   {
-                    type: "object", // autocasts as new ObjectSymbol3DLayer()
+                    type: "object",  // autocasts as new ObjectSymbol3DLayer()
                     resource: {
                       primitive: "cylinder"
                     },
-                    width: 25000 // width of the symol in meters
+                    width: 25000  // width of the symbol in meters
                   }
                 ]
               },
@@ -134,7 +134,7 @@
                 }, {
                   type: "size",
                   axis: "width-and-depth",
-                  useSymbolValue: true // uses the width value defined in the symbol layer (50,000)
+                  useSymbolValue: true  // uses the width value defined in the symbol layer (50,000)
                 }
               ]
             };
@@ -162,9 +162,9 @@
 
             const labelClass2 = ({  // autocasts as new LabelClass()
               symbol: {
-                type: "label-3d", // autocasts as new LabelSymbol3D()
+                type: "label-3d",  // autocasts as new LabelSymbol3D()
                 symbolLayers: [{
-                  type: "text", // autocasts as new TextSymbol3DLayer()
+                  type: "text",  // autocasts as new TextSymbol3DLayer()
                   material: {
                     color: "white"
                   },
