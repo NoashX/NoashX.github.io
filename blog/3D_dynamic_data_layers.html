@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>3D MapImageLayer - Dynamic Data Layers</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/themes/dark/main.css">
+
+  <script src="https://js.arcgis.com/4.8/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+        "esri/layers/MapImageLayer",
+        "esri/widgets/Legend",
+        "dojo/domReady!"
+      ],
+      function(
+        Map, SceneView, MapImageLayer, Legend
+      ) {
+
+
+        // The base SQL statement used to query features.
+	    // We'll select all rows with popualtions over 20,000 people
+	    // from the Places feature class table.
+	    const queryString = "SELECT * FROM ss6.gdb.Places WHERE population > 20000";
+
+        // Create a renderer for the Railroads dynamic data layer (table).
+        const renderer = {
+          type: "simple",  // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-line",  // autocasts as new SimpleLineSymbol()
+            color: [255, 255, 255, 0.5],
+            width: 1,
+            style: "long-dash-dot-dot"
+          }
+        };
+
+        // The name of the workspaceId
+        const myWorkspace = "MyDatabaseWorkspaceIDSSR2";
+
+        // Create a MapImageLayer instance pointing to a Map Service
+        // containing a spatial table that doesn't have an associated geodabase.
+        const mlayer = new MapImageLayer({
+          url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+          sublayers: [
+          {
+	        title: "Cities",
+	        id: 0,
+	        visible: false,
+	        source: {
+	          // indicates the source of the sublayer is a dynamic data layer
+	          type: "data-layer",
+	          // this object defines the data source of the layer
+	          // in this case it's a table that will be queried
+	          // using a SQL WHERE clause
+	          dataSource: {
+	            type: "query-table",
+	            workspaceId: myWorkspace,
+	            query: queryString,
+	            oidFields: "objectid"
+	          }
+	        }
+	      }, {
+            id: 1,
+            visible: true,
+            title: "Railroads",
+            renderer: renderer,
+            source: {
+              // indicates the source of the sublayer is a dynamic data layer
+              type: "data-layer",
+              // this object defines the data source of the layer
+              // in this case it's a feature class table from a file geodatabase
+              dataSource: {
+                type: "table",
+                // workspace name
+                workspaceId: myWorkspace,
+                // table name
+                dataSourceName: "ss6.gdb.Railroads"
+              }
+            }
+	      }]
+        });
+
+        const map = new Map({
+          basemap: {  // autocasts as new Basemap()
+            portalItem: {  // autocasts as new PortalItem()
+              id: "fe0039092fb548a5a20c0b56c5275108"
+            }
+          }
+        });
+
+        const view = new SceneView({
+          container: "viewDiv",
+          map: map,
+          zoom: 5,
+          camera: {
+            heading: 223.5055,
+            fov: 55,
+            tilt: 36.9775,
+            position: [
+              -58.98131,  // lon
+              74.12834,   // lat
+              3727864     // elevation in meters
+            ]
+          },
+          environment: {
+            starsEnabled: false,
+            atmosphereEnabled: false
+          }
+        });
+
+        // add the MapImageLayer to the map
+        map.add(mlayer);
+
+        // wait for the MapImageLayer to load, then create the FeatureLayer
+        mlayer.when(function() {
+
+          const mSublayer = mlayer.findSublayerById(0);
+          const mSublayerFeatureLayer = mSublayer.createFeatureLayer();
+          mSublayerFeatureLayer.visible = true;
+   
+          map.add(mSublayerFeatureLayer);
+
+          mSublayerFeatureLayer.load().then(function (){
+
+          	// renderer for the cities FeatureLayer
+            mSublayerFeatureLayer.renderer = {
+              type: "simple",  // autocasts as new SimpleRenderer()
+              symbol: {
+                type: "point-3d",  // autocasts as new PointSymbol3D()
+                symbolLayers: [
+                  {
+                    type: "object",  // autocasts as new ObjectSymbol3DLayer()
+                    resource: {
+                      primitive: "cylinder"
+                    },
+                    width: 25000  // width of the symol in meters
+                  }
+                ]
+              },
+              label: "Population",
+              visualVariables: [
+                {
+                  type: "size",  // SizeVisualVariable
+                  field: "population",
+                  stops: [
+                    {
+                      value: 20000,
+                      size: 25000
+                    },
+                    {
+                      value: 2500000,
+                      size: 1000000
+                    }
+                  ],
+                  axis: "height"
+                }, {
+                  type: "color",  // ColorVisualVariable
+                  field: "population",
+                  stops: [
+                    {
+                      value: 20000,
+                      color: "yellow"
+                    },
+                    {
+                      value: 2500000,
+                      color: "red"
+                    }
+                  ]
+                }, {
+                  type: "size",
+                  axis: "width-and-depth",
+                  useSymbolValue: true  // uses the width value defined in the symbol layer (50,000)
+                }
+              ]
+            };
+
+            const labelClass1 = ({  // autocasts as new LabelClass()
+              symbol: {
+                type: "label-3d",  // autocasts as new LabelSymbol3D()
+                symbolLayers: [{
+                  type: "text",  // autocasts as new TextSymbol3DLayer()
+                  material: {
+                    color: "white"
+                  },
+                  halo: {
+                    color: "black",
+                    size: 1
+                  },
+                  size: 16
+                }]
+              },
+              labelPlacement: "above-center",
+              labelExpressionInfo: {
+                expression: "IIF($feature.population > 1000000, $feature.areaname, '')"
+              }
+            });
+
+            const labelClass2 = ({  // autocasts as new LabelClass()
+              symbol: {
+                type: "label-3d",  // autocasts as new LabelSymbol3D()
+                symbolLayers: [{
+                  type: "text",  // autocasts as new TextSymbol3DLayer()
+                  material: {
+                    color: "white"
+                  },
+                  halo: {
+                    color: "black",
+                    size: 0.5
+                  },
+                  size: 8
+                }]
+              },
+              labelPlacement: "above-center",
+              labelExpressionInfo: {
+                expression: "IIF($feature.population > 400000 && $feature.population < 1000000, $feature.areaname, '')"
+              }
+            });
+            mSublayerFeatureLayer.labelingInfo = [labelClass1, labelClass2];
+          });
+
+          const legend = new Legend({
+            view: view,
+            layerInfos: [{
+              layer: mSublayerFeatureLayer,
+              title: "US Cities"
+            }]
+          });
+          // Add Legend widget to the bottom left corner of the view
+          view.ui.add(legend, "bottom-left");
+        });
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
