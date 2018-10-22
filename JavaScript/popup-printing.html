@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Popup actions - 4.9</title>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.9/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/tasks/support/PrintParameters",
+      "esri/tasks/support/PrintTemplate",
+      "esri/tasks/PrintTask"
+    ], function(
+      Map, MapView, FeatureLayer,
+      PrintParameters, PrintTemplate, PrintTask
+    ) {
+
+      // Create the Map
+      var map = new Map({
+        basemap: "gray"
+      });
+
+      // Create the MapView
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-117.08, 34.10],
+        zoom: 11
+      });
+
+      var printUrl = "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task";
+
+      var printTask = new PrintTask({
+        url: printUrl
+      });
+
+      /*************************************************************
+       * The PopupTemplate content is the text that appears inside the
+       * popup. Bracketed {fieldName} can be used to reference the value
+       * of an attribute of the selected feature. HTML elements can be
+       * used to provide structure and styles within the content.
+       **************************************************************/
+
+      // Add this action to the popup so it is always available in this view
+      var printThisAction = {
+        title: "Printer",
+        id: "print-this",
+        image: "printer.png"
+      };
+
+      var template = { // autocasts as new PopupTemplate()
+        title: "Printing",
+        content: "{name}",
+        actions: [printThisAction]
+      };
+
+      featureLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/TrailRuns/FeatureServer/0",
+        outFields: ["*"],
+        popupTemplate: template
+      });
+      map.add(featureLayer);
+
+      // Execute each time the "Measure Length" is clicked
+      function printThis() {
+        var geom = view.popup.selectedFeature.geometry;
+        var distance = geometryEngine.geodesicLength(geom, "miles");
+        distance = parseFloat(Math.round(distance * 100) / 100).toFixed(2);
+        view.popup.content = view.popup.selectedFeature.attributes.name +
+          "<div style='background-color:DarkGray;color:white'>" + distance +
+          " miles.</div>";
+      }
+
+      // Event handler that fires each time an action is clicked.
+      view.popup.on("trigger-action", function(event) {
+        // Execute the measureThis() function if the measure-this action is clicked
+        var width = view.width;
+        var height = view.height;
+
+        /*if (dpi === 300 && layout === "map-only") {
+          width = width * 3;
+          height = height * 3;
+        }*/
+
+        var layout = "map-only";
+
+        var dpi = 300;
+
+        var template = new PrintTemplate({
+          format: "pdf",
+          layout: layout//,
+          /*exportOptions: {
+            dpi: dpi,
+            width: width,
+            height: height
+          }*/
+        });
+
+        var params = new PrintParameters({
+          view: view,
+          template: template
+        });
+
+        printTask.execute(params).then(printResult, printError);
+      });
+
+      function printResult(result) {
+        console.log(result.url);
+        window.open(result.url);
+      }
+
+      function printError(result) {
+        console.log("Something broke: ", err);
+      }
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
