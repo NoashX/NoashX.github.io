@@ -27,10 +27,9 @@
       "esri/WebMap",
       "esri/views/MapView",
       "esri/layers/FeatureLayer",
-      "esri/widgets/Search",
       "esri/layers/MapImageLayer",
       "esri/widgets/Bookmarks"
-    ], function(WebMap, MapView, FeatureLayer, Search, MapImageLayer, Bookmarks) {
+    ], function(WebMap, MapView, FeatureLayer, MapImageLayer, Bookmarks) {
 
       // simple renderer for US states
       // https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-SimpleRenderer.html
@@ -175,19 +174,11 @@
         zoom: 12
       });
 
-      // Adds the search widget to the top right corner of the view
-      view.ui.add(new Search({
+      // Adds the bookmarks widget to the top-right corner of the view
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-webmap-Bookmark.html
+      view.ui.add(new Bookmarks({
         view: view
       }), "top-right");
-
-      const bookmarks = new Bookmarks({
-        view: view
-      });
-
-      // Add the bookmarks widget to the top-right corner of the view
-      view.ui.add(bookmarks, {
-        position: "top-right"
-      });
 
     });
   </script>
