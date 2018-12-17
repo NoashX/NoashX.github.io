@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Adding Labels @4.10</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/themes/dark-green/main.css">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background-color: black;
+    }
+  </style>
+
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <script>
+    require([
+      "esri/WebMap",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/widgets/Search",
+      "esri/layers/MapImageLayer",
+      "esri/widgets/Bookmarks"
+    ], function(WebMap, MapView, FeatureLayer, Search, MapImageLayer, Bookmarks) {
+
+      // simple renderer for US states
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-SimpleRenderer.html
+      const statesRenderer = {
+        type: "simple",  // autocasts as new SimpleRenderer()
+        symbol: {
+          type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          style: "none",
+          outline: {
+            width: 2,
+            color: "white"
+          }
+        },
+        label: "State boundaries"
+      };
+
+      // MapImageLayer for US states with two scale-dependent label classes
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-MapImageLayer.html
+      const milayer = new MapImageLayer({
+        url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+        sublayers: [{
+          id: 2,
+          renderer: statesRenderer,
+          opacity: 0.7,
+          minScale: 18500000,
+          maxScale: 2400000,
+          labelingInfo: [{
+            labelExpression: "[state_abbr]",
+            labelPlacement: "always-horizontal",
+            symbol: {
+              type: "text",  // autocasts as new TextSymbol()
+              color: [255, 255, 255, 0.85],
+              font: {  // autocast as new Font()
+                size: 16,
+                weight: "bold"
+              },
+              backgroundColor: [0, 0, 0, 0.5]
+            },
+            minScale: 18500000,
+            maxScale: 9250000
+          }, {
+            labelExpression: "[state_name]",
+            labelPlacement: "always-horizontal",
+            symbol: {
+              type: "text",  // autocasts as new TextSymbol()
+              color: [255, 255, 255, 0.85],
+              haloColor: "gray",
+              haloSize: 1,
+              font: {  // autocast as new Font()
+                size: 14,
+                weight: "bold"
+              },
+              backgroundColor: [0, 0, 0, 0.5]
+            },
+            minScale: 9250000,
+            maxScale: 2400000
+          }]
+        }]
+      });
+
+      // Label class using Esri Icon Font
+      // https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/index.html
+      const labelEsriIconFont = {  // autocasts as new LabelClass()
+        symbol: {
+          type: 'text',  // autocasts as new TextSymbol()
+          color: 'green',
+          font: {  // autocast as new Font()
+            family: 'calcite-web-icons',
+            size: 12
+          }
+        },
+        labelPlacement: 'always-horizontal',
+        labelExpressionInfo: {
+          expression: '"\ue62f"'  // esri-icon-home
+        }
+      };
+
+      // FeatureLayer for US states with Esri Icon Font as labels
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-FeatureLayer.html
+      const esriIconFontLayer = new FeatureLayer({
+        url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/2",
+        renderer: statesRenderer,
+        opacity: 0.7,
+        minScale: 100000000,
+        maxScale: 18500000,
+        labelingInfo: [labelEsriIconFont]
+      });
+
+      // Label class for outdoor recreation FeatureLayer from PortalItem
+      // https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-LabelClass.html
+      const labelClass = {  // autocasts as new LabelClass()
+        symbol: {
+          type: "text",  // autocasts as new TextSymbol()
+          color: "green",
+          haloColor: "black",
+          font: {  // autocast as new Font()
+            family: "playfair-display",
+            size: 12,
+            weight: "bold"
+          }
+        },
+        labelPlacement: "above-center",
+        labelExpressionInfo: {
+          expression: "$feature.MARKER_ACTIVITY"
+        }
+      };
+
+      // create the MapView
+      // the WebMap contains polyline layer with labels, and the bookmarks
+      // https://www.arcgis.com/home/webmap/viewer.html?webmap=901ab4abfc884c408fc6057f2dc53fbc
+
+      const view = new MapView({
+        container: "viewDiv",
+        map: new WebMap({
+          portalItem: {  // autocasts as new PortalItem
+            id: "901ab4abfc884c408fc6057f2dc53fbc"
+          },
+          layers: [milayer, esriIconFontLayer,
+            new FeatureLayer({
+              portalItem: {  // autocasts as new PortalItem
+                id: "6012738cd1c74582a5f98ea30ae9876f"
+              },
+              labelingInfo: [labelClass],
+              renderer: {
+                type: "simple", // autocasts as new SimpleRenderer()
+                symbol: {
+                  type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+                  color: "rgba(0,100,0,0.6)",
+                  size: 3,
+                  outline: {
+                    color: [0, 0, 0, 0.1],
+                    width: 0.5
+                  }
+                }
+              },
+              maxScale: 0,
+              minScale: 2400000
+            })
+          ]
+        }),
+        center:  [-71.49335, 43.94598],
+        zoom: 12
+      });
+
+      // Adds the search widget to the top right corner of the view
+      view.ui.add(new Search({
+        view: view
+      }), "top-right");
+
+      const bookmarks = new Bookmarks({
+        view: view
+      });
+
+      // Add the bookmarks widget to the top-right corner of the view
+      view.ui.add(bookmarks, {
+        position: "top-right"
+      });
+
+    });
+  </script>
+
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
