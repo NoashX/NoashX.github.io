@@ -28,8 +28,11 @@
       "esri/views/MapView",
       "esri/layers/FeatureLayer",
       "esri/layers/MapImageLayer",
-      "esri/widgets/Bookmarks"
-    ], function(WebMap, MapView, FeatureLayer, MapImageLayer, Bookmarks) {
+      "esri/widgets/Bookmarks",
+      "esri/config"
+    ], function(WebMap, MapView, FeatureLayer, MapImageLayer, Bookmarks, esriConfig) {
+
+      esriConfig.request.trustedServers.push("https://sampleserver6.arcgisonline.com/arcgis/rest/services");
 
       // simple renderer for US states
       // https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-SimpleRenderer.html
