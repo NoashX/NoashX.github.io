@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+
+  <title>Fonts for Football FeatureLayer</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/themes/dark/main.css">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    #infoDiv {
+      height: 100%;
+      width: 100%;	
+    }
+  </style>
+
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <script>
+    require([
+        "esri/WebMap",
+        "esri/views/MapView",
+        "esri/widgets/LayerList",
+        "esri/layers/FeatureLayer",
+      	"esri/layers/support/LabelClass"
+      ],
+      function(
+        WebMap, MapView, LayerList,
+        FeatureLayer, LabelClass
+      ) {
+
+      	const labelClass = new LabelClass({
+	        symbol: {
+	          type: "text",  // autocasts as new TextSymbol()
+	          color: "white",
+	          haloColor: "brown",
+	          font: {  // autocast as new Font()
+	            family: "abril-fatface"
+	          }
+	        },
+	        labelPlacement: "above-center",
+	        labelExpressionInfo: {
+	          expression: "$feature.Team"
+	        }
+	      });
+
+      	const labelLayer = new FeatureLayer({
+          portalItem: {  // autocasts as new PortalItem()
+            id: "7f0bfc7bf67a407d8efebf584f6d956d"
+          },
+          labelingInfo: [labelClass]
+        });
+
+        const familySelect = document.getElementById("family-select");
+        const sizeSelect = document.getElementById("size-select");
+        const decorationSelect = document.getElementById("decoration-select");
+        const expressionSelect = document.getElementById("expression-select");
+
+        const map = new WebMap({
+          portalItem: {  // autocasts as new PortalItem()
+            id: "fbe1dbf6c9e4420c99b3faae209c88fe"
+          },
+          layers: [labelLayer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center:  [-76.9026, 39.4360],
+  		  zoom: 6
+        });
+
+        labelLayer.load().then(function() {
+        	createFamily();
+        	createSize();
+        	createDecorate();
+        	createExpression();
+        	decorationSelect.addEventListener("change", createDecorate);
+        	familySelect.addEventListener("change", createFamily);
+        	sizeSelect.addEventListener("change", createSize);
+        	expressionSelect.addEventListener("change", createExpression);
+        });
+
+        function createFamily() {
+          var newFont = familySelect.value;
+          var obj = JSON.parse(newFont);
+
+          labelClass.symbol.font.family = obj.family;
+          labelClass.symbol.font.style = obj.style;
+          labelClass.symbol.font.weight = obj.weight;
+          labelLayer.labelingInfo = [labelClass];
+        }
+
+        function createSize() {
+          labelClass.symbol.font.size = sizeSelect.value;
+          labelLayer.labelingInfo = [labelClass];
+        }
+
+        function createDecorate() {
+          labelClass.symbol.font.decoration = decorationSelect.value;
+          labelLayer.labelingInfo = [labelClass];
+        }
+
+        function createExpression() {
+          labelClass.labelExpressionInfo.expression = expressionSelect.value;
+          labelLayer.labelingInfo = [labelClass];
+        }
+
+        const layerList = new LayerList({
+          view: view,
+          listItemCreatedFunction: function(event) {
+            const item = event.item;
+            item.title = "Font Explorer";
+            item.panel = {
+              content: [document.getElementById("infoDiv")],
+              open: true
+            };
+          }
+        });
+
+        view.ui.add(layerList, "top-right");
+
+      });
+
+  </script>
+
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="infoDiv">
+    <div style="padding-bottom: 20px;">
+    Size:
+    <select id="size-select" class="esri-widget">
+      <option value="12">12</option>
+      <option value="16">16</option>
+      <option value="24">24</option>
+      <option value="36">36</option>
+    </select>
+    </div>
+    <div style="padding-bottom: 20px;">
+    Decoration:
+    <select id="decoration-select" class="esri-widget">
+      <option value="none">None</option>
+      <option value="underline">Underline</option>
+      <option value="line-through">Line-through</option>
+    </select>
+    </div>
+    <div style="padding-bottom: 20px;">
+    Expression:
+    <select id="expression-select" class="esri-widget">
+      <option value="$feature.Team">$feature.Team</option>
+      <option value="$feature.Division">$feature.Division</option>
+      <option value="$feature.Name">$feature.Name</option>
+      <option value="$feature.City">$feature.City</option>
+      <option value="$feature.State">$feature.State</option>
+    </select>
+    </div>
+    <div style="padding-bottom: 20px;">
+    Font:
+    <select id="family-select" class="esri-widget">
+      <option value='{"family": "abril-fatface", "style": "normal", "weight": "normal"}'>Abril Fatface Regular</option>
+<option value='{"family": "alegreya", "style": "normal", "weight": "bold"}'>Alegreya Bold</option>
+<option value='{"family": "alegreya", "style": "italic", "weight": "bold"}'>Alegreya Bold Italic</option>
+<option value='{"family": "alegreya", "style": "italic", "weight": "normal"}'>Alegreya Italic</option>
+<option value='{"family": "alegreya", "style": "normal", "weight": "normal"}'>Alegreya Regular</option>
+<option value='{"family": "alegreya-sans", "style": "italic", "weight": "normal"}'>Alegreya Sans Italic</option>
+<option value='{"family": "alegreya-sc", "style": "normal", "weight": "bold"}'>Alegreya SC Bold</option>
+<option value='{"family": "alegreya-sc", "style": "italic", "weight": "normal"}'>Alegreya SC Italic</option>
+<option value='{"family": "alegreya-sc", "style": "normal", "weight": "normal"}'>Alegreya SC Regular</option>
+<option value='{"family": "amarante", "style": "normal", "weight": "normal"}'>Amarante Regular</option>
+<option value='{"family": "amatic-sc", "style": "normal", "weight": "bold"}'>Amatic SC Bold</option>
+<option value='{"family": "arial", "style": "normal", "weight": "bold"}'>Arial Bold</option>
+<option value='{"family": "arial", "style": "italic", "weight": "bold"}'>Arial Bold Italic</option>
+<option value='{"family": "arial", "style": "italic", "weight": "normal"}'>Arial Italic</option>
+<option value='{"family": "arial", "style": "normal", "weight": "normal"}'>Arial Regular</option>
+<option value='{"family": "arial-unicode-ms", "style": "normal", "weight": "bold"}'>Arial Unicode MS Bold</option>
+<option value='{"family": "arial-unicode-ms", "style": "normal", "weight": "normal"}'>Arial Unicode MS Regular</option>
+<option value='{"family": "atomic-age", "style": "normal", "weight": "normal"}'>Atomic Age Regular</option>
+<option value='{"family": "audiowide", "style": "normal", "weight": "normal"}'>Audiowide Regular</option>
+<option value='{"family": "avenir-next-lt-pro", "style": "normal", "weight": "bold"}'>Avenir Next LT Pro Bold</option>
+<option value='{"family": "avenir-next-lt-pro", "style": "italic", "weight": "bold"}'>Avenir Next LT Pro Bold Italic</option>
+<option value='{"family": "avenir-next-lt-pro-demi", "style": "italic", "weight": "normal"}'>Avenir Next LT Pro Demi Italic</option>
+<option value='{"family": "avenir-next-lt-pro", "style": "italic", "weight": "normal"}'>Avenir Next LT Pro Italic</option>
+<option value='{"family": "avenir-next-lt-pro-light", "style": "italic", "weight": "normal"}'>Avenir Next LT Pro Light Italic</option>
+<option value='{"family": "avenir-next-lt-pro", "style": "normal", "weight": "normal"}'>Avenir Next LT Pro Regular</option>
+<option value='{"family": "avenirnext-lt-pro-light", "style": "italic", "weight": "normal"}'>AvenirNext LT Pro Light Italic</option>
+<option value='{"family": "avenirnext-lt-pro-light", "style": "normal", "weight": "normal"}'>AvenirNext LT Pro Light Regular</option>
+<option value='{"family": "avenirnext-lt-pro-medium", "style": "normal", "weight": "bold"}'>AvenirNext LT Pro Medium Bold</option>
+<option value='{"family": "avenirnext-lt-pro-medium", "style": "italic", "weight": "bold"}'>AvenirNext LT Pro Medium Bold Italic</option>
+<option value='{"family": "avenirnext-lt-pro-regular", "style": "normal", "weight": "bold"}'>AvenirNext LT Pro Regular Bold</option>
+<option value='{"family": "avenirnext-lt-pro-regular", "style": "italic", "weight": "bold"}'>AvenirNext LT Pro Regular Bold Italic</option>
+<option value='{"family": "avenirnext-lt-pro-regular", "style": "italic", "weight": "normal"}'>AvenirNext LT Pro Regular Italic</option>
+<option value='{"family": "avenirnext-lt-pro-regular", "style": "normal", "weight": "normal"}'>AvenirNext LT Pro Regular Regular</option>
+<option value='{"family": "belleza", "style": "normal", "weight": "normal"}'>Belleza Regular</option>
+<option value='{"family": "black-ops-one", "style": "normal", "weight": "normal"}'>Black Ops One Regular</option>
+<option value='{"family": "cabin-sketch", "style": "normal", "weight": "bold"}'>Cabin Sketch Bold</option>
+<option value='{"family": "cabin-sketch", "style": "normal", "weight": "normal"}'>Cabin Sketch Regular</option>
+<option value='{"family": "coming-soon", "style": "normal", "weight": "normal"}'>Coming Soon Regular</option>
+<option value='{"family": "homemade-apple", "style": "normal", "weight": "normal"}'>Homemade Apple Regular</option>
+<option value='{"family": "im-fell-dw-pica", "style": "italic", "weight": "normal"}'>IM FELL DW Pica PRO Italic</option>
+<option value='{"family": "im-fell-dw-pica", "style": "normal", "weight": "normal"}'>IM FELL DW Pica PRO Regular</option>
+<option value='{"family": "josefin-sans", "style": "normal", "weight": "normal"}'>Josefin Sans Regular</option>
+<option value='{"family": "josefin-sans-semibold", "style": "italic", "weight": "normal"}'>Josefin Sans Semibold Italic</option>
+<option value='{"family": "josefin-slab", "style": "normal", "weight": "bold"}'>Josefin Slab Bold</option>
+<option value='{"family": "josefin-slab", "style": "italic", "weight": "bold"}'>Josefin Slab Bold Italic</option>
+<option value='{"family": "josefin-slab", "style": "italic", "weight": "normal"}'>Josefin Slab Italic</option>
+<option value='{"family": "josefin-slab-light", "style": "normal", "weight": "normal"}'>Josefin Slab Light</option>
+<option value='{"family": "josefin-slab-light", "style": "italic", "weight": "normal"}'>Josefin Slab Light Italic</option>
+<option value='{"family": "josefin-slab", "style": "normal", "weight": "normal"}'>Josefin Slab Regular</option>
+<option value='{"family": "josefin-slab-semibold", "style": "italic", "weight": "normal"}'>Josefin Slab Semibold Italic</option>
+<option value='{"family": "josefin-slab-thin", "style": "italic", "weight": "normal"}'>Josefin Slab Thin Italic</option>
+<option value='{"family": "just-another-hand", "style": "normal", "weight": "normal"}'>Just Another Hand Regular</option>
+<option value='{"family": "kranky", "style": "normal", "weight": "normal"}'>Kranky Regular</option>
+<option value='{"family": "life-savers", "style": "normal", "weight": "bold"}'>Life Savers Bold</option>
+<option value='{"family": "loved-by-the-king", "style": "normal", "weight": "normal"}'>Loved By The King Regular</option>
+<option value='{"family": "merriweather", "style": "normal", "weight": "bold"}'>Merriweather Bold</option>
+<option value='{"family": "merriweather", "style": "italic", "weight": "bold"}'>Merriweather Bold Italic</option>
+<option value='{"family": "merriweather", "style": "italic", "weight": "normal"}'>Merriweather Italic</option>
+<option value='{"family": "merriweather", "style": "normal", "weight": "normal"}'>Merriweather Regular</option>
+<option value='{"family": "montserrat", "style": "normal", "weight": "bold"}'>Montserrat Bold</option>
+<option value='{"family": "montserrat", "style": "italic", "weight": "normal"}'>Montserrat Italic</option>
+<option value='{"family": "montserrat-medium", "style": "normal", "weight": "normal"}'>Montserrat Medium</option>
+<option value='{"family": "montserrat-medium", "style": "italic", "weight": "normal"}'>Montserrat Medium Italic</option>
+<option value='{"family": "montserrat", "style": "normal", "weight": "normal"}'>Montserrat Regular</option>
+<option value='{"family": "montserrat-semibold", "style": "italic", "weight": "normal"}'>Montserrat Semibold Italic</option>
+<option value='{"family": "noto-sans", "style": "normal", "weight": "bold"}'>Noto Sans Bold</option>
+<option value='{"family": "noto-sans", "style": "italic", "weight": "bold"}'>Noto Sans Bold Italic</option>
+<option value='{"family": "noto-sans", "style": "italic", "weight": "normal"}'>Noto Sans Italic</option>
+<option value='{"family": "noto-sans", "style": "normal", "weight": "normal"}'>Noto Sans Regular</option>
+<option value='{"family": "noto-serif", "style": "normal", "weight": "bold"}'>Noto Serif Bold</option>
+<option value='{"family": "noto-serif", "style": "italic", "weight": "bold"}'>Noto Serif Bold Italic</option>
+<option value='{"family": "noto-serif", "style": "italic", "weight": "normal"}'>Noto Serif Italic</option>
+<option value='{"family": "noto-serif", "style": "normal", "weight": "normal"}'>Noto Serif Regular</option>
+<option value='{"family": "old-standard-tt", "style": "normal", "weight": "bold"}'>Old Standard TT Bold</option>
+<option value='{"family": "old-standard-tt", "style": "italic", "weight": "normal"}'>Old Standard TT Italic</option>
+<option value='{"family": "old-standard-tt", "style": "normal", "weight": "normal"}'>Old Standard TT Regular</option>
+<option value='{"family": "orbitron", "style": "normal", "weight": "bold"}'>Orbitron Bold</option>
+<option value='{"family": "orbitron", "style": "normal", "weight": "normal"}'>Orbitron Regular</option>
+<option value='{"family": "oregano", "style": "italic", "weight": "normal"}'>Oregano Italic</option>
+<option value='{"family": "oregano", "style": "normal", "weight": "normal"}'>Oregano Regular</option>
+<option value='{"family": "oswald", "style": "normal", "weight": "bold"}'>Oswald Bold</option>
+<option value='{"family": "oswald-light", "style": "normal", "weight": "normal"}'>Oswald Light</option>
+<option value='{"family": "oswald", "style": "normal", "weight": "normal"}'>Oswald Regular</option>
+<option value='{"family": "pacifico", "style": "normal", "weight": "normal"}'>Pacifico Regular</option>
+<option value='{"family": "palatino-linotype", "style": "normal", "weight": "normal"}'>Palatino Linotype Regular</option>
+<option value='{"family": "playfair-display-black", "style": "normal", "weight": "normal"}'>Playfair Display Black Regular</option>
+<option value='{"family": "playfair-display", "style": "normal", "weight": "bold"}'>Playfair Display Bold</option>
+<option value='{"family": "playfair-display", "style": "italic", "weight": "bold"}'>Playfair Display Bold Italic</option>
+<option value='{"family": "playfair-display", "style": "italic", "weight": "normal"}'>Playfair Display Italic</option>
+<option value='{"family": "playfair-display", "style": "normal", "weight": "normal"}'>Playfair Display Regular</option>
+<option value='{"family": "playfair-display-sc", "style": "normal", "weight": "bold"}'>Playfair Display SC Bold</option>
+<option value='{"family": "playfair-display-sc", "style": "normal", "weight": "normal"}'>Playfair Display SC Regular</option>
+<option value='{"family": "redressed", "style": "normal", "weight": "normal"}'>Redressed Regular</option>
+<option value='{"family": "risque", "style": "normal", "weight": "normal"}'>Risque Regular</option>
+<option value='{"family": "roboto-condensed", "style": "italic", "weight": "normal"}'>Roboto Condensed Italic</option>
+<option value='{"family": "roboto-condensed-light", "style": "italic", "weight": "normal"}'>Roboto Condensed Light Italic</option>
+<option value='{"family": "rye", "style": "normal", "weight": "normal"}'>Rye Regular</option>
+<option value='{"family": "special-elite", "style": "normal", "weight": "normal"}'>Special Elite Regular</option>
+<option value='{"family": "syncopate", "style": "normal", "weight": "bold"}'>Syncopate Bold</option>
+<option value='{"family": "syncopate", "style": "normal", "weight": "normal"}'>Syncopate Regular</option>
+<option value='{"family": "tangerine", "style": "normal", "weight": "normal"}'>Tangerine Regular</option>
+<option value='{"family": "ubuntu", "style": "normal", "weight": "bold"}'>Ubuntu Bold</option>
+<option value='{"family": "ubuntu", "style": "italic", "weight": "bold"}'>Ubuntu Bold Italic</option>
+<option value='{"family": "ubuntu-condensed", "style": "normal", "weight": "normal"}'>Ubuntu Condensed Regular</option>
+<option value='{"family": "ubuntu", "style": "italic", "weight": "normal"}'>Ubuntu Italic</option>
+<option value='{"family": "ubuntu-light", "style": "normal", "weight": "bold"}'>Ubuntu Light Bold</option>
+<option value='{"family": "ubuntu-light", "style": "italic", "weight": "bold"}'>Ubuntu Light Bold Italic</option>
+<option value='{"family": "ubuntu-light", "style": "italic", "weight": "normal"}'>Ubuntu Light Italic</option>
+<option value='{"family": "ubuntu-light", "style": "normal", "weight": "normal"}'>Ubuntu Light Regular</option>
+<option value='{"family": "ubuntu-medium", "style": "italic", "weight": "normal"}'>Ubuntu Medium Italic</option>
+<option value='{"family": "ubuntu-mono", "style": "normal", "weight": "bold"}'>Ubuntu Mono Bold</option>
+<option value='{"family": "ubuntu-mono", "style": "italic", "weight": "bold"}'>Ubuntu Mono Bold Italic</option>
+<option value='{"family": "ubuntu-mono", "style": "italic", "weight": "normal"}'>Ubuntu Mono Italic</option>
+<option value='{"family": "ubuntu-mono", "style": "normal", "weight": "normal"}'>Ubuntu Mono Regular</option>
+<option value='{"family": "ubuntu", "style": "normal", "weight": "normal"}'>Ubuntu Regular</option>
+<option value='{"family": "unifrakturcook", "style": "normal", "weight": "bold"}'>UnifrakturCook Bold</option>
+<option value='{"family": "vast-shadow", "style": "normal", "weight": "normal"}'>Vast Shadow Regular</option>
+<option value='{"family": "walter-turncoat", "style": "normal", "weight": "normal"}'>Walter Turncoat Regular</option>
+    </select>
+    </div>
+  </div>
+</body>
+
+</html>
