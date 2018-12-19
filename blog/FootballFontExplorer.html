@@ -99,21 +99,41 @@
           labelClass.symbol.font.style = obj.style;
           labelClass.symbol.font.weight = obj.weight;
           labelLayer.labelingInfo = [labelClass];
+          console.log("New font:");
+          console.log("labelClass.symbol.font.size: ", labelClass.symbol.font.size);
+          console.log("labelClass.symbol.font.decoration: ", labelClass.symbol.font.decoration);
+          console.log("labelClass.symbol.font.family: ", labelClass.symbol.font.family);
+          console.log("labelClass.labelExpressionInfo.expression: ", labelClass.labelExpressionInfo.expression);
         }
 
         function createSize() {
           labelClass.symbol.font.size = sizeSelect.value;
           labelLayer.labelingInfo = [labelClass];
+          console.log("New font:");
+          console.log("labelClass.symbol.font.size: ", labelClass.symbol.font.size);
+          console.log("labelClass.symbol.font.decoration: ", labelClass.symbol.font.decoration);
+          console.log("labelClass.symbol.font.family: ", labelClass.symbol.font.family);
+          console.log("labelClass.labelExpressionInfo.expression: ", labelClass.labelExpressionInfo.expression);
         }
 
         function createDecorate() {
           labelClass.symbol.font.decoration = decorationSelect.value;
           labelLayer.labelingInfo = [labelClass];
+          console.log("New font:");
+          console.log("labelClass.symbol.font.size: ", labelClass.symbol.font.size);
+          console.log("labelClass.symbol.font.decoration: ", labelClass.symbol.font.decoration);
+          console.log("labelClass.symbol.font.family: ", labelClass.symbol.font.family);
+          console.log("labelClass.labelExpressionInfo.expression: ", labelClass.labelExpressionInfo.expression);
         }
 
         function createExpression() {
           labelClass.labelExpressionInfo.expression = expressionSelect.value;
           labelLayer.labelingInfo = [labelClass];
+          console.log("New font:");
+          console.log("labelClass.symbol.font.size: ", labelClass.symbol.font.size);
+          console.log("labelClass.symbol.font.decoration: ", labelClass.symbol.font.decoration);
+          console.log("labelClass.symbol.font.family: ", labelClass.symbol.font.family);
+          console.log("labelClass.labelExpressionInfo.expression: ", labelClass.labelExpressionInfo.expression);
         }
 
         const layerList = new LayerList({
