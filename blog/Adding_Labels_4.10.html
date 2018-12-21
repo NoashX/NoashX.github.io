@@ -131,7 +131,8 @@
         symbol: {
           type: "text",  // autocasts as new TextSymbol()
           color: "green",
-          haloColor: "black",
+          haloColor: "white",
+          haloSize: 2,
           font: {  // autocast as new Font()
             family: "life-savers",
             size: 12,
@@ -140,6 +141,10 @@
         },
         labelPlacement: "above-center",
         labelExpressionInfo: {
+          // Logical Function in Arcade called DefaultValue, 
+          // which allows the app to display some text if no value is 
+          // found in the feature’s field used in the labelExpressionInfo
+          // https://developers.arcgis.com/arcade/function-reference/logical_functions/
           expression: 'DefaultValue($feature.MARKER_ACTIVITY, "no data")'
         }
       };
@@ -147,7 +152,6 @@
       // create the MapView
       // the WebMap contains polyline layer with labels, and the bookmarks
       // https://www.arcgis.com/home/webmap/viewer.html?webmap=901ab4abfc884c408fc6057f2dc53fbc
-
       const view = new MapView({
         container: "viewDiv",
         map: new WebMap({
