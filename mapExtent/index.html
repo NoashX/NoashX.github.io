@@ -7,8 +7,8 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
     <title>map helper</title>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/3.27/dijit/themes/claro/claro.css">    
-    <link rel="stylesheet" href="https://js.arcgis.com/3.27/esri/css/esri.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.28/dijit/themes/claro/claro.css">    
+    <link rel="stylesheet" href="https://js.arcgis.com/3.28/esri/css/esri.css">
 
     <!--<link rel="stylesheet" href="/mapExtent/css/styles/default.css">
     <link rel="stylesheet" href="/mapExtent/css/styles/atelier-forest.dark.css">
@@ -51,7 +51,7 @@
       }
     </style> 
     
-    <script src="https://js.arcgis.com/3.27/"></script>
+    <script src="https://js.arcgis.com/3.28/"></script>
     <script> 
     
       var map;
@@ -74,7 +74,7 @@
         parser.parse();
 
         map = new Map("map", {
-           basemap: "hybrid",
+           basemap: "topo-vector",
            center: [-71.6072, 43.8185],
            zoom: 6
         });
