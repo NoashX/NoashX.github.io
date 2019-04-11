@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>GEORGE'S MAP</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #sidebar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 10%;
+        width: 320px;
+        font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial,
+          sans-serif;
+        overflow-y: auto;
+        background-color: black;
+      }
+      .label {
+        color: white;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.11/esri/themes/light/main.css"
+    />
+
+    <script src="https://js.arcgis.com/4.11/"></script>
+
+    <script>
+      require(["esri/views/MapView", "esri/WebMap"], function(MapView, WebMap) {
+        /************************************************************
+         * Creates a new WebMap instance. A WebMap must reference
+         * a PortalItem ID that represents a WebMap saved to
+         * arcgis.com or an on-premise portal.
+         *
+         * To load a WebMap from an on-premise portal, set the portal
+         * url with esriConfig.portalUrl.
+         ************************************************************/
+        var webmap = new WebMap({
+          portalItem: {
+            // autocasts as new PortalItem()
+            id: "521533c35a264e30a54ee1864ec23f44"
+          }
+        });
+
+        /************************************************************
+         * Set the WebMap instance to the map property in a MapView.
+         ************************************************************/
+        var view = new MapView({
+          map: webmap,
+          container: "viewDiv"
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv">
+      <div id="sidebar" class="esri-widget">
+        <div id="text">
+          <div id="info">
+            <div style="padding-bottom:20px; padding-left:10px;">
+              <br />
+              <label class="label">George's Chicago Map!</label><br />
+              <br /><br />
+              <label class="label">https://noashx.github.io/Hawaii/GeorgeChicagoMap.html</label><br />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
