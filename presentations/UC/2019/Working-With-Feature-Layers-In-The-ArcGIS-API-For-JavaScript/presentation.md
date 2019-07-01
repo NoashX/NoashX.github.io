@@ -12,16 +12,21 @@
 
 ## Agenda
 
+</br>
+
 * Types of feature layers
 * Visualization styles
+* Labeling 
 * Popups to communicate information
-* Labelling
-* Query the data from the server
-* Interact with the data in memory
+* Querying data from the server
+* Editing features
+</br>
 </br>
 //* Feature Layer powered by dynamic feature tiles
 </br>
 //* Bringing portal feature layer into your app (add to Types)
+</br>
+//* Interact with the data in memory
 
 ---
 
@@ -39,13 +44,18 @@
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Feature Layer powered by dynamic feature tiles
+## Visualization styles
 
 ---
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Visualization styles
+## Labelling
+
+Label features to show relevant information at a glance
+
+* [Multiline labels](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiline/index.html) 
+* [Multiple label classes](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiple-classes/index.html)
 
 ---
 
@@ -164,17 +174,6 @@ layer.outFields = ["some_field"];
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Labelling
-
-Label features to show relevant information at a glance
-
-* [Multiline labels](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiline/index.html) 
-* [Multiple label classes](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiple-classes/index.html) 
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
 ## Query the data from the server
 
 * [queryFeatures()](./demos/3_query/1_query_features.html)
@@ -201,6 +200,10 @@ Label features to show relevant information at a glance
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
 
 # Questions
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/alias_slide.png" -->
 
 ---
 
