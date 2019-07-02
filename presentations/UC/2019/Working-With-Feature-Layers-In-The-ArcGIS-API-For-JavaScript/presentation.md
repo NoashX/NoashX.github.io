@@ -17,16 +17,9 @@
 * Types of feature layers
 * Visualization styles
 * Labeling 
-* Popups to communicate information
-* Querying data from the server
+* Popups
+* Querying
 * Editing features
-</br>
-</br>
-//* Feature Layer powered by dynamic feature tiles
-</br>
-//* Bringing portal feature layer into your app (add to Types)
-</br>
-//* Interact with the data in memory
 
 ---
 
@@ -36,32 +29,10 @@
 
 * [Feature Services](https://developers.arcgis.com/javascript/latest/sample-code/layers-featurelayer/index.html)
 * [Feature Collections](https://developers.arcgis.com/javascript/latest/sample-code/layers-featurelayer-collection/index.html)
+* [Portal Item](https://developers.arcgis.com/javascript/latest/sample-code/layers-portal/index.html)
 * Client side data
   * CSV: [SDK sample](https://developers.arcgis.com/javascript/latest/sample-code/layers-csv-projection/index.html)
   * GeoJSON: [DevSummit Plenary](https://ycabon.github.io/2019-devsummit-plenary/2_geojson.html)
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
-## Visualization styles
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
-## Labelling
-
-Label features to show relevant information at a glance
-
-* [Multiline labels](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiline/index.html) 
-* [Multiple label classes](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiple-classes/index.html)
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
-## Popups to communicate information
 
 ---
 
@@ -174,6 +145,29 @@ layer.outFields = ["some_field"];
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
+## Visualization styles
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Labelling
+
+Label features to show relevant information at a glance
+
+* [Multiline labels](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiline/index.html) 
+* [Multiple label classes](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiple-classes/index.html)
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Popups to communicate information
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
 ## Query the data from the server
 
 * [queryFeatures()](./demos/3_query/1_query_features.html)
@@ -186,12 +180,9 @@ layer.outFields = ["some_field"];
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Interact with the data in memory
+## Editing
 
-* when is the layerview ready
-* when is the layerview updating
-* add interactivity by querying the layerview
-* filter & effect
+* make edits and stuff
 
 [Demo](./demos/4_client-side_statistics/index.html)
 
