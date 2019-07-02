@@ -157,6 +157,12 @@ Label features to show relevant information at a glance
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
+## Query the data client-side
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
 ## Editing
 
 </br>
