@@ -4,7 +4,7 @@
 <h2 style="text-align: left; font-size: 60px;">in the ArcGIS API for JavaScript</h2>
 </br>
 <p style="text-align: left; font-size: 30px;">Yann Cabon | Noah Sager</p>
-    <p style="text-align: left; font-size: 30px;">slides: <a href="https://git.io/fhp4D"><code>https://git.io/fhp4D</code></a></p>
+    <p style="text-align: left; font-size: 30px;">slides: <a href="https://git.io/fjKQq"><code>https://git.io/fhp4D</code></a></p>
 
 ---
 
