@@ -122,36 +122,13 @@ Layer.fromPortalItem({
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Bringing portal feature layer into your app
-
-New in 4.11: Only fields for display requested
-
-```ts
-const webmap = new WebMap({
-  portalItem: {
-    id: "<webmap id>"
-  }
-});
-
-await webmap.loadAll();
-
-const layer = webmap.allLayers
-  .find((layer) => layer.title === "test");
-
-layer.outFields = ["some_field"];
-```
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
 ## Visualization styles
 
 ---
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Labelling
+## Labeling
 
 Label features to show relevant information at a glance
 
@@ -182,9 +159,21 @@ Label features to show relevant information at a glance
 
 ## Editing
 
-* make edits and stuff
+</br>
 
-[Demo](./demos/4_client-side_statistics/index.html)
+* Applies edits to features in a layer
+</br>
+</br>
+* New features can be created and existing features can be updated or deleted
+</br>
+</br>
+* Only applies to layers in a feature service and client-side features set through the layer's source
+
+</br>
+
+</br>
+
+[Samples](https://developers.arcgis.com/javascript/latest/sample-code/?search=editing)
 
 ---
 
