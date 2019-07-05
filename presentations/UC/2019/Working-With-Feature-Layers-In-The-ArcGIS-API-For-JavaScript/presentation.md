@@ -171,19 +171,79 @@ Label features to show relevant information at a glance
 
 </br>
 
-* Applies edits to features in a layer
+Updating features directly in the web browser
 </br>
 </br>
-* New features can be created and existing features can be updated or deleted
-</br>
-</br>
-* Only applies to layers in a feature service and client-side features set through the layer's source
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Editing
 
 </br>
 
+How do I know if I can edit features?
+</br>
+</br>
+* [REST Supported Operations](https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Thrift_Shops/FeatureServer/0)
+* [ArcGIS Online / Portal Settings](https://jsapi.maps.arcgis.com/home/item.html?id=104c2a112e2242f69ac6bf5fb636cf04)
+* ArcGIS Server Manager
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Editing
+
 </br>
 
-[Samples](https://developers.arcgis.com/javascript/latest/sample-code/?search=editing)
+Two ways to edit features:
+
+</br>
+
+* [applyEdits()](https://developers.arcgis.com/javascript/latest/sample-code/editing-applyedits/live/index.html)
+
+</br>
+</br>
+
+* [Editor widget](https://developers.arcgis.com/javascript/latest/sample-code/widgets-editor-basic/live/index.html)
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## applyEdits()
+
+</br>
+
+<img style="float:bottom;" src="Images/applyEdits.png" alt="applyEdits">
+
+</br>
+</br>
+
+[sample](https://developers.arcgis.com/javascript/latest/sample-code/editing-applyedits/live/index.html)
+
+</br>
+</br>
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Editor widget
+
+</br>
+
+<img style="float:bottom;" src="Images/editorWidget.png" alt="editorWidget">
+
+</br>
+</br>
+
+[sample](https://developers.arcgis.com/javascript/latest/sample-code/popup-editaction/live/index.html)
+
+</br>
+</br>
 
 ---
 
