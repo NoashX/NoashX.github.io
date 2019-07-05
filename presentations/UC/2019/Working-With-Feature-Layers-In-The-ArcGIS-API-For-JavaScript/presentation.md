@@ -190,7 +190,9 @@ Label features to show relevant information at a glance
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
 
 ## Related JavaScript Sessions at the UC
-
+</br>
+</br>
+<img style="float:bottom;" src="Images/EsriEventsApp.png" alt="EsriEventsApp">
 ---
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
@@ -214,7 +216,7 @@ Label features to show relevant information at a glance
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
 
-# Questions
+# Questions?
 
 ---
 
