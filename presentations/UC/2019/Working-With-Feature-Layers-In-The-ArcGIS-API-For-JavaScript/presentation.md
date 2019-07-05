@@ -30,9 +30,6 @@
 * [Feature Services](https://developers.arcgis.com/javascript/latest/sample-code/layers-featurelayer/index.html)
 * [Feature Collections](https://developers.arcgis.com/javascript/latest/sample-code/layers-featurelayer-collection/index.html)
 * [Portal Item](https://developers.arcgis.com/javascript/latest/sample-code/layers-portal/index.html)
-* Client side data
-  * CSV: [SDK sample](https://developers.arcgis.com/javascript/latest/sample-code/layers-csv-projection/index.html)
-  * GeoJSON: [DevSummit Plenary](https://ycabon.github.io/2019-devsummit-plenary/2_geojson.html)
 
 ---
 
@@ -130,10 +127,17 @@ Layer.fromPortalItem({
 
 ## Labeling
 
+</br>
+
 Label features to show relevant information at a glance
 
-* [Multiline labels](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiline/index.html) 
-* [Multiple label classes](https://developers.arcgis.com/javascript/latest/sample-code/labels-multiple-classes/index.html)
+</br>
+
+* [simple labels](./demos/2_labeling/1_simple_label.html)
+* [where clause](./demos/2_labeling/2_where_label.html)
+* [multiple labels classes](./demos/2_labeling/3_multiple_label_classes.html)
+* [min/max scale ranges](./demos/2_labeling/4_scaled_labels.html)
+* [complex labels](./demos/2_labeling/5_final.html)
 
 ---
 
@@ -180,6 +184,31 @@ Label features to show relevant information at a glance
 </br>
 
 [Samples](https://developers.arcgis.com/javascript/latest/sample-code/?search=editing)
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
+
+## Related JavaScript Sessions at the UC
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-2.png" -->
+
+<b>ArcGIS API for JavaScript: What's New</b></br>
+<i>Wednesday (1pm - 2pm)</i>
+</br></br>
+<b>Customizing ArcGIS API for JavaScript Widgets</b></br>
+<i>Wednesday (2:30pm - 3:30pm)</i>
+</br></br>
+<b>Editing with the ArcGIS API for JavaScript</b></br>
+<i>Wednesday (4pm - 5pm)</i>
+</br></br>
+<b>Building 3D GIS Applications with JavaScript</b></br>
+<i>Thursday (8:30am - 9:30am)</i>
+</br></br>
+<b>Building Web Apps with the ArcGIS API for JavaScript</b></br>
+<i>Thursday (4pm - 5pm)</i>
 
 ---
 
