@@ -32,6 +32,8 @@
         "esri/layers/FeatureLayer"
       ], function(WebMap, MapView, FeatureLayer) {
         
+        // SCALE
+        //  minimum scale (most zoomed out) at which the labels are visible
         const minScale = 2500000;
 
         const view = new MapView({

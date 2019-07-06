@@ -51,6 +51,9 @@ of the wind direction. This is appended to the wind speed
         "esri/views/MapView",
         "esri/layers/FeatureLayer"
       ], function(WebMap, MapView, FeatureLayer) {
+
+        // SCALE
+        //  minimum scale (most zoomed out) at which the labels are visible
         const minScale = 2500000;
 
         const view = new MapView({
@@ -61,6 +64,27 @@ of the wind direction. This is appended to the wind speed
             }
           })
         });
+
+        //////////////////////////
+        ////                  ////
+        //// wind label class ////
+        ////                  ////
+        //////////////////////////
+
+        // Arcade expression that determines the compass direction wind
+        // is blowing based on a field indicating the compass degrees
+        // of the wind direction. This is appended to the wind speed
+
+        const windArcade = document.getElementById("wind-direction").text;
+
+        const windClass = {
+          labelExpressionInfo: {
+            expression: windArcade
+          },
+          labelPlacement: "above-right",
+          minScale: minScale
+        };
+        windClass.symbol = createTextSymbol("green");
 
         /////////////////////////////////
         ////                         ////
@@ -90,27 +114,6 @@ of the wind direction. This is appended to the wind speed
           where: "TEMP > 32"
         };
         highTempClass.symbol = createTextSymbol("red");
-
-        //////////////////////////
-        ////                  ////
-        //// wind label class ////
-        ////                  ////
-        //////////////////////////
-
-        // Arcade expression that determines the compass direction wind
-        // is blowing based on a field indicating the compass degrees
-        // of the wind direction. This is appended to the wind speed
-
-        const windArcade = document.getElementById("wind-direction").text;
-
-        const windClass = {
-          labelExpressionInfo: {
-            expression: windArcade
-          },
-          labelPlacement: "above-right",
-          minScale: minScale
-        };
-        windClass.symbol = createTextSymbol("green");
 
         //////////////////////////////
         ////                      ////
