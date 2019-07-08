@@ -21,6 +21,9 @@
       height: 100%;
       width: 100%;
     }
+    #viewDiv canvas {
+      filter: drop-shadow(0px 4px 4px darkgray);
+    }
   </style>
 
   <script>
@@ -33,39 +36,40 @@
       "dstore/Store",
       "dstore/QueryResults"
     ], function(
-      Map, MapView, FeatureLayer,      
-      OnDemandGrid, Store, QueryResults  
+      Map, MapView, FeatureLayer,
+      OnDemandGrid, Store, QueryResults
     ) {
+      // portal item: https://jsapi.maps.arcgis.com/home/item.html?id=811dc250274741bab8cdcf0386724054
       var layer = new FeatureLayer({
-        url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Beverly%20Hills%20Trees%20By%20Block/FeatureServer/0",
-        outFields: ["*"]
+        portalItem: {
+          id: "811dc250274741bab8cdcf0386724054"
+        }
       });
 
-      // setup the map
-      var map = new Map({
-        basemap: "hybrid",
+      map = new Map({
         layers: [layer]
       });
 
-      var view = new MapView({
+      view = new MapView({
         container: "viewDiv",
         map: map,
-        popup: {
-          autoOpenEnabled: false
-        },
-        constraints: {
-          snapToZoom: false
-        }
-      });
-      
-      layer.load()
-      .then(() => {
-          // Set the view extent to the data extent
-          view.extent = layer.fullExtent;
 
-          // New in 4.11: FeatureLayer.createPopupTemplate()
-          layer.popupTemplate = layer.createPopupTemplate();
-        });
+        popup: {
+          autoOpenEnabled: false,
+          defaultPopupTemplateEnabled: true
+        },
+
+        extent: {
+          xmin: 60659.82391183183,
+          ymin: 5991474.660211295,
+          xmax: 1260705.520404459,
+          ymax: 7169379.292192988,
+          spatialReference: { wkid: 2154 }
+        },
+        spatialReference: { wkid: 2154 },
+
+        ui: { components: ["attribution" ] }
+      });
 
       view.on("click", (event) => {
         queryFeatures(event);

@@ -22,6 +22,9 @@
       height: 50%;
       width: 100%;
     }
+    #viewDiv canvas {
+      filter: drop-shadow(0px 4px 4px darkgray);
+    }
   </style>
 
   <script>
@@ -34,36 +37,39 @@
       "dstore/Store",
       "dstore/QueryResults"
     ], function(
-      Map, MapView, FeatureLayer,      
-      OnDemandGrid, Store, QueryResults  
+      Map, MapView, FeatureLayer,
+      OnDemandGrid, Store, QueryResults
     ) {
+      // portal item: https://jsapi.maps.arcgis.com/home/item.html?id=811dc250274741bab8cdcf0386724054
       var layer = new FeatureLayer({
-        url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Median_Disposable_Income_2015/FeatureServer",
-        outFields: ["*"]
+        portalItem: {
+          id: "811dc250274741bab8cdcf0386724054"
+        }
       });
 
-      // setup the map
-      var map = new Map({
+      map = new Map({
         layers: [layer]
       });
 
       view = new MapView({
         container: "viewDiv",
         map: map,
-        spatialReference: {
-          wkid: 2154
+
+        popup: {
+          autoOpenEnabled: false,
+          defaultPopupTemplateEnabled: true
         },
-        center: {
-          spatialReference: {
-            wkid: 2154
-          },
-          x: 603737.3294851505,
-          y: 6826948.894620353
+
+        extent: {
+          xmin: 60659.82391183183,
+          ymin: 5991474.660211295,
+          xmax: 1260705.520404459,
+          ymax: 7169379.292192988,
+          spatialReference: { wkid: 2154 }
         },
-        scale: 2893742,
-        constraints: {
-          snapToZoom: false
-        }
+        spatialReference: { wkid: 2154 },
+
+        ui: { components: ["attribution" ] }
       });
 
       createGrid();
