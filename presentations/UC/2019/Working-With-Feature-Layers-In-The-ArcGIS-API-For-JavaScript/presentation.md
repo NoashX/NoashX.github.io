@@ -15,8 +15,8 @@
 </br>
 
 * Types of feature layers
-* Visualization styles
-* Labeling 
+* Rendering
+* Labeling
 * Popups
 * Querying
 * Editing features
@@ -119,7 +119,7 @@ Layer.fromPortalItem({
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
-## Visualization styles
+## Rendering
 
 ---
 
@@ -133,11 +133,11 @@ Label features to show relevant information at a glance
 
 </br>
 
-* [simple labels](./demos/2_labeling/1_simple_label.html)
-* [where clause](./demos/2_labeling/2_where_label.html)
-* [multiple labels classes](./demos/2_labeling/3_multiple_label_classes.html)
-* [min/max scale ranges](./demos/2_labeling/4_scaled_labels.html)
-* [complex labels](./demos/2_labeling/5_final.html)
+* [simple labels](./demos/3_labeling/1_simple_label.html)
+* [where clause](./demos/3_labeling/2_where_label.html)
+* [multiple labels classes](./demos/3_labeling/3_multiple_label_classes.html)
+* [min/max scale ranges](./demos/3_labeling/4_scaled_labels.html)
+* [complex labels](./demos/3_labeling/5_final.html)
 
 ---
 
@@ -151,11 +151,11 @@ Label features to show relevant information at a glance
 
 ## Query the data from the server
 
-* [queryFeatures()](./demos/3_query/1_query_features.html)
-* [queryFeatures() - by distance](./demos/3_query/2_query_features_by_distance.html)
-* [queryFeatures() - pagination](./demos/3_query/3_query_features_pagination.html)
-* [queryAttachments()](./demos/3_query/4_query_attachments.html)
-* [queryRelatedFeatures()](./demos/3_query/5_query_related_features.html)
+* [queryFeatures()](./demos/5_query/1_query_features.html)
+* [queryFeatures() - by distance](./demos/5_query/2_query_features_by_distance.html)
+* [queryFeatures() - pagination](./demos/5_query/3_query_features_pagination.html)
+* [queryAttachments()](./demos/5_query/4_query_attachments.html)
+* [queryRelatedFeatures()](./demos/5_query/5_query_related_features.html)
 
 ---
 
