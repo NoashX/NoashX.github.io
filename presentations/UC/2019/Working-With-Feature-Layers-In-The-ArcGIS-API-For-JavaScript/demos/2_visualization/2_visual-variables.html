@@ -32,6 +32,7 @@
 
     <script>
       require([
+        "esri/intl",
         "esri/Map",
 
         "esri/views/MapView",
@@ -42,6 +43,7 @@
         "esri/widgets/Home",
         "esri/widgets/Legend"
       ], function(
+        intl,
         Map,
         MapView,
         FeatureLayer,
@@ -67,6 +69,7 @@
 
         var featureLayer = new FeatureLayer({
           url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Median_Disposable_Income_2015/FeatureServer/0",
+          title: "Median Disposable Income 2015",
           renderer: {
             type: "simple",
             symbol: {
@@ -74,16 +77,32 @@
               color: "darkgray",
               outline: null
             },
-            visualVariables: [
-              {
-                type: "color", // opacity, size, rotation
-                valueExpression: "$feature.medianIncome2015",
-                stops: [
-                  { value: 15000, color: "white" },
-                  { value: 30000, color: "red" }
-                ]
-              }
-            ]
+            // visualVariables: [
+            //   {
+            //     type: "color", // opacity, size, rotation
+            //     valueExpression: "$feature.medianIncome2015",
+            //     stops: [
+            //       {
+            //         value: 17000,
+            //         color: "white",
+            //         // label: `< ${intl.formatNumber(17000, {
+            //         //   style: "currency",
+            //         //   currency: "EUR",
+            //         //   currencyDisplay: "symbol"
+            //         // })}`
+            //       },
+            //       {
+            //         value: 28000,
+            //         color: "red",
+            //         // label: `> ${intl.formatNumber(28000, {
+            //         //   style: "currency",
+            //         //   currency: "EUR",
+            //         //   currencyDisplay: "symbol"
+            //         // })}`
+            //       }
+            //     ]
+            //   }
+            // ]
           }
         });
 

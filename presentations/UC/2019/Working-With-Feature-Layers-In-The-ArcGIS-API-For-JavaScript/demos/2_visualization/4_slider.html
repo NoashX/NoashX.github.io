@@ -38,17 +38,18 @@
 
         "esri/layers/FeatureLayer",
 
+        "esri/renderers/smartMapping/statistics/histogram",
         "esri/renderers/smartMapping/creators/color",
 
         "esri/widgets/Zoom",
         "esri/widgets/Home",
-        "esri/widgets/Legend"
+        "esri/widgets/smartMapping/ColorSlider"
       ], function(
         Map,
         MapView,
         FeatureLayer,
-        colorRendererCreator,
-        Zoom, Home, Legend
+        histogram, colorRendererCreator,
+        Zoom, Home, ColorSlider
       ) {
         map = new Map({});
 
@@ -73,28 +74,51 @@
           title: "Median Disposable Income 2015"
         });
 
-        // using smart mapping APIs
-        // https://developers.arcgis.com/javascript/latest/guide/visualization-overview/index.html#smart-mapping-apis
+        Promise.all([
+          colorRendererCreator.createContinuousRenderer({
+            layer: featureLayer,
+            field: "medianIncome2015",
+            theme: "above-and-below",
 
-        colorRendererCreator.createContinuousRenderer({
-          layer: featureLayer,
-          field: "medianIncome2015",
-          theme: "above-and-below",
+            // Make the outline thinner for small scales
+            outlineOptimizationEnabled: true,
+            view: view
+          }),
 
-          // Make the outline thinner for small scales
-          outlineOptimizationEnabled: true,
-          view: view
+          // Get information about the repartition of the income
+          histogram({
+            layer: featureLayer,
+            field: "medianIncome2015",
+            view: view,
+            numBins: 70
+          })
+        ])
+        .then(([rendererResult, histogramResult]) => {
+          featureLayer.renderer = rendererResult.renderer;
+          map.add(featureLayer);
+
+          // using color slider
+          // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-smartMapping-ColorSlider.html
+          
+          // create a slider from the renderer and the histogram
+          const colorSlider = ColorSlider.fromRendererResult(rendererResult, histogramResult);
+          view.ui.add(colorSlider, "bottom-right");
+          colorSlider.primaryHandleEnabled = true;
+
+          // colorSlider.watch(["thumb-change", "thumb-drag"], function() {
+          //   const renderer = featureLayer.renderer.clone();
+          //   const colorVariable = renderer.visualVariables[0];
+          //   colorVariable.stops = colorSlider.stops;
+          //   featureLayer.renderer = renderer;
+          // });
         })
-        .then((response) => {
-          featureLayer.renderer = response.renderer;
-        })
-
-        map.add(featureLayer);
+        .catch((error) => {
+          console.error("there was an error: ", error);
+        });
 
         // Setup UI elements
         view.ui.add(new Home({ view }), "bottom-left");
         view.ui.add(new Zoom({ view, layout: "horizontal" }), "bottom-left");
-        view.ui.add(new Legend({ view }), "bottom-right");
 
       });
     </script>
