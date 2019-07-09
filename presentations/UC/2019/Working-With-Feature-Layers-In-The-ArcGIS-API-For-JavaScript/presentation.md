@@ -150,6 +150,21 @@ Guides are available in the API:
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
+## Rendering... next steps
+
+<br>
+<b>ArcGIS Online:</b>
+<br>
+<b>Using Map Styles to Discover and Define Your Web Map’s Purpose</b>
+<br>
+<br>
+<i>Wednesday, July 10<br> 4:00 pm - 5:00 pm</i>
+<br><i>Room 17 B</i>
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
 ## Labeling
 
 </br>
@@ -163,12 +178,6 @@ Label features to show relevant information at a glance
 * [multiple labels classes](./demos/3_labeling/3_multiple_label_classes.html)
 * [min/max scale ranges](./demos/3_labeling/4_scaled_labels.html)
 * [complex labels](./demos/3_labeling/5_final.html)
-
----
-
-<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
-
-## Popups to communicate information
 
 ---
 
