@@ -17,7 +17,6 @@
 * Types of feature layers
 * Rendering
 * Labeling
-* Popups
 * Querying
 * Editing features
 

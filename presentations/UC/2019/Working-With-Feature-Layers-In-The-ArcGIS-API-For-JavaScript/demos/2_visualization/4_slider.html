@@ -105,12 +105,12 @@
           view.ui.add(colorSlider, "bottom-right");
           colorSlider.primaryHandleEnabled = true;
 
-          // colorSlider.watch(["thumb-change", "thumb-drag"], function() {
-          //   const renderer = featureLayer.renderer.clone();
-          //   const colorVariable = renderer.visualVariables[0];
-          //   colorVariable.stops = colorSlider.stops;
-          //   featureLayer.renderer = renderer;
-          // });
+          colorSlider.on(["thumb-change", "thumb-drag"], function() {
+            const renderer = featureLayer.renderer.clone();
+            const colorVariable = renderer.visualVariables[0];
+            colorVariable.stops = colorSlider.stops;
+            featureLayer.renderer = renderer;
+          });
         })
         .catch((error) => {
           console.error("there was an error: ", error);
