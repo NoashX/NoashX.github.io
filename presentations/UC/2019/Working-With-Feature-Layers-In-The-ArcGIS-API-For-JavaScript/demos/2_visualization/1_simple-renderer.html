@@ -67,22 +67,22 @@
 
         var featureLayer = new FeatureLayer({
           url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Median_Disposable_Income_2015/FeatureServer/0",
-          // renderer: {
-          //   type: "simple",
-          //   symbol: {
-          //     type: "simple-fill",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "simple-fill",
               
-          //     color: "tomato",
-          //     // color: "rgb(255, 99, 71)",
-          //     // color: "rgb(255, 99, 71, 0.5)",
+              color: "tomato",
+              // color: "rgb(255, 99, 71)",
+              // color: "rgb(255, 99, 71, 0.5)",
 
-          //     outline: null,
-          //     // outline: {
-          //     //   width: "0.5px",
-          //     //   color: "rgba(255, 255, 255, 0.25)"
-          //     // }
-          //   }
-          // }
+//               outline: null,
+              outline: {
+                width: "0.5px",
+                color: "rgba(255, 255, 255, 0.25)"
+              }
+            }
+          }
         });
 
         map.add(featureLayer);

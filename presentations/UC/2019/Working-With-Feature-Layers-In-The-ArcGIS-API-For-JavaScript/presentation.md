@@ -220,6 +220,19 @@ Query data already in the web browser
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
+## Querying... next steps
+
+<br>
+<b>Interactive Client-Side Web Mapping with the ArcGIS API for JavaScript</b>
+<br>
+<br>
+<i>Wednesday, July 10<br>10:00 am - 11:00 am</i>
+<br><i>Room 15 B</i>
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
 ## Editing
 
 </br>

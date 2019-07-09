@@ -75,37 +75,34 @@
             symbol: {
               type: "simple-fill",
               style: "none",
-              outline: {
-                width: "1px",
-                color: "black"
-              }
+              outline: null
             },
-            // visualVariables: [
-            //   {
-            //     type: "color", // opacity, size, rotation
-            //     valueExpression: "$feature.medianIncome2015",
-            //     stops: [
-            //       {
-            //         value: 17000,
-            //         color: "white",
-            //         // label: `< ${intl.formatNumber(17000, {
-            //         //   style: "currency",
-            //         //   currency: "EUR",
-            //         //   currencyDisplay: "symbol"
-            //         // })}`
-            //       },
-            //       {
-            //         value: 28000,
-            //         color: "red",
-            //         // label: `> ${intl.formatNumber(28000, {
-            //         //   style: "currency",
-            //         //   currency: "EUR",
-            //         //   currencyDisplay: "symbol"
-            //         // })}`
-            //       }
-            //     ]
-            //   }
-            // ]
+            visualVariables: [
+              {
+                type: "color", // opacity, size, rotation
+                valueExpression: "$feature.medianIncome2015",
+                stops: [
+                  {
+                    value: 17000,
+                    color: "white",
+                    label: `< ${intl.formatNumber(17000, {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "symbol"
+                    })}`
+                  },
+                  {
+                    value: 28000,
+                    color: "red",
+                    label: `> ${intl.formatNumber(28000, {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "symbol"
+                    })}`
+                  }
+                ]
+              }
+            ]
           }
         });
 
