@@ -121,6 +121,31 @@ Layer.fromPortalItem({
 
 ## Rendering
 
+A renderer defines how the `FeatureLayer` is drawn.
+
+* SimpleRenderer
+* ClassBreaksRenderer
+* UniqueValueRenderer
+* HeatmapRenderer
+* DotDensityRenderer
+
+Guides are available in the API:
+
+* [Visualization Overview guide](https://developers.arcgis.com/javascript/latest/guide/visualization-overview/)
+* [Renderer API reference](https://developers.arcgis.com/javascript/latest/api-reference/esri-renderers-Renderer.html)
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Building a renderer
+
+* [simple renderer](./demos/2_visualization/1_simple-renderer.html)
+* [visual variables](./demos/2_visualization/2_visual-variables.html)
+* [smart mapping APIs](./demos/2_visualization/3_smart-mapping.html)
+* [smart mapping sliders](./demos/2_visualization/4_slider.html)
+* [loading from portal](./demos/2_visualization/5_portal-item.html)
+
 ---
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
@@ -151,17 +176,37 @@ Label features to show relevant information at a glance
 
 ## Query the data from the server
 
+Bring features from your data to the web browsers.
+
+* <h4>Attribute queries</h4><small>select only features passing a WHERE SQL clause</small>
+* <h4>Spatial queries</h4><small>select only features passing a spatial filter</small>
+* <h4>Statistic queries</h4><small>returns statistics about the selected features</small>
+
+[API Reference](https://developers.arcgis.com/javascript/latest/api-reference/esri-tasks-support-Query.html)
+
+---
+
+<!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
+
+## Query the data from the server
+
 * [queryFeatures()](./demos/5_query/1_query_features.html)
 * [queryFeatures() - by distance](./demos/5_query/2_query_features_by_distance.html)
 * [queryFeatures() - pagination](./demos/5_query/3_query_features_pagination.html)
-* [queryAttachments()](./demos/5_query/4_query_attachments.html)
-* [queryRelatedFeatures()](./demos/5_query/5_query_related_features.html)
 
 ---
 
 <!-- .slide: data-background="../../reveal.js/img/2019/uc/bg-3.png" -->
 
 ## Query the data client-side
+
+Query data already in the web browser
+
+* really fast queries
+* avoid round-trips to server
+* only works with what is available
+
+[Client-side statistics](./demos/6_client-side_statistics/index.html)
 
 ---
 
