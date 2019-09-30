@@ -144,6 +144,12 @@
           });
           // Add the appropriate measurement UI to the bottom-right when activated
           activeView.ui.add(measurement, "bottom-right");
+          measurement.watch("viewModel.state", function(state){
+            console.log("Current state: ", state);
+            if (state == "measuring") {
+              console.log("Active Widget: ", measurement.activeWidget.label);
+            }
+          });
           // Set the views for the widgets
           measurement.view = activeView;
         }
@@ -169,6 +175,12 @@
           });
           // Add the appropriate measurement UI to the bottom-right when activated
           activeView.ui.add(measurement, "bottom-right");
+          measurement.watch("viewModel.state", function(state){
+            console.log("Current state: ", state);
+            if (state == "measuring") {
+              console.log("Active Widget: ", measurement.activeWidget.label);
+            }
+          });
           // Set the views for the widgets
           measurement.view = activeView;
           // Reset the value of the 2D or 3D switching button
