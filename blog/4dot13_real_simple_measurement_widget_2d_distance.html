@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Measurement widget - 2D Distances</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.13/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.13/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/widgets/Measurement"
+      ], function(
+        Map,
+        MapView,
+        Measurement
+      ) {
+
+        const map = new Map({
+          basemap: "hybrid"
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-71.69, 43.76],
+          zoom: 15
+        });
+
+        const measurement = new Measurement({
+          view: view,
+          activeTool: "distance",
+          linearUnit: "miles"
+        });
+
+        view.ui.add(measurement, "top-right");
+
+        measurement.watch("viewModel.state", function(state){
+          console.log("Current state: ", state);
+          if (state == "measuring") {
+            console.log("Active Widget: ", measurement.activeWidget.label);
+          }
+        });
+          
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
