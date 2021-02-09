@@ -1,0 +1,122 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Directions widget</title>
+
+    <style>
+    html,
+    body,
+    #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+    }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/next/"></script>
+    <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+    <script>
+    require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/widgets/Directions",
+        "esri/config",
+        "esri/tasks/Locator",
+        "esri/layers/FeatureLayer",
+        "esri/layers/support/LabelClass",
+        "esri/Basemap"
+    ], function(Map, MapView, Directions, esriConfig, Locator, FeatureLayer, LabelClass, Basemap) {
+
+        // API Key from developer's account
+        esriConfig.apiKey = 'AAPK08a50e3001e740b79481bec86be3136es3HipVvezx7KKnqr_q1y5bdqn6GqVLqKKF57uxG05x6q_SPQa6MT_MFGp1N1Yhk1';
+
+        // labels for the football FeatureLayer
+        const labelClass = new LabelClass({
+            symbol: {
+                type: "text",
+                color: "white",
+                haloColor: [101, 67, 33],
+                haloSize: 1,
+                font: {
+                    family: "Noto Serif",
+                    size: 14,
+                    weight: "bold",
+                    style: "italic"
+                }
+            },
+            labelPlacement: "above-center",
+            labelExpressionInfo: {
+                expression: "$feature.Team"
+            }
+        });
+
+        const footballLayer = new FeatureLayer({ 
+            url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/NFL_Stadiums_CSV/FeatureServer/0",
+            labelingInfo: [labelClass]
+        });
+
+        const map = new Map({
+            basemap: new Basemap({
+                portalItem: {
+                    id: "1fba45e6caf34d0d8d0ce151f32dc6d3"  // Firefly basemap - no references
+                }
+            }),
+            layers: [footballLayer]
+        });
+
+        const view = new MapView({
+            center: [-81.34075, 39.14229],
+            zoom: 6,
+            container: "viewDiv",
+            map: map
+        });
+
+        // Directions widget
+        const directionsWidget = new Directions({
+            view: view,
+            searchProperties: {
+                includeDefaultSources: false,
+                sources: [{
+                        // first locator is using the football FeatureLayer
+                        // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Search-LayerSearchSource.html
+                        layer: footballLayer,  
+                        searchFields: ["Name", "Team", "City"],  
+                        suggestionTemplate: "{Team}, Stadium: {Name}",
+                        exactMatch: false,
+                        outFields: ["*"],
+                        placeholder: "example: New England Patriots",
+                        name: "Football locator",
+                        zoomScale: 500000
+                    },
+                    {
+                        // second locator is the default for API Keys
+                        // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Search-LocatorSearchSource.html
+                        locator: new Locator({  
+                            url: "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer"
+                        }),
+                        placeholder: "Find a dress or place",
+                        name: "Default locator"
+                    }
+                ]
+            },
+            // this is the URL for routing with API Keys
+            routeServiceUrl: "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World"
+        });
+
+        view.ui.add(directionsWidget, {
+            position: "top-right"
+        });
+    });
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+
+</html>
