@@ -77,10 +77,10 @@
         }
 
         // this Promise.all waits for everyting to be completed before moving on
-        // making asynchronous code run syncrhronously
+        // making asynchronous code run synchronously
         // first wait for the view to be ready, then call the getfleetRoutes function
         // then take the results of the previous function and pass the relevant values
-        // to the below 4 functions and calll the showDepot function
+        // to the below 4 functions and calls the showDepot function
         // once all of these are resolved, we continue with the code below
         Promise.all([view.when(), getfleetRoutes()]).then(([_view, { directions, routes, stops }]) => {
             zoomToResults(directions);
@@ -308,7 +308,7 @@
                 ]
             });
 
-            // manually define the tavel mode properties
+            // manually define the travel mode properties
             const travel_mode = {
                 attributeParameterValues: [{
                         attributeName: "Use Preferred Truck Routes",
@@ -400,7 +400,7 @@
                 travel_mode
             };
 
-            // this is the URl for the VehicleRoutingProblem service
+            // this is the URL for the VehicleRoutingProblem service
             // authentication is handled by API Key
             const url = "https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem";
 
@@ -426,7 +426,7 @@
             // await - don't continue execution until we know that the job has been completed on the server
             await geoprocessor.waitForJobCompletion(jobId, options);
 
-            // these variable will all be populated from the gp job
+            // these variables will all be populated from the gp job
             // do not proceed forward in the code until all variables
             // have the relevant values
             const [directionsResult, routesResult, stopsResult] = await Promise.all([
@@ -482,7 +482,7 @@
         }
 
         // function to set the appropriate width for each route
-        // so that route on the bottom are wider than routes above
+        // so that routes on the bottom are wider than routes above
         function getRouteWidth(name) {
             switch (name) {
                 case "Truck_1":
@@ -508,7 +508,7 @@
                     return new Graphic({
                         attributes,
                         geometry,
-                        symbol: { //  no symoblogy returned from server, so we need to generate one ourselves
+                        symbol: { //  no symbology returned from server, so we need to generate one ourselves
                             type: "simple-line",
                             color,
                             width: getRouteWidth(RouteName)
