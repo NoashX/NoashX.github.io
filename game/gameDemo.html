@@ -1,0 +1,780 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+    <title>ArcGIS API for JavaScript Game</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #info {
+        padding: 5px;
+        border-radius: 5px;
+        height: 60px;
+        width: 200px;
+        text-align: center;
+        align-items: center;
+        vertical-align: text-top;
+      }
+
+      div.esriPopupWrapper .zoomTo {
+        display:none;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.22/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/layers/FeatureLayer",
+        "esri/views/MapView",
+        "esri/geometry/geometryEngine",
+        "esri/Graphic",
+        "esri/widgets/Search",
+        "esri/widgets/Search/LocatorSearchSource",
+        "esri/widgets/Search/SearchSource",
+        "esri/widgets/Print",
+        "esri/widgets/DistanceMeasurement2D",
+        "esri/widgets/Expand",
+        "esri/config",
+        "esri/geometry/Point"
+      ], (Map, FeatureLayer, MapView, geometryEngine, Graphic, Search, LocatorSearchSource, SearchSource, Print, DistanceMeasurement2D, Expand, esriConfig, Point) => {
+        esriConfig.apiKey = "AAPKfdc120fe339d48388166035854bfced8IvqRVb8pDgYA_S6qdouO-KOJBf4I7YtDV8kSRliqx6ybJWbgRn4buWgznLjGBaFG";
+        // Create the Map
+        const map = new Map({
+          basemap: "arcgis-navigation-night"
+        });
+        /*const populatedCityLayer = new FeatureLayer({
+          url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/ne_10m_populated_places/FeatureServer/0"
+        });*/
+        const populatedCityLayer = new FeatureLayer({
+          portalItem: {  // autocasts as esri/portal/PortalItem
+            id: "b3935be7f5f140e9a9888cac2a390fed"
+          }
+        });
+
+        // https://esri.maps.arcgis.com/home/item.html?id=795e2e2aa8384bc0bce8f0642b50f49b
+        //const url = "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/MNG_Boundaries_2020/FeatureServer/2";
+        const url = "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/ne_10m_populated_places/FeatureServer/0";
+        // Create the MapView
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-116.92146, 34.25271],
+          zoom: 14,
+          ui: {components: [ "attribution" ]}
+        });
+
+        view.popup.autoCloseEnabled = true;
+        view.popup.viewModel.includeDefaultActions = false;
+        //view.popup.actions = [];
+        //view.popup.visibleElements.featureNavigation = false;
+
+        view.on("drag", function(event){
+          // prevents panning with the mouse drag event
+          event.stopPropagation();
+        });
+
+        view.on("key-down", function(event){
+          // prevents panning with the arrow keys
+          var keyPressed = event.key;
+          if(keyPressed.slice(0,5) === "Arrow"){
+            event.stopPropagation();
+          }
+        });
+
+        view.on("key-down", function(event){
+          var prohibitedKeys = [ "+", "-", "Shift", "_", "=" ];
+          var keyPressed = event.key;
+          if(prohibitedKeys.indexOf(keyPressed) !== -1){
+            event.stopPropagation();
+          }
+        });
+
+        view.on("mouse-wheel", function(event){
+          event.stopPropagation();
+        });
+
+        /*view.on("double-click", function(event){
+          event.stopPropagation();
+        });*/
+
+        view.on("double-click", ["Control"], function(event){
+          event.stopPropagation();
+        });
+
+        view.on("drag", function(event){
+          event.stopPropagation();
+        });
+
+        view.on("drag", ["Shift"], function(event){
+          event.stopPropagation();
+        });
+
+        view.on("drag", ["Shift", "Control"], function(event){
+          event.stopPropagation();
+        });
+
+        const opts = {
+          duration: 5000  // Duration of animation will be 5 seconds
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const Redlands = {
+          title: "Redlands",
+          id: "Redlands",
+          image: "redlands.jpeg"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const Redding = {
+          title: "Redding",
+          id: "Redding",
+          image: "reddesert.png"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const Redwoods = {
+          title: "Redwoods",
+          id: "Redwoods",
+          image: "redwoods.jpeg"
+        };
+
+
+        const template = {
+          // autocasts as new PopupTemplate()
+          title: "JavaScript Trail",
+          content: "Question 1: Where was Esri founded?",
+          visible: true,
+          actions: [Redlands, Redding, Redwoods]
+        };
+        const template2 = {
+          // autocasts as new PopupTemplate()
+          title: "Correct! +1 point. Ulaanbaatar, the capital of Mongolia, is on average the coldest capital city in the world, according to World Atlas.",
+          content: "Question 4: ",
+          visible: true
+        };
+
+        /*template.actions = [];
+        template.actions.push(Redlands);
+        template.actions.push(Redding);
+        template.actions.push(Redwoods);*/
+
+
+        // First create a point geometry (this is the location of the Titanic)
+        const startPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: -116.92146,
+          latitude: 34.25271
+        };
+        const symbol1 = {
+          type: "picture-marker",  // autocasts as new PictureMarkerSymbol()
+          url: "started.png",
+          width: "256px",
+          height: "128px"
+        };
+        // Create a graphic and add the geometry and symbol to it
+        const startPointGraphic = new Graphic({
+          symbol: symbol1,
+          geometry: startPoint,
+          popupTemplate: template
+        });
+
+        // First create a point geometry (this is the location of the Titanic)
+        const esriPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: -117.19570,
+          latitude: 34.05609
+        };
+        // First create a point geometry (this is the location of the Titanic)
+        const reddingPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: -122.39255,
+          latitude: 40.58766
+        };
+        // First create a point geometry (this is the location of the Titanic)
+        const redwoodsPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: -119.64039,
+          latitude: 37.54864
+        };
+        // First create a point geometry (this is the location of the Titanic)
+        const coltonPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: -117.25463,
+          latitude: 34.07110
+        };
+        // First create a point geometry (this is the location of the Titanic)
+        const mongoliaPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: 106.91810,
+          latitude: 48
+        };
+
+        const nullPoint = {
+          type: "point", // autocasts as new Point()
+          longitude: 0,
+          latitude: 0
+        };
+
+        const printPoint = {
+          type: "point", // autocasts as new Point()
+          //longitude: -71.26432,
+          //latitude: 42.09095
+          longitude: 116.39723,
+          latitude: 39.90805
+        };
+
+        //center: [114.14443, 22.27414],
+
+        // Create a symbol for drawing the point
+        const markerSymbol = {
+          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+          color: [226, 119, 40],
+          outline: {
+            // autocasts as new SimpleLineSymbol()
+            color: [255, 255, 255],
+            width: 1
+          }
+        };
+
+        // Create a symbol for drawing the point
+        const correctMarkerSymbol = {
+          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+          color: [27, 61, 129],
+          outline: {
+            // autocasts as new SimpleLineSymbol()
+            color: [255, 255, 255],
+            width: 1
+          }
+        };
+
+        
+        // Add this action to the popup so it is always available in this view
+        const Colton1 = {
+          title: "5km",
+          id: "Colton1",
+          image: "less_than.png"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const Colton2 = {
+          title: "6km",
+          id: "Colton2",
+          image: "almost_equals.jpeg"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const Colton3 = {
+          title: "7km",
+          id: "Colton3",
+          image: "greater_than.png"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const print1 = {
+          title: "False. It can be printed",
+          id: "print1",
+          image: "smile.png"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const print2 = {
+          title: "Client-side image",
+          id: "print2",
+          image: "camera.png"
+        };
+
+        // Add this action to the popup so it is always available in this view
+        const print3 = {
+          title: "Requires 10.9.1",
+          id: "print3",
+          image: "server.jpeg"
+        };
+
+        
+        
+
+        const goodSearchTemplate = {
+          // autocasts as new PopupTemplate()
+          title: "Correct! +1 point. Ulaanbaatar, the capital of Mongolia, is on average the coldest capital city in the world, according to World Atlas.",
+          //title: "Correct!",
+          content: "Question 4: Why can't layers with effects be displayed in a printed legend?",
+          //content: "Question 4:",
+          visible: true,
+          actions: [print1, print2, print3]//,
+          //overwriteActions: true
+        };
+
+        const badSearchTemplate = {
+          // autocasts as new PopupTemplate()
+          title: "Pretty close, but wrong: -1 point. Remember, Google (and search suggestions) are your friends. Like, really good friends.", // title displayed in the popup
+          content: "Final Score: 1 point. Refresh to retry.", //, // content displayed in the popup
+          visible: true,
+          //action: [Redlands, Redding, Redwoods]
+        };
+
+        // Create a graphic and add the geometry and symbol to it
+        const esriPointGraphic = new Graphic({
+          geometry: esriPoint,
+          symbol: correctMarkerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const reddingPointGraphic = new Graphic({
+          geometry: reddingPoint,
+          symbol: markerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const redwoodsPointGraphic = new Graphic({
+          geometry: redwoodsPoint,
+          symbol: markerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const coltonPointGraphic = new Graphic({
+          geometry: coltonPoint,
+          symbol: correctMarkerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const coltonPointGraphic2 = new Graphic({
+          geometry: coltonPoint,
+          symbol: markerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const mongoliaPointGraphic = new Graphic({
+          geometry: mongoliaPoint,
+          symbol: correctMarkerSymbol,
+          popupTemplate: template2
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const nullPointGraphic = new Graphic({
+          geometry: nullPoint,
+          symbol: markerSymbol
+        });
+        // Create a graphic and add the geometry and symbol to it
+        const printPointGraphic = new Graphic({
+          geometry: printPoint,
+          symbol: correctMarkerSymbol
+        });
+        
+        //view.graphics.addMany([startPointGraphic, nullPoint]);
+        view.graphics.addMany([startPointGraphic]);
+
+        
+        /*const customSearchSource = new LocatorSearchSource({
+          placeholder: "example: Nuuk, Greenland",
+          url: "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+          getResults: (params) => {
+            console.log(params);
+            if (params.suggestResult.text == "Ulaanbaatar, MNG") {
+              //console.log("bingo");
+              return searchWidget.search("Ulaanbaatar, MNG").then((results) => {
+                const searchResults = results.data.features.map((feature) => {
+                  // Create a Graphic the Search widget can display
+                  const graphic = new Graphic({
+                    geometry: new Point({
+                      x: feature.geometry.coordinates[0],
+                      y: feature.geometry.coordinates[1]
+                    }),
+                    attributes: feature.properties
+                  });
+                  // Optionally, you can provide an extent for
+                  // a point result, so the view can zoom to it
+                  const buffer = geometryEngine.geodesicBuffer(
+                    graphic.geometry,
+                    100,
+                    "meters"
+                  );
+                  // Return a Search Result
+                  const searchResult = {
+                    extent: buffer.extent,
+                    feature: graphic,
+                    name: feature.properties.label
+                  };
+                  return searchResult;
+                });
+                // Return an array of Search Results
+                return searchResults;
+              });
+            }
+            else if (params.suggestResult.text == "Ulaanbaatar, Ulaanbaatar, MNG") {
+              console.log("bingo");
+              return;
+            }
+            else {
+              console.log("fail");
+              return;
+            }
+          }
+        });*/
+
+        /*const customSearchSource = new SearchSource({
+          placeholder: "example: Nuuk, Greenland",
+          // Provide a getSuggestions method
+          // to provide suggestions to the Search widget
+          getSuggestions: (params) => {
+            // You can request data from a
+            // third-party source to find some
+            // suggestions with provided suggestTerm
+            // the user types in the Search widget
+            return esriRequest(url + "query/", {
+              query: {
+                q: params.suggestTerm,
+                limit: 6//,
+                //lat: view.center.latitude,
+                //lon: view.center.longitude
+              },
+              responseType: "json"
+            }).then((results) => {
+              // Return Suggestion results to display
+              // in the Search widget
+              return results.data.features.map((feature) => {
+                return {
+                  //key: "name",
+                  //text: feature.properties.label,
+                  key: "NAME",
+                  text: feature.NAME,
+                  sourceIndex: params.sourceIndex
+                };
+              });
+            });
+          },
+          // Provide a getResults method to find
+          // results from the suggestions
+          getResults: (params) => {
+            // If the Search widget passes the current location,
+            // you can use this in your own custom source
+            const operation = params.location ? "reverse/" : "search/";
+            let query = {};
+            // You can perform a different query if a location
+            // is provided
+            if (params.location) {
+              query.lat = params.location.latitude;
+              query.lon = params.location.longitude;
+            } else {
+              query.q = params.suggestResult.text.replace(/ /g, "+");
+              query.limit = 6;
+            }
+            return esriRequest(url + operation, {
+              query: query,
+              responseType: "json"
+            }).then((results) => {
+              // Parse the results of your custom search
+              const searchResults = results.data.features.map((feature) => {
+                // Create a Graphic the Search widget can display
+                const graphic = new Graphic({
+                  geometry: new Point({
+                    x: feature.geometry.coordinates[0],
+                    y: feature.geometry.coordinates[1]
+                  }),
+                  attributes: feature.properties
+                });
+                // Optionally, you can provide an extent for
+                // a point result, so the view can zoom to it
+                const buffer = geometryEngine.geodesicBuffer(
+                  graphic.geometry,
+                  100,
+                  "meters"
+                );
+                // Return a Search Result
+                const searchResult = {
+                  extent: buffer.extent,
+                  feature: graphic,
+                  name: feature.properties.label
+                };
+                return searchResult;
+              });
+
+              // Return an array of Search Results
+              return searchResults;
+            });
+          }
+        });*/
+
+
+        // To add the DistanceMeasurement2D widget to the map
+        const measurementWidget = new DistanceMeasurement2D({
+          view: view,
+          container: document.createElement("div")
+        });
+        const mExpand = new Expand({
+          view: view,
+          content: measurementWidget
+        });
+        //view.ui.add(measurementWidget, "top-left");
+        /*const searchWidget = new Search({
+          view: view,
+          resultGraphicEnabled: false,
+          //popupTemplate: searchTemplate,
+          sources: [customSearchSource],
+          includeDefaultSources: false,
+          container: document.createElement("div")
+        });*/
+        
+        //view.ui.add(measurementWidget, "top-left");
+        const printWidget = new Print({
+          view: view,
+          // specify your own print service
+          printServiceUrl:
+             "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
+          container: document.createElement("div")
+        });
+        const pExpand = new Expand({
+          view: view,
+          content: printWidget
+        });
+        view.ui.add(mExpand, "top-right");
+        
+        view.ui.add(pExpand, "top-right");
+        //view.ui.add(bgExpand, "top-right");
+
+        
+
+        const searchWidget = new Search({
+          view: view,
+          resultGraphicEnabled: false,
+          allPlaceholder: "example: Nuuk, Greenland",
+          includeDefaultSources: false,
+          sources: [
+            {
+              layer: populatedCityLayer,
+              searchFields: ["NAME", "NAMEASCII"],
+              displayField: "NAME",
+              exactMatch: false,
+              outFields: ["NAME", "SOV0NAME", "ADM0NAME"],
+              suggestionTemplate: "{NAME}, {SOV0NAME}",
+              name: "Populated Cities",
+              maxSuggestions: 5,
+              placeholder: "example: Nuuk, Greenland",
+              popupTemplate: goodSearchTemplate,
+              zoomScale: 50000//,
+              //autoNavigate: false
+            },
+            {
+              name: "ArcGIS World Geocoding Service",
+              placeholder: "example: Nuuk, GRL",
+              suggestionsEnabled: false,
+              singleLineFieldName: "SingleLine",
+              url: "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+              popupTemplate: badSearchTemplate
+            }
+          ],
+          container: document.createElement("div")
+        });
+
+        const sExpand = new Expand({
+          view: view,
+          content: searchWidget
+        });
+        view.ui.add(sExpand, "top-right");
+
+
+        // Event handler that fires each time an action is clicked.
+        view.popup.on("trigger-action", (event) => {
+          // Execute the measureThis() function if the measure-this action is clicked
+          if (event.action.id === "Redlands") {
+            view.graphics.addMany([esriPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: esriPointGraphic,
+              zoom: 12
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.visibleElements.featureNavigation = false;
+              view.popup.open({
+                location: view.center,
+                title: "Correct! Environmental Systems Research Institute was founded in 1969 in Redlands, California. +1 point.", // title displayed in the popup
+                content: "Question 2: How far is Esri from the 'N' in North Loma Linda?",
+                actions: [Colton1, Colton2, Colton3]
+              });
+            });
+          } else if (event.action.id === "Redding") {
+            view.graphics.addMany([reddingPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: reddingPointGraphic,
+              zoom: 8
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              //view.popup.viewmodel.includeDefaultActions = false;
+              view.popup.open({
+                location: view.center,
+                title: "Almost close. Wrong: -1 point.", // title displayed in the popup
+                content: "Final Score: -1 point. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          } else if (event.action.id === "Redwoods") {
+            view.graphics.addMany([redwoodsPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: redwoodsPointGraphic,
+              zoom: 8
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Seriously? Wrong: -1 point.", // title displayed in the popup
+                content: "Final Score: -1 point. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          } else if (event.action.id === "Colton1") {
+            view.graphics.addMany([coltonPointGraphic2]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: coltonPointGraphic,
+              zoom: 14
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Close! Wrong: -1 point. Hint: use the measurement widget.", // title displayed in the popup
+                content: "Final Score: 0 points. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+          else if (event.action.id === "Colton2") {
+            view.graphics.addMany([coltonPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: coltonPointGraphic,
+              zoom: 14
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Correct! +1 point. The distance is approximately 6.27 km.", // title displayed in the popup
+                content: "Question 3: Where is the coldest capital in the world? Navigate there to answer this question.", // content displayed in the popup
+                actions: []
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+          else if (event.action.id === "Colton3") {
+            view.graphics.addMany([coltonPointGraphic2]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: coltonPointGraphic,
+              zoom: 14
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Close! Wrong: -1 point. Hint: use the measurement widget.", // title displayed in the popup
+                content: "Final Score: 0 points. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+          else if (event.action.id === "print1") {
+            view.graphics.addMany([nullPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: nullPointGraphic,
+              zoom: 3
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Close! Wrong: -1 point. Hint: read the doc.", // title displayed in the popup
+                content: "Final Score: 2 points. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+          else if (event.action.id === "print2") {
+            view.graphics.addMany([printPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: printPointGraphic,
+              zoom: 8
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Correct! +1 point. Gotta love reading the print limitations doc.", // title displayed in the popup
+                content: "Final Score: 4x points. Perfect score. Refresh to retry." //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+          else if (event.action.id === "print3") {
+            view.graphics.addMany([nullPointGraphic]);
+            //view.goTo({ center: [-126, 49] }).then(function () {
+            // go to point at LOD 15 with custom duration
+            view.goTo({
+              target: nullPointGraphic,
+              zoom: 3
+            }, opts).then(function () {
+              //console.log(view.popup);
+              //view.popup.visible = true;
+              view.popup.open({
+                location: view.center,
+                title: "Close! Wrong: -1 point. Hint: read the doc.", // title displayed in the popup
+                content: "Final Score: 2 points. Refresh to retry.",
+                actions: [] //, // content displayed in the popup
+                //updateLocationEnabled: true // updates the location of popup based on
+                // selected feature's geometry
+              });
+            });
+          }
+        });
+        view.ui.add("info", {
+          position: "top-left"
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+    <div id="info" class="esri-widget">
+      <h3>Instructions: Click START</h3>
+    </div>
+  </body>
+</html>
