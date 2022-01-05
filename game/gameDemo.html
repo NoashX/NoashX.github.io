@@ -514,7 +514,8 @@
         });
         const mExpand = new Expand({
           view: view,
-          content: measurementWidget
+          content: measurementWidget,
+          expandTooltip: "Measure once"
         });
         //view.ui.add(measurementWidget, "top-left");
         /*const searchWidget = new Search({
@@ -536,7 +537,8 @@
         });
         const pExpand = new Expand({
           view: view,
-          content: printWidget
+          content: printWidget,
+          expandTooltip: "Does it print?"
         });
         view.ui.add(mExpand, "top-right");
         
@@ -579,7 +581,8 @@
 
         const sExpand = new Expand({
           view: view,
-          content: searchWidget
+          content: searchWidget,
+          expandTooltip: "Searching for..."
         });
         view.ui.add(sExpand, "top-right");
 
