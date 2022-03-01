@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>RouteLayer routing</title>
+  <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+  <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/next/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #linkDiv {
+      display: none;
+      margin: 5px;
+    }
+
+    #linkDiv2 {
+      display: none;
+      margin: 5px;
+      text-align: center;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/WebMap",
+      "esri/layers/RouteLayer",
+      "esri/views/MapView",
+      "esri/rest/support/Stop",
+      "esri/rest/support/PointBarrier",
+      "esri/rest/support/PolylineBarrier",
+      "esri/rest/support/PolygonBarrier",
+      "esri/symbols/CIMSymbol"
+    ],
+      function (
+        WebMap,
+        RouteLayer,
+        MapView,
+        Stop,
+        PointBarrier,
+        PolylineBarrier,
+        PolygonBarrier,
+        CIMSymbol
+      ) {
+        (async () => {
+          const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
+
+          const stops = [
+            new Stop({ 
+                geometry: { x: -117.59275, y: 34.06200 },
+                name: "Ontario Airpoirt"
+            }),  
+            new Stop({ 
+                geometry: { x: -117.19570, y: 34.05609 },
+                name: "Esri Campus"
+            }), 
+          ];
+
+          const pointBarriers = [
+            new PointBarrier({ geometry: { x: -117.43576, y: 34.10264 } }),  // DUI checkpoint, Fontana
+            new PointBarrier({ geometry: { x: -117.29412, y: 34.10530 } }),  // Construction, San Bernardino
+            new PointBarrier({ geometry: { x: -117.30507, y: 34.03644 } }),  // Car fire, Grand Terrace
+            new PointBarrier({ geometry: { x: -117.57527, y: 34.10282 } }),  // REI sale, Rancho Cucamonda
+            new PointBarrier({ geometry: { x: -117.48886, y: 34.09552 } }),  // Protest, Kaiser
+            new PointBarrier({ geometry: { x: -117.47636, y: 34.04798 } })   // Quarry incident, Declezville
+          ];
+
+          const polylineBarriers = [
+            new PolylineBarrier({
+              geometry: {
+                paths: [[
+                  [-117.30584, 34.07115], 
+                  [-117.26710, 34.04838]
+                ]]
+              },
+              name: "Major highway closure"
+            })
+          ];
+
+          const polygonBarriers = [  
+            new PolygonBarrier({
+              geometry: {
+                rings: [[
+                  [-117.49497 - 0.01, 34.13484 - 0.01], 
+                  [-117.49497 - 0.01, 34.13484 + 0.01],
+                  [-117.49497 + 0.01, 34.13484 + 0.01],
+                  [-117.49497 + 0.01, 34.13484 - 0.01],
+                  [-117.49497 - 0.01, 34.13484 - 0.01]
+                ]]
+              },
+              name: "Street festival, Etiwanda"
+            })
+          ];
+ 
+
+          const routeLayer = new RouteLayer({
+            stops,
+            pointBarriers,
+            polylineBarriers,
+            polygonBarriers
+          });
+
+          const map = new WebMap({
+            basemap: "topo-vector",
+            layers: [ routeLayer ]
+          });
+
+          const view = new MapView({
+            container: "viewDiv",
+            map
+          });
+
+          await Promise.all([view.when(), routeLayer.load()]);
+
+          const results = await routeLayer.solve({ apiKey });
+          routeLayer.update(results);
+
+          await view.goTo(routeLayer.routeInfo.geometry);
+          console.log("routeLayer: ", routeLayer);
+
+          view.on("click", async (e) => {
+            const stops = routeLayer.stops.clone();
+            stops.pop();
+            stops.add(new Stop({ geometry: e.mapPoint }));
+
+            routeLayer.update(await routeLayer.solve({
+              apiKey,
+              stops
+            }));
+          });
+
+          // Code for the "Save As New RouteLayer" button
+          document.getElementById("routeSaveAs").addEventListener("click", async () => {
+            const link2 = document.getElementById("linkDiv2");
+            link2.style.display = "none";
+
+            const portalRouteItem = await routeLayer.saveAs({
+            //routeLayer.saveAs({
+              title: "Route from Ontario Airport to Esri Campus",
+              snippet: "Route created using the ArcGIS API for JavaScript"
+            });
+
+            // Prepare a link to navigate to the new route item's portal page
+            const { id, portal: { url } } = portalRouteItem;
+            link2.href = `${url}/home/item.html?id=${id}`;
+            link2.style.display = "block";
+            link2.color = "white";
+            link2.background = "blue";
+          });
+
+          // Code for the "Save As New WebMap" button
+          document.getElementById("webmapSaveAs").addEventListener("click", async () => {
+            const link = document.getElementById("linkDiv");
+            link.style.display = "none";
+
+            // Save the current map as a new webmap with the title "Map of Populated Places".
+            await map.updateFrom(view);
+            const portalItem = await map.saveAs({
+              title: "WebMap with route from Ontario Airport to Esri Campus",
+              snippet: "WebMap created using the ArcGIS API for JavaScript"
+            });
+
+            // Prepare a link to navigate to the new webmap's portal page
+            const { id, portal: { url } } = portalItem;
+            link.href = `${url}/home/item.html?id=${id}`;
+            link.style.display = "block";
+
+          });
+
+          const buttonRoute = document.getElementById("buttonDiv1");
+          const buttonWebmap = document.getElementById("buttonDiv2");
+          view.ui.add([
+            { component: buttonRoute, position: "top-trailing", index: 0 },
+            { component: buttonWebmap, position: "top-trailing", index: 1 }
+          ]);
+        })();
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="buttonDiv1" class="esri-widget esri-component">
+    <button id="routeSaveAs" type="button" class="esri-button">
+      Save As New RouteLayer
+    </button>
+    <a id="linkDiv2" href="https://www.esri.com" target="_blank">Open in ArcGIS Online</a>
+  </div>
+   <div id="buttonDiv2" class="esri-widget esri-component">
+    <button id="webmapSaveAs" type="button" class="esri-button">
+      Save As New WebMap
+    </button>
+    <a id="linkDiv" href="https://www.esri.com" target="_blank">Open in ArcGIS Online</a>
+  </div>
+</body>
+
+</html>

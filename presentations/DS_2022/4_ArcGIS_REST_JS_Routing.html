@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>ArcGIS REST JS - Routing</title>
+    <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+    <style>
+      body {
+        font-family: monospace;
+        color: black;
+        font-size: 20px;
+      }
+      pre {
+        overflow: auto;
+        padding: 1rem;
+      }
+      body,
+      pre {
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+  <pre id="result"></pre>
+
+  <!-- 
+    require ArcGIS REST JS libraries from https://unpkg.com: 
+    request.umd.js - undperins all other packages, supports low-level requests
+    auth.umd.js - provides methods to authenticate named users and applications
+    routing.umd.js - routing and directions wrapper
+  -->
+
+    <script src="https://unpkg.com/@esri/arcgis-rest-request@3.0.0/dist/umd/request.umd.js"></script>
+    <script src="https://unpkg.com/@esri/arcgis-rest-auth@3.0.0/dist/umd/auth.umd.js"></script>
+    <script src="https://unpkg.com/@esri/arcgis-rest-routing@3.0.0/dist/umd/routing.umd.js"></script>
+
+    <script>
+      
+      const apiKey =
+        "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
+      
+      const authentication = new arcgisRest.ApiKey({
+        key: apiKey
+      });
+
+      arcgisRest.solveRoute({
+          stops: [
+            [-117.19570, 34.05609], // Esri Campus, Redlands, CA
+            [-116.53818, 33.82586]  // Palm Springs Convention Center, Palm Springs, CA
+          ],
+          authentication
+        })
+        .then((response) => {
+          console.log(response);
+          document.getElementById("result").textContent = JSON.stringify(response, null, 2);
+        });
+    </script>
+  </head>
+  <body>
+    <div class="grid-container padding-leader-1 padding-trailer-3">
+      <h1>ArcGIS-REST-JS Demo Template</h1>
+      <div class="wrapper column-24">
+        <h3>Results</h3>
+        <pre class="results" id="results"><span style="color:gray"></span></pre>
+      </div>
+</div>
+  </body>
+</html>
