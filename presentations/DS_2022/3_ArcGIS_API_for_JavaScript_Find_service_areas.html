@@ -7,6 +7,11 @@
   <title>Find service areas</title>
   <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
 
+  <!--
+    for more information on ArcGIS API for JavaScript - next
+    visit: https://github.com/Esri/feedback-js-api-next
+  -->
+
   <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css">
   <script src="https://js.arcgis.com/next/"></script>
 
@@ -33,6 +38,7 @@
       "esri/Graphic"
     ], function(esriConfig,Map, MapView, serviceArea, ServiceAreaParams, FeatureSet, Graphic) {
 
+      // API Key from developer's account
       esriConfig.apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
 
       const map = new Map({

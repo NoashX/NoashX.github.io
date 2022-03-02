@@ -7,6 +7,11 @@
   <title>RouteLayer routing</title>
   <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
 
+  <!--
+    for more information on ArcGIS API for JavaScript - next
+    visit: https://github.com/Esri/feedback-js-api-next
+  -->
+
   <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css">
   <script src="https://js.arcgis.com/next/"></script>
 
@@ -28,32 +33,31 @@
     #linkDiv2 {
       display: none;
       margin: 5px;
-      text-align: center;
     }
   </style>
 
   <script>
     require([
       "esri/WebMap",
-      "esri/layers/RouteLayer",
       "esri/views/MapView",
+      "esri/layers/RouteLayer",
       "esri/rest/support/Stop",
       "esri/rest/support/PointBarrier",
       "esri/rest/support/PolylineBarrier",
-      "esri/rest/support/PolygonBarrier",
-      "esri/symbols/CIMSymbol"
+      "esri/rest/support/PolygonBarrier"
     ],
       function (
         WebMap,
-        RouteLayer,
         MapView,
+        RouteLayer,
         Stop,
         PointBarrier,
         PolylineBarrier,
-        PolygonBarrier,
-        CIMSymbol
+        PolygonBarrier
       ) {
         (async () => {
+
+          // API Key from developer's account
           const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
 
           const stops = [
@@ -127,7 +131,6 @@
           routeLayer.update(results);
 
           await view.goTo(routeLayer.routeInfo.geometry);
-          console.log("routeLayer: ", routeLayer);
 
           view.on("click", async (e) => {
             const stops = routeLayer.stops.clone();
@@ -146,7 +149,6 @@
             link2.style.display = "none";
 
             const portalRouteItem = await routeLayer.saveAs({
-            //routeLayer.saveAs({
               title: "Route from Ontario Airport to Esri Campus",
               snippet: "Route created using the ArcGIS API for JavaScript"
             });
