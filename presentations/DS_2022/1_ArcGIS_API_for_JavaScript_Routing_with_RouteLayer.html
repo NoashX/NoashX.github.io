@@ -57,7 +57,7 @@
       ) {
         (async () => {
 
-          // API Key from developer's account
+          // API key from developer's account
           const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
 
           const stops = [
@@ -107,7 +107,6 @@
             })
           ];
  
-
           const routeLayer = new RouteLayer({
             stops,
             pointBarriers,
@@ -125,14 +124,22 @@
             map
           });
 
+          // wait for the view and the RouteLayer to load
           await Promise.all([view.when(), routeLayer.load()]);
 
+          // once the RouteLayer is loaded, solve the route
+          // use the optional RouteParameters parameter to provide the apiKey
+          // and other settings like directions language and travel mode
           const results = await routeLayer.solve({ apiKey });
+
+          // the `solve()` method returns a routing solution
+          // it contains the computed route, stops, and barriers
           routeLayer.update(results);
 
+          // when the route is solved, zoom to the route's extent
           await view.goTo(routeLayer.routeInfo.geometry);
 
-          // Code for the "Save As New RouteLayer" button
+          // code for the "Save as new RouteLayer" button
           document.getElementById("routeSaveAs").addEventListener("click", async () => {
             const link2 = document.getElementById("linkDiv2");
             link2.style.display = "none";
@@ -142,7 +149,7 @@
               snippet: "Route created using the ArcGIS API for JavaScript"
             });
 
-            // Prepare a link to navigate to the new route item's portal page
+            // prepare a link to navigate to the new route item's portal page
             const { id, portal: { url } } = portalRouteItem;
             link2.href = `${url}/home/item.html?id=${id}`;
             link2.style.display = "block";
@@ -150,19 +157,19 @@
             link2.background = "blue";
           });
 
-          // Code for the "Save As New WebMap" button
+          // code for the "Save as new WebMap" button
           document.getElementById("webmapSaveAs").addEventListener("click", async () => {
             const link = document.getElementById("linkDiv");
             link.style.display = "none";
 
-            // Save the current map as a new webmap with the title "Map of Populated Places".
+            // save the current map as a new webmap with the title "Map of Populated Places".
             await map.updateFrom(view);
             const portalItem = await map.saveAs({
               title: "WebMap with route from Ontario Airport to Esri Campus",
               snippet: "WebMap created using the ArcGIS API for JavaScript"
             });
 
-            // Prepare a link to navigate to the new webmap's portal page
+            // prepare a link to navigate to the new webmap's portal page
             const { id, portal: { url } } = portalItem;
             link.href = `${url}/home/item.html?id=${id}`;
             link.style.display = "block";
@@ -184,13 +191,13 @@
   <div id="viewDiv"></div>
   <div id="buttonDiv1" class="esri-widget esri-component">
     <button id="routeSaveAs" type="button" class="esri-button">
-      Save As New RouteLayer
+      Save as new RouteLayer
     </button>
     <a id="linkDiv2" href="https://www.esri.com" target="_blank">Open in ArcGIS Online</a>
   </div>
    <div id="buttonDiv2" class="esri-widget esri-component">
     <button id="webmapSaveAs" type="button" class="esri-button">
-      Save As New WebMap
+      Save as new WebMap
     </button>
     <a id="linkDiv" href="https://www.esri.com" target="_blank">Open in ArcGIS Online</a>
   </div>
