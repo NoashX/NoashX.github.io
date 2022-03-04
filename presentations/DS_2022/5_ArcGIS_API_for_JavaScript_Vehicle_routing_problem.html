@@ -48,7 +48,8 @@
         FeatureSet
     ) {
 
-        // API Key from developer's account
+        // API key from developer's account
+        // https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/
         esriConfig.apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
 
         // https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap
@@ -404,7 +405,7 @@
 
             // this is the URL for the VehicleRoutingProblem service using Job request
             // authentication is handled by API Key
-            // https://developers.arcgis.com/documentation/mapping-apis-and-location-services/route-and-directions/fleet-routing/
+            // https://developers.arcgis.com/documentation/mapping-apis-and-services/routing/fleet-routing/
             const url = "https://logistics.arcgis.com/arcgis/rest/services/World/VehicleRoutingProblem/GPServer/SolveVehicleRoutingProblem";
 
             // create a GPOptions object for providing input options 
