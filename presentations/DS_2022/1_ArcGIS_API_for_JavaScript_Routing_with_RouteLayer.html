@@ -132,17 +132,6 @@
 
           await view.goTo(routeLayer.routeInfo.geometry);
 
-          view.on("click", async (e) => {
-            const stops = routeLayer.stops.clone();
-            stops.pop();
-            stops.add(new Stop({ geometry: e.mapPoint }));
-
-            routeLayer.update(await routeLayer.solve({
-              apiKey,
-              stops
-            }));
-          });
-
           // Code for the "Save As New RouteLayer" button
           document.getElementById("routeSaveAs").addEventListener("click", async () => {
             const link2 = document.getElementById("linkDiv2");
