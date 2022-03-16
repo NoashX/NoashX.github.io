@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Multi RouteLayer</title>
+  <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.23/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #actions {
+      padding: 10px;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/WebMap",
+      "esri/layers/RouteLayer",
+      "esri/views/MapView",
+      "esri/rest/support/Stop",
+      "esri/rest/support/PointBarrier",
+      "esri/rest/support/PolylineBarrier",
+      "esri/rest/support/PolygonBarrier",
+      "esri/rest/networkService",
+      "esri/Graphic",
+      "esri/symbols/CIMSymbol",
+      "esri/layers/support/FeatureEffect"
+    ],
+      function (
+        WebMap,
+        RouteLayer,
+        MapView,
+        Stop,
+        PointBarrier,
+        PolylineBarrier,
+        PolygonBarrier,
+        networkService,
+        Graphic,
+        CIMSymbol,
+        FeatureEffect
+      ) {
+        (async () => {
+          const url = "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
+          const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
+
+          const esri = { x: -117.19570, y: 34.05609 };
+
+          const point = {
+            type: "point",
+            x: esri.x,
+            y: esri.y
+          };
+
+          const bowlPoint = {
+            type: "point",
+            x: -117.18539, 
+            y: 34.05388
+          };
+
+          const escapePoint = {
+            type: "point",
+            x: -117.21848, 
+            y: 34.06139
+          };
+
+          const minutePoint = {
+            type: "point",
+            x: -117.18194, 
+            y: 34.05581
+          };
+
+          const parkPoint = {
+            type: "point",
+            x: -117.17255, 
+            y: 34.04082
+          };
+
+          const forestPoint = {
+            type: "point",
+            x: -116.921525, 
+            y: 34.088523
+          };
+
+          const esriSymbol = new CIMSymbol({
+            "data": {
+              "type": "CIMSymbolReference",
+              "symbol": {
+                "type": "CIMPointSymbol",
+                "symbolLayers": [
+                  {
+                    "type": "CIMVectorMarker",
+                    "enable": true,
+                    "anchorPoint": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "anchorPointUnits": "Relative",
+                    "dominantSizeAxis3D": "Y",
+                    "size": 30,
+                    "billboardMode3D": "FaceNearPlane",
+                    "frame": {
+                      "xmin": 0,
+                      "ymin": 0,
+                      "xmax": 21,
+                      "ymax": 21
+                    },
+                    "markerGraphics": [
+                      {
+                        "type": "CIMMarkerGraphic",
+                        "geometry": {
+                          "rings": [
+                            [
+                              [
+                                11,
+                                16
+                              ],
+                              [
+                                11,
+                                14
+                              ],
+                              [
+                                17,
+                                14
+                              ],
+                              [
+                                17,
+                                4
+                              ],
+                              [
+                                18,
+                                4
+                              ],
+                              [
+                                18,
+                                3
+                              ],
+                              [
+                                3,
+                                3
+                              ],
+                              [
+                                3,
+                                4
+                              ],
+                              [
+                                4,
+                                4
+                              ],
+                              [
+                                4,
+                                14
+                              ],
+                              [
+                                10,
+                                14
+                              ],
+                              [
+                                10,
+                                19
+                              ],
+                              [
+                                11,
+                                19
+                              ],
+                              [
+                                14,
+                                17.5
+                              ],
+                              [
+                                11,
+                                16
+                              ]
+                            ],
+                            [
+                              [
+                                13,
+                                12
+                              ],
+                              [
+                                13,
+                                10
+                              ],
+                              [
+                                16,
+                                10
+                              ],
+                              [
+                                16,
+                                12
+                              ],
+                              [
+                                13,
+                                12
+                              ]
+                            ],
+                            [
+                              [
+                                12,
+                                10
+                              ],
+                              [
+                                12,
+                                12
+                              ],
+                              [
+                                9,
+                                12
+                              ],
+                              [
+                                9,
+                                10
+                              ],
+                              [
+                                12,
+                                10
+                              ]
+                            ],
+                            [
+                              [
+                                8,
+                                10
+                              ],
+                              [
+                                8,
+                                12
+                              ],
+                              [
+                                5,
+                                12
+                              ],
+                              [
+                                5,
+                                10
+                              ],
+                              [
+                                8,
+                                10
+                              ]
+                            ],
+                            [
+                              [
+                                13,
+                                8
+                              ],
+                              [
+                                13,
+                                6
+                              ],
+                              [
+                                16,
+                                6
+                              ],
+                              [
+                                16,
+                                8
+                              ],
+                              [
+                                13,
+                                8
+                              ]
+                            ],
+                            [
+                              [
+                                12,
+                                6
+                              ],
+                              [
+                                12,
+                                8
+                              ],
+                              [
+                                9,
+                                8
+                              ],
+                              [
+                                9,
+                                6
+                              ],
+                              [
+                                12,
+                                6
+                              ]
+                            ],
+                            [
+                              [
+                                8,
+                                6
+                              ],
+                              [
+                                8,
+                                8
+                              ],
+                              [
+                                5,
+                                8
+                              ],
+                              [
+                                5,
+                                6
+                              ],
+                              [
+                                8,
+                                6
+                              ]
+                            ]
+                          ]
+                        },
+                        "symbol": {
+                          "type": "CIMPolygonSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Round",
+                              "joinStyle": "Round",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 0,
+                              "color": [
+                                0,
+                                0,
+                                0,
+                                255
+                              ]
+                            },
+                            {
+                              "type": "CIMSolidFill",
+                              "enable": true,
+                              "color": [
+                                131,
+                                53,
+                                168,
+                                255
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "scaleSymbolsProportionally": true,
+                    "respectFrame": true
+                  },
+                  {
+                    "type": "CIMVectorMarker",
+                    "enable": true,
+                    "colorLocked": true,
+                    "anchorPointUnits": "Relative",
+                    "dominantSizeAxis3D": "Y",
+                    "size": 30,
+                    "billboardMode3D": "FaceNearPlane",
+                    "frame": {
+                      "xmin": -5,
+                      "ymin": -5,
+                      "xmax": 5,
+                      "ymax": 5
+                    },
+                    "markerGraphics": [
+                      {
+                        "type": "CIMMarkerGraphic",
+                        "geometry": {
+                          "rings": [
+                            [
+                              [
+                                0,
+                                5
+                              ],
+                              [
+                                0.87,
+                                4.92
+                              ],
+                              [
+                                1.71,
+                                4.7
+                              ],
+                              [
+                                2.5,
+                                4.33
+                              ],
+                              [
+                                3.21,
+                                3.83
+                              ],
+                              [
+                                3.83,
+                                3.21
+                              ],
+                              [
+                                4.33,
+                                2.5
+                              ],
+                              [
+                                4.7,
+                                1.71
+                              ],
+                              [
+                                4.92,
+                                0.87
+                              ],
+                              [
+                                5,
+                                0
+                              ],
+                              [
+                                4.92,
+                                -0.87
+                              ],
+                              [
+                                4.7,
+                                -1.71
+                              ],
+                              [
+                                4.33,
+                                -2.5
+                              ],
+                              [
+                                3.83,
+                                -3.21
+                              ],
+                              [
+                                3.21,
+                                -3.83
+                              ],
+                              [
+                                2.5,
+                                -4.33
+                              ],
+                              [
+                                1.71,
+                                -4.7
+                              ],
+                              [
+                                0.87,
+                                -4.92
+                              ],
+                              [
+                                0,
+                                -5
+                              ],
+                              [
+                                -0.87,
+                                -4.92
+                              ],
+                              [
+                                -1.71,
+                                -4.7
+                              ],
+                              [
+                                -2.5,
+                                -4.33
+                              ],
+                              [
+                                -3.21,
+                                -3.83
+                              ],
+                              [
+                                -3.83,
+                                -3.21
+                              ],
+                              [
+                                -4.33,
+                                -2.5
+                              ],
+                              [
+                                -4.7,
+                                -1.71
+                              ],
+                              [
+                                -4.92,
+                                -0.87
+                              ],
+                              [
+                                -5,
+                                0
+                              ],
+                              [
+                                -4.92,
+                                0.87
+                              ],
+                              [
+                                -4.7,
+                                1.71
+                              ],
+                              [
+                                -4.33,
+                                2.5
+                              ],
+                              [
+                                -3.83,
+                                3.21
+                              ],
+                              [
+                                -3.21,
+                                3.83
+                              ],
+                              [
+                                -2.5,
+                                4.33
+                              ],
+                              [
+                                -1.71,
+                                4.7
+                              ],
+                              [
+                                -0.87,
+                                4.92
+                              ],
+                              [
+                                0,
+                                5
+                              ]
+                            ]
+                          ]
+                        },
+                        "symbol": {
+                          "type": "CIMPolygonSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Round",
+                              "joinStyle": "Round",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 0.5,
+                              "color": [
+                                167,
+                                169,
+                                172,
+                                255
+                              ]
+                            },
+                            {
+                              "type": "CIMSolidFill",
+                              "enable": true,
+                              "color": [
+                                255,
+                                255,
+                                255,
+                                255
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "scaleSymbolsProportionally": true,
+                    "respectFrame": true
+                  }
+                ],
+                "haloSize": 1,
+                "scaleX": 1,
+                "angleAlignment": "Display",
+                "version": "2.0.0",
+                "build": "8933"
+              }
+            }
+          });
+
+          const pointGraphic = new Graphic({
+            geometry: point,
+            symbol: esriSymbol,
+            popupTemplate: {
+              title: "Esri Campus, Redlands",
+              content: "This is the starting point for our routing."
+            },
+          });
+
+          const bowlTextSymbol = {
+            type: "text",  // autocasts as new TextSymbol()
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "Redlands Bowl",
+            xoffset: 70,
+            font: {  // autocasts as new Font()
+              size: 16,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const bowlGraphic = new Graphic({
+            geometry: bowlPoint,
+            symbol: bowlTextSymbol
+          });
+
+          const escapeTextSymbol = {
+            type: "text",  // autocasts as new TextSymbol()
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "Escape Craft Brewery",
+            xoffset: -90,
+            font: {  // autocasts as new Font()
+              size: 16,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const escapeGraphic = new Graphic({
+            geometry: escapePoint,
+            symbol: escapeTextSymbol
+          });
+
+          const minuteTextSymbol = {
+            type: "text",  // autocasts as new TextSymbol()
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "A La Minute",
+            xoffset: 60,
+            font: {  // autocasts as new Font()
+              size: 16,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const minuteGraphic = new Graphic({
+            geometry: minutePoint,
+            symbol: minuteTextSymbol
+          });
+
+          const parkTextSymbol = {
+            type: "text",  // autocasts as new TextSymbol()
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "Prospect Park",
+            xoffset: 60,
+            font: {  // autocasts as new Font()
+              size: 16,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const parkGraphic = new Graphic({
+            geometry: parkPoint,
+            symbol: parkTextSymbol
+          });
+
+          const forestTextSymbol = {
+            type: "text",  // autocasts as new TextSymbol()
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "Forest Falls",
+            xoffset: 60,
+            font: {  // autocasts as new Font()
+              size: 16,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const forestGraphic = new Graphic({
+            geometry: forestPoint,
+            symbol: forestTextSymbol
+          });
+
+          const map = new WebMap({
+            portalItem: {
+              id: "1ebfb42897b641afa1098fd7b5d24993"
+            }
+          });
+
+          const view = new MapView({
+            container: "viewDiv",
+            map,
+            center: esri,
+            zoom: 15
+          });
+
+          view.graphics.addMany([pointGraphic]);
+
+          const { supportedTravelModes } = await networkService.fetchServiceDescription(url, apiKey);
+          const driveTravelMode = supportedTravelModes.find((travelMode) => travelMode.name === "Driving Time");
+          const walkTravelMode = supportedTravelModes.find((travelMode) => travelMode.name === "Walking Time");
+
+          view.ui.add("actions", "top-right");
+
+          document.getElementById("bowl").addEventListener("click", () => showRoutes({ x: -117.18539, y: 34.05388 }, "bowl"));
+          document.getElementById("escape").addEventListener("click", () => showRoutes({ x: -117.21848, y: 34.06139 }, "escape"));
+          document.getElementById("minute").addEventListener("click", () => showRoutes({ x: -117.18194, y: 34.05581 }, "minute"));
+          document.getElementById("park").addEventListener("click", () => showRoutes({ x: -117.17255, y: 34.04082 }, "park"));
+          document.getElementById("forest").addEventListener("click", () => showRoutes({ x: -116.921525, y: 34.088523 }, "forest"));
+
+          function showRoutes(destination, place) {
+            map.removeAll();
+            
+            switch(place) {
+              case "bowl":
+                view.graphics.removeAll();
+                view.graphics.addMany([pointGraphic, bowlGraphic]);
+                break;
+              case "escape":
+                view.graphics.removeAll();
+                view.graphics.addMany([pointGraphic, escapeGraphic]);
+                break;
+              case "minute":
+                view.graphics.removeAll();
+                view.graphics.addMany([pointGraphic, minuteGraphic]);
+                break;
+              case "park":
+                view.graphics.removeAll();
+                view.graphics.addMany([pointGraphic, parkGraphic]);
+                break;
+              case "forest":
+                view.graphics.removeAll();
+                view.graphics.addMany([pointGraphic, forestGraphic]);
+                break;
+              default:
+                console.log(":-(");
+            }
+  
+            const drive = new RouteLayer({
+              stops: [
+                { geometry: esri },
+                { geometry: destination }
+              ]
+            });
+
+            drive.solve({ apiKey, travelMode: driveTravelMode }).then((results) => {
+              drive.update(results);
+              const extent = results.routeInfo.geometry.extent.clone();
+              view.goTo(extent.expand(1.5));
+            });
+
+            const includedEffect = "sepia(70%) saturate(150%) hue-rotate(320deg) opacity(60%)";
+
+            const walk = new RouteLayer({
+              stops: [
+                { geometry: esri },
+                { geometry: destination }
+              ],
+              effect: "bloom(2, 0.5px, 0)"
+            });
+
+            // Solve and update route
+            walk.solve({ apiKey, travelMode: walkTravelMode }).then((results) => {
+              walk.update(results);
+            });
+
+            map.addMany([drive, walk]);
+          }
+        })();
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="actions" class="esri-widget">
+    <button style="border:1px solid white" class="esri-button" id="bowl">Redlands Bowl</button>
+    <button style="border:1px solid white" class="esri-button" id="escape">Escape Craft Brewery</button>
+    <button style="border:1px solid white" class="esri-button" id="minute">A La Minute</button>
+    <button style="border:1px solid white" class="esri-button" id="park">Prospect Park</button>
+    <button style="border:1px solid white" class="esri-button" id="forest">Forest Falls</button>
+    
+  </div>
+</body>
+
+</html>
