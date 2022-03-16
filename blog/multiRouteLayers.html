@@ -31,26 +31,18 @@
       "esri/layers/RouteLayer",
       "esri/views/MapView",
       "esri/rest/support/Stop",
-      "esri/rest/support/PointBarrier",
-      "esri/rest/support/PolylineBarrier",
-      "esri/rest/support/PolygonBarrier",
       "esri/rest/networkService",
       "esri/Graphic",
-      "esri/symbols/CIMSymbol",
-      "esri/layers/support/FeatureEffect"
+      "esri/symbols/CIMSymbol"
     ],
       function (
         WebMap,
         RouteLayer,
         MapView,
         Stop,
-        PointBarrier,
-        PolylineBarrier,
-        PolygonBarrier,
         networkService,
         Graphic,
-        CIMSymbol,
-        FeatureEffect
+        CIMSymbol
       ) {
         (async () => {
           const url = "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
@@ -578,14 +570,33 @@
             },
           });
 
+          const esriTextSymbol = {
+            type: "text",
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: "Esri",
+            yoffset: 30,
+            font: {
+              size: 20,
+              family: "Life Savers",
+              weight: "bold"
+            }
+          };
+
+          const esriGraphic = new Graphic({
+            geometry: point,
+            symbol: esriTextSymbol
+          });
+
           const bowlTextSymbol = {
-            type: "text",  // autocasts as new TextSymbol()
+            type: "text",
             color: "white",
             haloColor: "black",
             haloSize: "1px",
             text: "Redlands Bowl",
             xoffset: 70,
-            font: {  // autocasts as new Font()
+            font: {
               size: 16,
               family: "Life Savers",
               weight: "bold"
@@ -598,13 +609,13 @@
           });
 
           const escapeTextSymbol = {
-            type: "text",  // autocasts as new TextSymbol()
+            type: "text",
             color: "white",
             haloColor: "black",
             haloSize: "1px",
             text: "Escape Craft Brewery",
-            xoffset: -90,
-            font: {  // autocasts as new Font()
+            xoffset: -100,
+            font: {
               size: 16,
               family: "Life Savers",
               weight: "bold"
@@ -617,13 +628,13 @@
           });
 
           const minuteTextSymbol = {
-            type: "text",  // autocasts as new TextSymbol()
+            type: "text",
             color: "white",
             haloColor: "black",
             haloSize: "1px",
             text: "A La Minute",
-            xoffset: 60,
-            font: {  // autocasts as new Font()
+            xoffset: 70,
+            font: {
               size: 16,
               family: "Life Savers",
               weight: "bold"
@@ -636,13 +647,13 @@
           });
 
           const parkTextSymbol = {
-            type: "text",  // autocasts as new TextSymbol()
+            type: "text",
             color: "white",
             haloColor: "black",
             haloSize: "1px",
             text: "Prospect Park",
-            xoffset: 60,
-            font: {  // autocasts as new Font()
+            xoffset: 70,
+            font: {
               size: 16,
               family: "Life Savers",
               weight: "bold"
@@ -655,14 +666,14 @@
           });
 
           const forestTextSymbol = {
-            type: "text",  // autocasts as new TextSymbol()
+            type: "text",
             color: "white",
-            haloColor: "black",
+            haloColor: "green",
             haloSize: "1px",
             text: "Forest Falls",
-            xoffset: 60,
-            font: {  // autocasts as new Font()
-              size: 16,
+            xoffset: 80,
+            font: {
+              size: 18,
               family: "Life Savers",
               weight: "bold"
             }
@@ -686,7 +697,7 @@
             zoom: 15
           });
 
-          view.graphics.addMany([pointGraphic]);
+          view.graphics.addMany([pointGraphic, esriGraphic]);
 
           const { supportedTravelModes } = await networkService.fetchServiceDescription(url, apiKey);
           const driveTravelMode = supportedTravelModes.find((travelMode) => travelMode.name === "Driving Time");
@@ -740,8 +751,6 @@
               const extent = results.routeInfo.geometry.extent.clone();
               view.goTo(extent.expand(1.5));
             });
-
-            const includedEffect = "sepia(70%) saturate(150%) hue-rotate(320deg) opacity(60%)";
 
             const walk = new RouteLayer({
               stops: [
