@@ -45,7 +45,12 @@
         CIMSymbol
       ) {
         (async () => {
+          
+          // the routing service URL
           const url = "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
+
+          // API key from developer's account
+          // https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/
           const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
 
           const esri = { x: -117.19570, y: 34.05609 };
@@ -739,6 +744,7 @@
                 console.log(":-(");
             }
   
+            // create a RouteLayer for "Driving Time"
             const drive = new RouteLayer({
               stops: [
                 { geometry: esri },
@@ -746,12 +752,15 @@
               ]
             });
 
+            // Solve and update route for "Driving Time"
+            // and zoom to results
             drive.solve({ apiKey, travelMode: driveTravelMode }).then((results) => {
               drive.update(results);
               const extent = results.routeInfo.geometry.extent.clone();
               view.goTo(extent.expand(1.5));
             });
 
+            // create another RouteLayer for "Walking Time" with bloom
             const walk = new RouteLayer({
               stops: [
                 { geometry: esri },
@@ -760,11 +769,12 @@
               effect: "bloom(2, 0.5px, 0)"
             });
 
-            // Solve and update route
+            // Solve and update route "Walking Time"
             walk.solve({ apiKey, travelMode: walkTravelMode }).then((results) => {
               walk.update(results);
             });
 
+            // add both RouteLayers to the map
             map.addMany([drive, walk]);
           }
         })();
