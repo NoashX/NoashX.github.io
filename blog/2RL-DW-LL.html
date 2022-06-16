@@ -689,6 +689,8 @@
       // An authorization string used to access the basemap, geocoding and routing services
       const apiKey = "AAPK4d3f8badb46144b99b6dfcd47cba376dDj78KAX8MzYjOeH7YjFvPIeRt_GHpXVSxk0ZrFO1mjxw9iY0vV91SRkH0cmnVP7i";
       // create a new RouteLayer, required for Directions widget
+      // this is a private route portal item
+      // https://jsapi.maps.arcgis.com/home/item.html?id=3aab940ed2b94ab997130b7c630359be
       const routeLayer = new RouteLayer({
         portalItem: {
           // autocasts as new PortalItem()
@@ -735,8 +737,8 @@
             first: {
               type: "picture-marker",
               url: "https://freesvg.org/img/1540864318.png",
-              height: 75,
-              width: 75
+              height: 100,
+              width: 100
             },
             middle: {
               type: "cim",
@@ -761,12 +763,18 @@
       const routeLayer2 = new RouteLayer({
         portalItem: {
           // autocasts as new PortalItem()
-          id: "25ee82248c8f42ce8eb44a836048e055"
+          id: "a1b6fee5f4e545d8b7fa4074accedb10"
         }
       });
-      const routeLayers = [routeLayer, routeLayer2];
+      const routeLayer3 = new RouteLayer({
+        stops: [
+          { locationType: "stop",  geometry: { x: -87.61395, y: 41.86039 }, name: "Soldier Field" },
+          { locationType: "stop",  geometry: { x: -87.58425, y: 41.79169 }, name: "Museum of Science and Industry" }
+        ]
+      });
+      const routeLayers = [routeLayer, routeLayer2, routeLayer3];
       getSymbology(routeLayer);
-
+      // new RouteLayer must be added to the map
       const map = new Map({
         basemap: "topo-vector"
       });
@@ -794,9 +802,15 @@
       async function getSymbology(routeLayer) {
         //console.log(routeLayer)
         await routeLayer.load();
+        await routeLayer2.load();
+        await routeLayer3.load();
         await routeLayer.solve({apiKey});
+        await routeLayer3.solve({apiKey});
         const result = await routeLayer.solve({ apiKey });
+        const result3 = await routeLayer3.solve({ apiKey });
         routeLayer.update(result);
+        routeLayer3.update(result3);
+        map.add(routeLayer3);
         map.add(routeLayer2);
         map.add(routeLayer);
       }
@@ -806,7 +820,7 @@
           event.item.actionsSections = [
             [
               {
-                title: "Show Directions",
+                title: "Show Directions and Zoom to Route",
                 className: "esri-icon-navigation",
                 id: "show-directions"
               }
@@ -820,8 +834,16 @@
         for (const layer of routeLayers) {
           if (layer === event.item.layer) {
             if (!layer.effect) {
+              console.log(layer);
               layer.effect = "bloom(1.5, 1px, 0.1)";
               directionsWidget.layer = layer;
+              if (layer.title == "Route from Sears Tower to Navy Pier to Hancock Building") {
+                view.goTo(layer.routeInfo.geometry.extent);
+              }
+              else {
+                const extent = layer.routeInfo.geometry.extent.clone().expand(1.5);
+                view.goTo(extent);
+              }
             }
             else {
               layer.effect = null;
