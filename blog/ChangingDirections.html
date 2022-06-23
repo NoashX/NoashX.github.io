@@ -1,0 +1,862 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Changing Directions</title>
+  <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.24/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Directions",
+      "esri/layers/RouteLayer",
+      "esri/widgets/LayerList"
+    ], function(Map, MapView, Directions, RouteLayer, LayerList) {
+      let navyPierJSON = {"type": "CIMPointSymbol",
+        "symbolLayers": [
+          {
+            "type": "CIMVectorMarker",
+            "enable": true,
+            "anchorPointUnits": "Relative",
+            "dominantSizeAxis3D": "Y",
+            "size": 40,
+            "billboardMode3D": "FaceNearPlane",
+            "frame": {
+              "xmin": 0,
+              "ymin": 0,
+              "xmax": 21,
+              "ymax": 21
+            },
+            "markerGraphics": [
+              {
+                "type": "CIMMarkerGraphic",
+                "geometry": {
+                  "rings": [
+                    [
+                      [
+                        19,
+                        10.7
+                      ],
+                      [
+                        18.92,
+                        8.53
+                      ],
+                      [
+                        18.7,
+                        6.6
+                      ],
+                      [
+                        18.34,
+                        5.35
+                      ],
+                      [
+                        17.72,
+                        4.23
+                      ],
+                      [
+                        16.9,
+                        3.34
+                      ],
+                      [
+                        15.9,
+                        2.7
+                      ],
+                      [
+                        14.97,
+                        2.36
+                      ],
+                      [
+                        14,
+                        2.25
+                      ],
+                      [
+                        13.03,
+                        2.36
+                      ],
+                      [
+                        12.1,
+                        2.7
+                      ],
+                      [
+                        11.11,
+                        3.29
+                      ],
+                      [
+                        10.2,
+                        4.3
+                      ],
+                      [
+                        11.34,
+                        5.41
+                      ],
+                      [
+                        12.1,
+                        6.7
+                      ],
+                      [
+                        13.2,
+                        6.94
+                      ],
+                      [
+                        14,
+                        7
+                      ],
+                      [
+                        14.83,
+                        6.93
+                      ],
+                      [
+                        15.62,
+                        6.74
+                      ],
+                      [
+                        16.37,
+                        6.42
+                      ],
+                      [
+                        17,
+                        6
+                      ],
+                      [
+                        16.54,
+                        6.83
+                      ],
+                      [
+                        15.84,
+                        7.48
+                      ],
+                      [
+                        14.99,
+                        7.87
+                      ],
+                      [
+                        14,
+                        8
+                      ],
+                      [
+                        13.18,
+                        7.92
+                      ],
+                      [
+                        12.5,
+                        7.7
+                      ],
+                      [
+                        12.7,
+                        8.4
+                      ],
+                      [
+                        12.93,
+                        10.6
+                      ],
+                      [
+                        13,
+                        12.7
+                      ],
+                      [
+                        12.8,
+                        15.9
+                      ],
+                      [
+                        14,
+                        15.8
+                      ],
+                      [
+                        15.07,
+                        15.88
+                      ],
+                      [
+                        16.13,
+                        16.11
+                      ],
+                      [
+                        17.18,
+                        16.5
+                      ],
+                      [
+                        18.1,
+                        17
+                      ],
+                      [
+                        18.48,
+                        15.66
+                      ],
+                      [
+                        18.77,
+                        14.07
+                      ],
+                      [
+                        18.94,
+                        12.41
+                      ],
+                      [
+                        19,
+                        10.7
+                      ]
+                    ],
+                    [
+                      [
+                        16,
+                        11
+                      ],
+                      [
+                        17,
+                        11
+                      ],
+                      [
+                        17.36,
+                        11.08
+                      ],
+                      [
+                        17.69,
+                        11.31
+                      ],
+                      [
+                        17.92,
+                        11.64
+                      ],
+                      [
+                        18,
+                        12
+                      ],
+                      [
+                        17.92,
+                        12.36
+                      ],
+                      [
+                        17.69,
+                        12.69
+                      ],
+                      [
+                        17.36,
+                        12.92
+                      ],
+                      [
+                        17,
+                        13
+                      ],
+                      [
+                        16,
+                        13
+                      ],
+                      [
+                        15.64,
+                        12.92
+                      ],
+                      [
+                        15.31,
+                        12.69
+                      ],
+                      [
+                        15.08,
+                        12.36
+                      ],
+                      [
+                        15,
+                        12
+                      ],
+                      [
+                        15.08,
+                        11.64
+                      ],
+                      [
+                        15.31,
+                        11.31
+                      ],
+                      [
+                        15.64,
+                        11.08
+                      ],
+                      [
+                        16,
+                        11
+                      ]
+                    ],
+                    [
+                      [
+                        12,
+                        12.7
+                      ],
+                      [
+                        11.92,
+                        10.53
+                      ],
+                      [
+                        11.7,
+                        8.6
+                      ],
+                      [
+                        11.34,
+                        7.35
+                      ],
+                      [
+                        10.72,
+                        6.23
+                      ],
+                      [
+                        9.9,
+                        5.34
+                      ],
+                      [
+                        8.9,
+                        4.7
+                      ],
+                      [
+                        7.97,
+                        4.36
+                      ],
+                      [
+                        7,
+                        4.25
+                      ],
+                      [
+                        6.03,
+                        4.36
+                      ],
+                      [
+                        5.1,
+                        4.7
+                      ],
+                      [
+                        4.1,
+                        5.34
+                      ],
+                      [
+                        3.28,
+                        6.23
+                      ],
+                      [
+                        2.66,
+                        7.35
+                      ],
+                      [
+                        2.3,
+                        8.6
+                      ],
+                      [
+                        2.08,
+                        10.46
+                      ],
+                      [
+                        2,
+                        12.7
+                      ],
+                      [
+                        2.06,
+                        14.37
+                      ],
+                      [
+                        2.23,
+                        16.02
+                      ],
+                      [
+                        2.52,
+                        17.62
+                      ],
+                      [
+                        2.9,
+                        19
+                      ],
+                      [
+                        3.82,
+                        18.5
+                      ],
+                      [
+                        4.87,
+                        18.11
+                      ],
+                      [
+                        5.93,
+                        17.88
+                      ],
+                      [
+                        7,
+                        17.8
+                      ],
+                      [
+                        8.07,
+                        17.88
+                      ],
+                      [
+                        9.13,
+                        18.11
+                      ],
+                      [
+                        10.18,
+                        18.5
+                      ],
+                      [
+                        11.1,
+                        19
+                      ],
+                      [
+                        11.48,
+                        17.66
+                      ],
+                      [
+                        11.77,
+                        16.07
+                      ],
+                      [
+                        11.94,
+                        14.41
+                      ],
+                      [
+                        12,
+                        12.7
+                      ]
+                    ],
+                    [
+                      [
+                        9,
+                        15
+                      ],
+                      [
+                        8.64,
+                        14.92
+                      ],
+                      [
+                        8.31,
+                        14.69
+                      ],
+                      [
+                        8.08,
+                        14.36
+                      ],
+                      [
+                        8,
+                        14
+                      ],
+                      [
+                        8.08,
+                        13.64
+                      ],
+                      [
+                        8.31,
+                        13.31
+                      ],
+                      [
+                        8.64,
+                        13.08
+                      ],
+                      [
+                        9,
+                        13
+                      ],
+                      [
+                        10,
+                        13
+                      ],
+                      [
+                        10.36,
+                        13.08
+                      ],
+                      [
+                        10.69,
+                        13.31
+                      ],
+                      [
+                        10.92,
+                        13.64
+                      ],
+                      [
+                        11,
+                        14
+                      ],
+                      [
+                        10.92,
+                        14.36
+                      ],
+                      [
+                        10.69,
+                        14.69
+                      ],
+                      [
+                        10.36,
+                        14.92
+                      ],
+                      [
+                        10,
+                        15
+                      ],
+                      [
+                        9,
+                        15
+                      ]
+                    ],
+                    [
+                      [
+                        5,
+                        15
+                      ],
+                      [
+                        4,
+                        15
+                      ],
+                      [
+                        3.64,
+                        14.92
+                      ],
+                      [
+                        3.31,
+                        14.69
+                      ],
+                      [
+                        3.08,
+                        14.36
+                      ],
+                      [
+                        3,
+                        14
+                      ],
+                      [
+                        3.08,
+                        13.64
+                      ],
+                      [
+                        3.31,
+                        13.31
+                      ],
+                      [
+                        3.64,
+                        13.08
+                      ],
+                      [
+                        4,
+                        13
+                      ],
+                      [
+                        5,
+                        13
+                      ],
+                      [
+                        5.36,
+                        13.08
+                      ],
+                      [
+                        5.69,
+                        13.31
+                      ],
+                      [
+                        5.92,
+                        13.64
+                      ],
+                      [
+                        6,
+                        14
+                      ],
+                      [
+                        5.92,
+                        14.36
+                      ],
+                      [
+                        5.69,
+                        14.69
+                      ],
+                      [
+                        5.36,
+                        14.92
+                      ],
+                      [
+                        5,
+                        15
+                      ]
+                    ],
+                    [
+                      [
+                        10,
+                        9
+                      ],
+                      [
+                        9.37,
+                        8.58
+                      ],
+                      [
+                        8.62,
+                        8.26
+                      ],
+                      [
+                        7.83,
+                        8.07
+                      ],
+                      [
+                        7,
+                        8
+                      ],
+                      [
+                        6.17,
+                        8.07
+                      ],
+                      [
+                        5.38,
+                        8.26
+                      ],
+                      [
+                        4.63,
+                        8.58
+                      ],
+                      [
+                        4,
+                        9
+                      ],
+                      [
+                        4.46,
+                        8.17
+                      ],
+                      [
+                        5.16,
+                        7.52
+                      ],
+                      [
+                        6.01,
+                        7.13
+                      ],
+                      [
+                        7,
+                        7
+                      ],
+                      [
+                        7.99,
+                        7.13
+                      ],
+                      [
+                        8.84,
+                        7.52
+                      ],
+                      [
+                        9.54,
+                        8.17
+                      ],
+                      [
+                        10,
+                        9
+                      ]
+                    ]
+                  ]
+                },
+                "symbol": {
+                  "type": "CIMPolygonSymbol",
+                  "symbolLayers": [
+                    {
+                      "type": "CIMSolidStroke",
+                      "enable": true,
+                      "capStyle": "Round",
+                      "joinStyle": "Round",
+                      "lineStyle3D": "Strip",
+                      "miterLimit": 10,
+                      "width": 0,
+                      "color": [
+                        110,
+                        110,
+                        110,
+                        255
+                      ]
+                    },
+                    {
+                      "type": "CIMSolidFill",
+                      "enable": true,
+                      "color": [
+                        115,
+                        25,
+                        204,
+                        255
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "scaleSymbolsProportionally": true,
+            "respectFrame": true
+          }
+        ]};
+      // An authorization string used to access the basemap, geocoding and routing services
+      const apiKey = "AAPKec928a03d2c444ff9253d6f9e65abb89wrbqk2sNYSZOs8HtK3ydZ9pS230xVcngdK35oDzuP67ApSBAN9Fss5Xel2s-QMji";
+
+      const routeLayer = new RouteLayer({
+        portalItem: {
+          // autocasts as new PortalItem()
+          id: "fd4188722f3e4e14986abca86cad80c6"
+        },
+        defaultSymbols: {
+          directionLines: {
+            type: "simple-line",
+            color: [0, 128, 0, 0.75],
+            width: 6,
+            cap: "square",
+            join: "miter"
+          },
+          directionPoints: {
+            type: "simple-marker",
+            size: 0,
+            color: [0, 0, 0, 0]
+          },
+          routeInfo: {
+            type: "simple-line",
+            width: 0
+          },
+          pointBarriers: {
+            type: "picture-marker",
+            url: "https://freesvg.org/img/cybergedeon-flame-color.png",
+            height: 60,
+            width: 45
+          },
+          polylineBarriers: {
+            type: "simple-line",
+            cap: "butt",
+            join: "bevel",
+            marker: {
+              color: "orange",
+              placement: "begin-end",
+              style: "x"
+            },
+            style: "solid",
+            width: 5,
+            color: "red"
+
+          },
+          stops: {
+            first: {
+              type: "picture-marker",
+              url: "https://freesvg.org/img/1540864318.png",
+              height: 100,
+              width: 100
+            },
+            middle: {
+              type: "cim",
+              data: {
+                type: "CIMSymbolReference",
+                symbol: navyPierJSON
+              }
+            },
+            last: {
+              type: "simple-marker",
+              style: "diamond",
+              size: 42,
+              color: "#FFEF00",
+              outline: {
+                color: "#32527b",
+                width: 5
+              } 
+            }
+          }
+        }
+      });
+      const routeLayer2 = new RouteLayer({
+        portalItem: {
+          // autocasts as new PortalItem()
+          id: "a1b6fee5f4e545d8b7fa4074accedb10"
+        }
+      });
+      const routeLayer3 = new RouteLayer({
+        stops: [
+          { geometry: { x: -87.61395, y: 41.86039 }, name: "Soldier Field" },
+          { geometry: { x: -87.58425, y: 41.79169 }, name: "Museum of Science and Industry" }
+        ]
+      });
+      const routeLayers = [routeLayer, routeLayer2, routeLayer3];
+      
+      getSymbology(routeLayer);
+
+      const map = new Map({
+        basemap: "topo-vector"
+      });
+      const view = new MapView({
+        center: [-87.62235, 41.88951],
+        zoom: 14,
+        container: "viewDiv",
+        map: map
+      });
+      // new RouteLayer must be added to Directions widget
+      let directionsWidget = new Directions({
+        layer: routeLayer,
+        apiKey,
+        view
+      });
+      // Add the Directions widget to the top right corner of the view
+      view.ui.add(directionsWidget, {
+        position: "top-right"
+      });
+      goToRoute();
+      async function goToRoute() {
+        await Promise.all([view.when(), routeLayer.load()]);
+        await view.goTo(routeLayer.routeInfo.geometry.extent);
+      }
+      async function getSymbology(routeLayer) {
+        await Promise.all([
+          routeLayer.load(),
+          routeLayer2.load(),
+          routeLayer3.load()
+        ]);
+        const [result, result3] = await Promise.all([
+          routeLayer.solve({ apiKey }),
+          routeLayer3.solve({ apiKey })
+        ]);
+        routeLayer.update(result);
+        routeLayer3.update(result3);
+        map.addMany([routeLayer3, routeLayer2, routeLayer]);
+      }
+      const layerList = new LayerList({
+        view,
+        listItemCreatedFunction: (event) => {
+          event.item.actionsSections = [
+            [
+              {
+                title: "Show Directions and Zoom to Route",
+                className: "esri-icon-navigation",
+                id: "show-directions"
+              }
+            ]
+          ]
+        }
+      });
+      view.ui.add(layerList, "top-left");
+      
+      layerList.on("trigger-action", (event) => {
+        for (const layer of routeLayers) {
+          if (layer === event.item.layer) {
+            if (!layer.effect) {
+              layer.effect = "bloom(1.5, 1px, 0.1)";
+              directionsWidget.layer = layer;
+              if (layer.title == "Route from Sears Tower to Navy Pier to Hancock Building") {
+                view.goTo(layer.routeInfo.geometry.extent);
+              }
+              else {
+                const extent = layer.routeInfo.geometry.extent.clone().expand(1.5);
+                view.goTo(extent);
+              }
+            }
+            else {
+              layer.effect = null;
+              directionsWidget.layer = layer;
+            }
+          } else {
+            layer.effect = null;
+          }
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
