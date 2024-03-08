@@ -1,0 +1,151 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Report Thyme</title>
+  <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .btns {
+      top: 20px;
+      left: 100px;
+      position: absolute;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+
+    .print-button:hover,
+    .print-button:focus {
+      background-color: lightsteelblue;
+    }
+
+    .print-button {
+      flex-grow: 4;
+      font-size: 20px;
+      height: 32px;
+      margin: 5px;
+      width: 150px;
+      background-color: #0079c1;
+      border: 1px solid #0079c1;
+      color: white;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <script>
+    require([
+      "esri/config",
+      "esri/views/MapView",
+      "esri/WebMap",
+      "esri/rest/print",
+      "esri/rest/support/PrintTemplate",
+      "esri/rest/support/PrintParameters",
+      "esri/portal/PortalItem"
+    ], function(esriConfig, MapView, WebMap, printTask, PrintTemplate, PrintParameters, PortalItem) {
+      document.getElementById("print-button").addEventListener("click", print);
+
+      // Set the hostname to the on-premise portal
+      esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
+
+      const layoutItemTanu = new PortalItem({
+        id: "d16678fb334f4581b215c73058b722ee"
+      });
+
+      const map = new WebMap({
+        portalItem: {
+          id: "22c2fde97ecd4e84adf8dfab0caadb9e"
+        }
+      });
+
+      const view = new MapView({
+        container: "viewDiv",
+        map
+      });
+
+      const printURL = "https://dev0024573.esri.com/server/rest/services/PrintReport/GPServer/Export%20Web%20Map";
+
+      const template = new PrintTemplate({
+        format: "pdf",
+        layoutItem: layoutItemTanu,
+        includeTables: true,
+        layoutOptions: {
+          titleText: "Population Report Card",
+          elementOverrides: {
+            "CountyPopStats_DynamicText": {
+              "visible": true,
+              "dynamicTextElements": [{
+                "sourceLayerId": "18e1648277e-layer-46"
+              }, {
+                "sourceLayerId": "18e1648277e-layer-46"
+              }, {
+                "sourceLayerId": "18e1648277e-layer-46"
+              }]
+            },
+            "CountyPopTable": {
+              "sourceLayerId": "18e1648277e-layer-46",
+              "fields": [
+                "ID",
+                "NAME",
+                "ST_ABBREV",
+                "TOTPOP_CY",
+                "HHPOP_CY",
+                "FAMPOP_CY",
+                "TOTHH_CY",
+                "AVGFMSZ_CY"
+              ]
+            }
+          }
+        }
+      });
+
+      // package the template with the view and send to the print service
+      const params = new PrintParameters({
+        view: view,
+        template: template
+      });
+
+      // sends the print request
+      function print() {
+        printTask.execute(printURL, params).then(printResult, printError);
+      }
+
+      // print it out
+      function printResult(result) {
+        console.log("Let's check the results together: ", result.url);
+        window.open(result.url);
+      }
+
+      // unless we broke something
+      function printError(err) {
+        console.log("Did Noah break something? ", err);
+        alert("Tanu, please check the browser console!");
+      }
+    });
+  </script>
+</head>
+
+<body class="esri-widget">
+  <div id="viewDiv"></div>
+  <div class="btns">
+    <input type="button" class="print-button" data-id="0" value="print()" id="print-button">
+  </div>
+</body>
+
+</html>

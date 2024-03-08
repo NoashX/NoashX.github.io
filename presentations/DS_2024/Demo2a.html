@@ -1,0 +1,186 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Report Thyme</title>
+  <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .btns {
+      top: 20px;
+      left: 100px;
+      position: absolute;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+
+    .print-button:hover,
+    .print-button:focus {
+      background-color: lightsteelblue;
+    }
+
+    .print-button {
+      flex-grow: 4;
+      font-size: 20px;
+      height: 32px;
+      margin: 5px;
+      width: 150px;
+      background-color: #0079c1;
+      border: 1px solid #0079c1;
+      color: white;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <script>
+    require([
+      "esri/config",
+      "esri/views/MapView",
+      "esri/WebMap",
+      "esri/rest/print",
+      "esri/rest/support/PrintTemplate",
+      "esri/rest/support/PrintParameters"
+    ], function(esriConfig, MapView, WebMap, printTask, PrintTemplate, PrintParameters) {
+      document.getElementById("print-button").addEventListener("click", print);
+      
+      // Set the hostname to the on-premise portal
+      esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
+      const map = new WebMap({
+        portalItem: {
+          id: "6b499d4ec17949b38c9c716f84eead25"
+        }
+      });
+      const view = new MapView({
+        container: "viewDiv",
+        map
+      });
+
+      const printURL = "https://dev0024573.esri.com/server/rest/services/PrintReport/GPServer/Export%20Web%20Map";
+      const template = new PrintTemplate({
+        format: "pdf",
+        layout: "A4 Landscape",
+        report: "Attribute List A4 Landscape",
+        reportOptions: {
+          "reportSectionOverrides": {
+            "Report Section": {
+              "name": "Worldly Cities",
+              "sourceId": "18e169b5c68-layer-2",
+              "fieldElements": {
+                "Field 1": "CITY_NAME",
+                "Field 2": "POP",
+                "Field 3": "POP_RANK",
+                "Field 4": "POP_CLASS"
+              },
+              "fieldLabelElements": {
+                "Field Label 1": "City",
+                "Field Label 2": "Population",
+                "Field Label 3": "Rank",
+                "Field Label 4": "Class"
+              },
+              "statisticElements": {
+                "Count Statistic Field 1": "POP"
+              }
+            }
+          },
+          "elementOverrides": {
+            "Field 5": {
+              "visible": false
+            },
+            "Field Label 5": {
+              "visible": false
+            },
+            "Field 6": {
+              "visible": false
+            },
+            "Field Label 6": {
+              "visible": false
+            },
+            "Field 7": {
+              "visible": false
+            },
+            "Field Label 7": {
+              "visible": false
+            },
+            "Field 8": {
+              "visible": false
+            },
+            "Field Label 8": {
+              "visible": false
+            },
+            "Field 9": {
+              "visible": false
+            },
+            "Field Label 9": {
+              "visible": false
+            },
+            "Field 10": {
+              "visible": false
+            },
+            "Field Label 10": {
+              "visible": false
+            },
+            "Field 11": {
+              "visible": false
+            },
+            "Field Label 11": {
+              "visible": false
+            }
+          }
+        },
+        layoutOptions: {
+          titleText: "Attribute Report",
+          authorText: "Tanu Hoque"
+        }
+      });
+
+      // package the template with the view and send to the print service
+      const params = new PrintParameters({
+        view: view,
+        template: template
+      });
+
+      // sends the print request
+      function print() {
+        printTask.execute(printURL, params).then(printResult, printError);
+      }
+
+      // print it out
+      function printResult(result) {
+        console.log("Let's check the results together: ", result.url);
+        window.open(result.url);
+      }
+
+      // unless we broke something
+      function printError(err) {
+        console.log("Did Noah break something? ", err);
+        alert("Tanu, please check the browser console!");
+      }
+    });
+  </script>
+</head>
+
+<body class="esri-widget">
+  <div id="viewDiv"></div>
+  <div class="btns">
+    <input type="button" class="print-button" data-id="0" value="print()" id="print-button">
+  </div>
+</body>
+
+</html>
