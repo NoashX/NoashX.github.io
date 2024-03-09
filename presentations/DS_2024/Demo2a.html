@@ -58,21 +58,34 @@
       "esri/rest/support/PrintTemplate",
       "esri/rest/support/PrintParameters"
     ], function(esriConfig, MapView, WebMap, printTask, PrintTemplate, PrintParameters) {
+
+      // print button
       document.getElementById("print-button").addEventListener("click", print);
       
       // Set the hostname to the on-premise portal
       esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
+
+      // map of the known world
       const map = new WebMap({
         portalItem: {
           id: "6b499d4ec17949b38c9c716f84eead25"
         }
       });
+
+      // nice view
       const view = new MapView({
         container: "viewDiv",
         map
       });
 
+      // Print service URL, you've seen this before
       const printURL = "https://dev0024573.esri.com/server/rest/services/PrintReport/GPServer/Export%20Web%20Map";
+
+      // template options to assign report values
+      // the report options are critical
+      // but how did we know them?
+      // we should inspect the Get Report Templates Info
+      // on the print service probably
       const template = new PrintTemplate({
         format: "pdf",
         layout: "A4 Landscape",

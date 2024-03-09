@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Reporting Live</title>
+  <title>GOAT</title>
   <link rel="shortcut icon" href="https://NoashX.github.io/favicon.ico">
 
   <style>
@@ -58,21 +58,35 @@
       "esri/rest/support/PrintTemplate",
       "esri/rest/support/PrintParameters"
     ], function(esriConfig, MapView, WebMap, printTask, PrintTemplate, PrintParameters) {
+
+      // print button
       document.getElementById("print-button").addEventListener("click", print);
 
       // Set the hostname to the on-premise portal
       esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
+
+      // map of unusual concentration
+      // of superbowl trophies
       const map = new WebMap({
         portalItem: {
           id: "731d0c14ab2c43cca7e3de6932225698"
         }
       });
+
+      // not a view of a parking lot
       const view = new MapView({
         container: "viewDiv",
         map
       });
 
+      // Print service URL, have you seen this before?
       const printURL = "https://dev0024573.esri.com/server/rest/services/PrintReport/GPServer/Export%20Web%20Map";
+
+      // template options to assign report values
+      // the report options are critical
+      // but how did we know them?
+      // we should inspect the Get Report Templates Info
+      // on the print service probably
       const template = new PrintTemplate({
         format: "pdf",
         layout: "A4 Landscape",

@@ -59,28 +59,46 @@
       "esri/rest/support/PrintParameters",
       "esri/portal/PortalItem"
     ], function(esriConfig, MapView, WebMap, printTask, PrintTemplate, PrintParameters, PortalItem) {
+
+      // print button
       document.getElementById("print-button").addEventListener("click", print);
 
       // Set the hostname to the on-premise portal
       esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
 
+      // whoa, we're using a portal item this time?
+      // that's right, this portal item
+      // contains a layout that can be used
+      // for a report!
       const layoutItemTanu = new PortalItem({
         id: "d16678fb334f4581b215c73058b722ee"
       });
 
+      // requires a map, preferably a
+      // county map focused on the 
+      // state with the greatest
+      // sports dynasty the world
+      // has ever seen
       const map = new WebMap({
         portalItem: {
           id: "22c2fde97ecd4e84adf8dfab0caadb9e"
         }
       });
 
+      // add a view; no extra charge
       const view = new MapView({
         container: "viewDiv",
         map
       });
 
+      // the URL to the print service
       const printURL = "https://dev0024573.esri.com/server/rest/services/PrintReport/GPServer/Export%20Web%20Map";
 
+      // template options to assign report values
+      // the report options are critical
+      // but how did we know them?
+      // we should inspect the Get Layout Templates Info
+      // on the print service probably
       const template = new PrintTemplate({
         format: "pdf",
         layoutItem: layoutItemTanu,

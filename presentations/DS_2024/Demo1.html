@@ -66,13 +66,14 @@
       // Set the hostname to the on-premise portal
       esriConfig.portalUrl = "https://dev0024573.esri.com/portal"
 
-      // Lovely parks in SoCal
+      // Lovely parks in SoCal webmap
       const map = new WebMap({
         portalItem: {
           id: "4ccb9e9b0c374211bd45388224213212"
         }
       });
 
+      // map with a view
       const view = new MapView({
         container: "viewDiv",
         map
