@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1,user-scalable=no"
+    />
+    <title>4.32</title>
+    <link rel="stylesheet" href="https://jsdev.arcgis.com/4.32/esri/themes/light/main.css" />
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #version{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 5px;
+        font-size: 12pt;
+        background-color: white;
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
+
+    <!-- <script>
+      var esriConfig = {
+        has: {
+          "polylabel-placement-enabled": 2
+        }
+      }
+    </script>-->
+
+    <script src="https://jsdev.arcgis.com/4.32/"></script>
+    <script>
+      require(["esri/Map", "esri/views/MapView", "esri/widgets/Directions", "esri/layers/RouteLayer"], function(
+      Map,
+      MapView,
+      Directions,
+      RouteLayer
+    ) {
+
+        function getUrlParams() {
+          const queryParams = document.location.search.substr(1);
+          let result = {};
+
+          queryParams.split("&").forEach(function(part) {
+            var item = part.split("=");
+            result[item[0]] = decodeURIComponent(item[1]);
+          });
+
+          return result.id;
+        }
+
+        let id = getUrlParams();
+
+      // An authorization string used to access the basemap, geocoding and routing services
+      // An authorization string used to access the basemap, geocoding and routing services
+      const apiKey = "AAPK5b5e55b2ab554cb8aac450bd917363085YpKUsPUkKwnwOJqkJs7Dxii7IOfq9zvBL28V-GVm3PDThzP4DK-ySN0AZh0s_Rg"
+      //const apiKey = "AAPK9d8b91902667422aa70e7415cba6f68at4R02XOXN6Dx3HyfK-pGxbaZx2x9DBx_VWbgfXDyoiaTsDksgWkebHFd9B2uZe5H"
+      // create a new RouteLayer, required for Directions widget
+      const routeLayer = new RouteLayer(
+        portalItem: {
+          id
+        }
+      );
+      const map = new Map({
+        basemap: "topo-vector",
+        layers: [routeLayer]
+      });
+      const view = new MapView({
+        zoom: 14,
+        center: [-118.24, 34.05],
+        container: "viewDiv",
+        map: map
+      });
+      // new RouteLayer must be added to Directions widget
+      let directionsWidget = new Directions({
+        layer: routeLayer,
+        apiKey,
+        view
+      });
+      // Add the Directions widget to the top right corner of the view
+      view.ui.add(directionsWidget, {
+        position: "top-right"
+      });
+    });
+    </script>
+  </head>
+
+  <body class="calcite">
+    <div id="viewDiv"></div>
+    <div id="version">4.32</div>
+  </body>
+</html>

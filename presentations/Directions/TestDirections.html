@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1,user-scalable=no"
+    />
+    <title>Compare Directions</title>
+
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+      iframe {
+        height: 98%;
+        width: 49%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <iframe id="431directions431" style="float:left;"></iframe>
+    <iframe id="432directions432" style="float:right;"></iframe>
+  </body>
+
+
+  <script>
+
+    function getUrlParams() {
+      const queryParams = document.location.search.substr(1);
+      let result = {};
+
+      queryParams.split("&").forEach(function(part) {
+        var item = part.split("=");
+        result[item[0]] = decodeURIComponent(item[1]);
+      });
+
+      return result.id;
+    }
+
+    // function to set an id as a url param
+    function setUrlParams(id) {
+      window.history.pushState("", "", `${window.location.pathname}?id=${id}`);
+    }
+
+    let id = getUrlParams();
+
+    if(!id){
+      id = "5980d5494853485bbb56629262d8bf57";
+      setUrlParams(id);
+      console.log("no webmap");
+    }
+
+
+    const frame4xlabelpoint = document.getElementById("432directions432");
+    console.log("432directions432", frame4xlabelpoint);
+    const frame4xpolylabel = document.getElementById("431directions431");
+    console.log("431directions431", frame4xpolylabel);
+
+    //frame4xlabelpoint.src = `PR-directions.html?id=${id}`;
+    //frame4xpolylabel.src = `431-directions.html?id=${id}`;
+    frame4xlabelpoint.src = `432directions432.html?id=${id}`;
+    frame4xpolylabel.src = `431directions431.html?id=${id}`;
+
+  </script>
+</html>
