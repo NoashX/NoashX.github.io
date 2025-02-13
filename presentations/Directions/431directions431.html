@@ -67,11 +67,11 @@
       const apiKey = "AAPK5b5e55b2ab554cb8aac450bd917363085YpKUsPUkKwnwOJqkJs7Dxii7IOfq9zvBL28V-GVm3PDThzP4DK-ySN0AZh0s_Rg"
       //const apiKey = "AAPK9d8b91902667422aa70e7415cba6f68at4R02XOXN6Dx3HyfK-pGxbaZx2x9DBx_VWbgfXDyoiaTsDksgWkebHFd9B2uZe5H"
       // create a new RouteLayer, required for Directions widget
-      const routeLayer = new RouteLayer(
+      const routeLayer = new RouteLayer({
         portalItem: {
           id
         }
-      );
+      });
       // new RouteLayer must be added to the map
       const map = new Map({
         basemap: "topo-vector",
