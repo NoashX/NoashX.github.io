@@ -26,7 +26,7 @@
         right: 5px;
         padding: 5px;
         font-size: 12pt;
-        background-color: white;
+        background-color: blue;
         font-family: 'Courier New', Courier, monospace;
       }
     </style>
@@ -72,6 +72,7 @@
           id
         }
       });
+      getSymbology(routeLayer);
       // new RouteLayer must be added to the map
       const map = new Map({
         basemap: "topo-vector"//,
