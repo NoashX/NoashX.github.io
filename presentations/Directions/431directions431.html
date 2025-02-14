@@ -74,8 +74,8 @@
       });
       // new RouteLayer must be added to the map
       const map = new Map({
-        basemap: "topo-vector",
-        layers: [routeLayer]
+        basemap: "topo-vector"//,
+        //layers: [routeLayer]
       });
       const view = new MapView({
         zoom: 14,
@@ -93,6 +93,23 @@
       view.ui.add(directionsWidget, {
         position: "top-right"
       });
+      goToRoute();
+      async function goToRoute() {
+        await Promise.all([view.when(), routeLayer.load()]);
+        await view.goTo(routeLayer.routeInfo.geometry.extent);
+      }
+      async function getSymbology(routeLayer) {
+        await Promise.all([
+          routeLayer.load(),
+        ]);
+        const [result] = await Promise.all([
+          routeLayer.solve({
+            apiKey
+          })
+        ]);
+        routeLayer.update(result);
+        map.addMany([routeLayer]);
+      }
     });
     </script>
   </head>
