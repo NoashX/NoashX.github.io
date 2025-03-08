@@ -1,0 +1,298 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>ArcGIS Maps SDK for JavaScript Demo Theater: Geometries Operators</title>
+
+  <style>
+    html,
+    body,
+    arcgis-map {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #measurementsDiv {
+      background-color: white;
+      border-radius: 6px;
+      padding: 6px;
+    }
+  </style>
+
+  <!-- Load Calcite components from CDN -->
+  <script type="module" src="https://js.arcgis.com/calcite-components/3.0.3/calcite.esm.js"></script>
+
+  <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.32/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.32/"></script>
+
+  <!-- Load Map components from CDN-->
+  <script type="module" src="https://js.arcgis.com/map-components/4.32/arcgis-map-components.esm.js"></script>
+
+</head>
+
+<body>
+
+  <arcgis-map basemap="satellite" center="-118.805, 34.027" zoom="14">
+    <arcgis-zoom position="top-left"></arcgis-zoom>
+
+    <!-- Placement component -->
+    <arcgis-placement position="bottom-right">
+      <div id="measurementsDiv"></div>
+    </arcgis-placement>
+
+    <arcgis-placement position="top-right">
+      <calcite-action-bar expand-disabled expanded>
+        <calcite-action id="buffer" text="Buffer" icon="circle-area"></calcite-action>
+        <calcite-tooltip reference-element="buffer">
+          <span>Buffer</span>
+        </calcite-tooltip>
+        <calcite-action id="intersect" disabled text="Intersect" icon="preserve"></calcite-action>
+        <calcite-tooltip reference-element="intersect">
+          <span>Intersect</span>
+        </calcite-tooltip>
+        <calcite-action id="union" disabled text="Union" icon="dissolve-features"></calcite-action>
+        <calcite-tooltip reference-element="union">
+          <span>Union</span>
+        </calcite-tooltip>
+        <calcite-action id="reset" disabled text="Reset" icon="reset"></calcite-action>
+        <calcite-tooltip reference-element="reset">
+          <span>Reset</span>
+        </calcite-tooltip>
+      </calcite-action-bar>
+    </arcgis-placement>
+
+  </arcgis-map>
+
+  <script>
+    require([
+      "esri/Graphic",
+      "esri/Map",
+      "esri/geometry/operators/geodesicBufferOperator",
+      "esri/geometry/operators/geodeticAreaOperator",
+      "esri/geometry/operators/geodeticLengthOperator",
+      "esri/geometry/operators/intersectionOperator",
+      "esri/geometry/operators/unionOperator",
+      "esri/layers/GraphicsLayer"
+    ], (Graphic, Map, geodesicBufferOperator, geodeticAreaOperator, geodeticLengthOperator, intersectionOperator, unionOperator, GraphicsLayer) => {
+      const bufferAction = document.querySelector("#buffer");
+      const intersectAction = document.querySelector("#intersect");
+      const unionAction = document.querySelector("#union");
+      const resetAction = document.querySelector("#reset");
+      const arcgisMap = document.querySelector("arcgis-map");
+      const graphicsLayer = new GraphicsLayer();
+      const resultsLayer = new GraphicsLayer();
+      arcgisMap.map = new Map({
+        layers: [graphicsLayer, resultsLayer]
+      });
+      measurementsDiv.innerHTML =
+        "<b>Geodesic area</b>: 0 km\xB2";
+      const point = {
+        //Create a point
+        type: "point",
+        longitude: -118.80657463861,
+        latitude: 34.0005930608889
+      };
+      const simpleMarkerSymbol = {
+        type: "simple-marker",
+        color: [227, 139, 79, 0.8], // Orange, opacity 80%
+        outline: {
+          color: [255, 255, 255], // White
+          width: 1
+        }
+      };
+      // Create a line geometry
+      const polyline = {
+        type: "polyline",
+        paths: [
+          [-118.821527826096, 34.0139576938577], //Longitude, latitude
+          [-118.814893761649, 34.0080602407843], //Longitude, latitude
+          [-118.808878330345, 34.0016642996246] //Longitude, latitude
+        ]
+      };
+      const simpleLineSymbol = {
+        type: "simple-line",
+        color: "red",
+        width: 5
+      };
+      // Create a polygon geometry
+      const polygon = {
+        type: "polygon",
+        rings: [
+          [-118.818984489994, 34.0137559967283], //Longitude, latitude
+          [-118.806796597377, 34.0215816298725], //Longitude, latitude
+          [-118.791432890735, 34.0163883241613], //Longitude, latitude
+          [-118.79596686535, 34.008564864635], //Longitude, latitude
+          [-118.808558110679, 34.0035027131376] //Longitude, latitude
+        ]
+      };
+      const simpleFillSymbol = {
+        type: "simple-fill",
+        color: [227, 139, 79, 0.8], // Orange, opacity 80%
+        outline: {
+          color: [255, 255, 255],
+          width: 1
+        }
+      };
+      const popupTemplate = {
+        title: "{Name}",
+        content: "{Description}"
+      };
+      const polygonAttributes = {
+        Name: "Graphic",
+        Description: "I am a polygon"
+      };
+      const polylineAttributes = {
+        Name: "Graphic",
+        Description: "I am a polyline"
+      };
+      const pointAttributes = {
+        Name: "Graphic",
+        Description: "What's the point?"
+      };
+      const pointGraphic = new Graphic({
+        geometry: point,
+        symbol: simpleMarkerSymbol,
+        attributes: pointAttributes,
+        popupTemplate: popupTemplate
+      });
+      graphicsLayer.add(pointGraphic);
+      const polylineGraphic = new Graphic({
+        geometry: polyline,
+        symbol: simpleLineSymbol,
+        attributes: polylineAttributes,
+        popupTemplate: popupTemplate
+      });
+      graphicsLayer.add(polylineGraphic);
+      const lineLength = getLength(polylineGraphic.geometry);
+      const polygonGraphic = new Graphic({
+        geometry: polygon,
+        symbol: simpleFillSymbol,
+        attributes: polygonAttributes,
+        popupTemplate: popupTemplate
+      });
+      graphicsLayer.add(polygonGraphic);
+      bufferAction?.addEventListener("click", createBuffer);
+      resetAction?.addEventListener("click", resetGraphics);
+      intersectAction?.addEventListener("click", findIntersection);
+      unionAction?.addEventListener("click", createUnion);
+      let bufferGraphic;
+      async function createBuffer() {
+        if (bufferGraphic) {
+          return;
+        }
+        if (!geodesicBufferOperator.isLoaded()) {
+          await geodesicBufferOperator.load();
+        }
+        const buffer = geodesicBufferOperator.execute(pointGraphic.geometry, 1, {
+          unit: "kilometers"
+        });
+        const bufferAttributes = {
+          Name: "Graphic",
+          Description: "I am a buffer"
+        };
+        bufferGraphic = new Graphic({
+          geometry: buffer,
+          symbol: {
+            type: "simple-fill",
+            color: [227, 139, 79, 0.6], // Orange, opacity 60%
+            outline: {
+              color: [255, 255, 255, 255]
+            }
+          },
+          attributes: bufferAttributes,
+          popupTemplate: popupTemplate
+        });
+        graphicsLayer.add(bufferGraphic);
+        getArea(bufferGraphic.geometry);
+        console.log("Geodesic length: ", lineLength, " km\xB2");
+        bufferAction.disabled = true;
+        resetAction.disabled = false;
+        intersectAction.disabled = false;
+        unionAction.disabled = false;
+      }
+
+      function resetGraphics() {
+        graphicsLayer.remove(bufferGraphic);
+        resultsLayer.removeAll();
+        bufferGraphic = null;
+        bufferAction.disabled = false;
+        resetAction.disabled = true;
+        intersectAction.disabled = true;
+        unionAction.disabled = true;
+        measurementsDiv.innerHTML =
+          "<b>Geodesic area</b>: 0 km\xB2";
+      }
+      async function findIntersection() {
+        resultsLayer.removeAll();
+        if (!bufferGraphic) {
+          return;
+        }
+        const intersectGeom = intersectionOperator.execute(polygonGraphic.geometry, bufferGraphic.geometry);
+        const intersectionGraphic = new Graphic({
+          geometry: intersectGeom,
+          symbol: {
+            type: "simple-fill",
+            style: "cross",
+            color: "pink",
+            outline: {
+              color: "white"
+            }
+          }
+        });
+        resultsLayer.add(intersectionGraphic);
+        getArea(intersectionGraphic.geometry);
+      }
+
+      function createUnion() {
+        resultsLayer.removeAll();
+        if (!bufferGraphic) {
+          return;
+        }
+        const unionGeom = unionOperator.execute(polygonGraphic.geometry, bufferGraphic.geometry);
+        const unionGraphic = new Graphic({
+          geometry: unionGeom,
+          symbol: {
+            type: "simple-fill",
+            style: "cross",
+            color: "pink",
+            outline: {
+              color: "white"
+            }
+          }
+        });
+        resultsLayer.add(unionGraphic);
+        getArea(unionGraphic.geometry);
+      }
+      // A function to get the area of a polygon
+      async function getArea(polygon) {
+        if (!geodeticAreaOperator.isLoaded()) {
+          await geodeticAreaOperator.load();
+        }
+        const geodesicArea = geodeticAreaOperator.execute(polygon, {
+          units: "square-kilometers"
+        });
+        measurementsDiv.innerHTML =
+          "<b>Geodesic area</b>:  " +
+          geodesicArea.toFixed(2) +
+          " km\xB2";
+      }
+      // A function to get the length of a polyline
+      async function getLength(line) {
+        if (!geodeticLengthOperator.isLoaded()) {
+          await geodeticLengthOperator.load();
+        }
+        const geodesicLength = geodeticLengthOperator.execute(line, {
+          units: "kilometers"
+        });
+        return geodesicLength;
+      }
+    });
+  </script>
+
+</body>
+
+</html>
