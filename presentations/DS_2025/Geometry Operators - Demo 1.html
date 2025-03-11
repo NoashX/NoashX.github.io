@@ -273,7 +273,7 @@
           await geodeticAreaOperator.load();
         }
         const geodesicArea = geodeticAreaOperator.execute(polygon, {
-          units: "square-kilometers"
+          unit: "square-kilometers"
         });
         measurementsDiv.innerHTML =
           "<b>Geodesic area</b>:  " +
@@ -286,7 +286,7 @@
           await geodeticLengthOperator.load();
         }
         const geodesicLength = geodeticLengthOperator.execute(line, {
-          units: "kilometers"
+          unit: "kilometers"
         });
         return geodesicLength;
       }
