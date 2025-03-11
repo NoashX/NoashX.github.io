@@ -1,0 +1,286 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>ArcGIS Maps SDK for JavaScript Demo Theater: Geometries Operators 4</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #ffffff;
+    }
+
+    #projectionDiv {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ffffff;
+      padding: 10px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.32/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.32/"></script>
+
+  <script>
+    require([
+      "esri/views/MapView",
+      "esri/Map",
+      "esri/geometry/SpatialReference",
+      "esri/layers/GeoJSONLayer",
+      "esri/core/reactiveUtils",
+      "esri/widgets/Legend",
+      "esri/Graphic",
+      "esri/symbols/SimpleMarkerSymbol",
+      "esri/geometry/Point",
+      "esri/geometry/Polyline",
+      "esri/geometry/Polygon",  
+      "esri/geometry/operators/projectOperator",
+      "esri/geometry/operators/shapePreservingProjectOperator"      
+    ],
+      (MapView,
+        Map,
+        SpatialReference,
+        GeoJSONLayer,
+        reactiveUtils,
+        Legend,
+        Graphic,
+        SimpleMarkerSymbol,
+        Point,
+        Polyline,
+        Polygon,
+        projectOperator,
+        shapePreservingProjectOperator
+      ) => {
+        let centerGraphic;
+        let polygon = new Polygon({
+          rings: [[-641220.6756556984, 6180803.2080516275], [-641220.6756556984, 2371258.1553477403], [-9394330.53270205, 2371258.1553477403], [-9394330.53270205, 6180803.2080516275], [-641220.6756556984, 6180803.2080516275]],
+          spatialReference: SpatialReference.WebMercator,
+        });   
+        
+        const polygon2 = new Polygon({
+          rings: [
+            [
+              [-8301252.364338701, 7501568.174419401], [-7386129.152451742, 7501568.174419401], [-7386129.152451742, 6664544.496182801], [-8301252.364338701, 6664544.496182801], [-8301252.364338701, 7501568.174419401]
+            ]
+          ],
+          spatialReference: SpatialReference.WebMercator,
+        });        
+
+        // Create a symbol for drawing the centroid
+        const redMarkerSymbol = new SimpleMarkerSymbol({
+          color: "red",
+          size: "20px",
+          outline: { // autocasts as new SimpleLineSymbol()
+            color: [255, 255, 255],
+            width: 1 // points
+          }
+        });
+
+        const greenFillSymbol = {
+          type: "simple-fill",
+          color: [227, 139, 79, 0.8],
+          outline: {
+            color: "green",
+            width: 1
+          }
+        };
+        
+        const greenLineSymbol = {
+          type: "simple-line",
+          color: "red",
+          width: 4
+        };        
+
+        // display projected graphics as a FeatureLayer
+        const countriesLayer = new GeoJSONLayer({
+          title: "Forest area by country",
+          url: "https://developers.arcgis.com/javascript/latest/sample-code/client-projection/live/percent-forest-area.json",
+          objectIdField: "OBJECTID",
+          fields: [
+            {
+              name: "OBJECTID",
+              alias: "ObjectID",
+              type: "oid"
+            },
+            {
+              name: "Country",
+              alias: "Country",
+              type: "string"
+            },
+            {
+              name: "y2015",
+              alias: "% forest area (2015)",
+              type: "double"
+            }
+          ],
+          popupTemplate: {
+            title: "{Country}",
+            content: "{expression/per-land-area}",
+            expressionInfos: [
+              {
+                title: "per-land-area",
+                name: "per-land-area",
+                expression:
+                  "IIF(!IsEmpty($feature.y2015), Round($feature.y2015) + '% of the land area in this country is forest.', 'No data')"
+              }
+            ]
+          },
+          renderer: {
+            type: "class-breaks",
+            defaultLabel: "No data",
+            defaultSymbol: {
+              type: "simple-fill",
+              color: "#fcedcd",
+              outline: {
+                color: [255, 255, 255, 0.1],
+                width: 0.5
+              }
+            },
+            field: "y2015",
+            legendOptions: {
+              title: " "
+            },
+            visualVariables: [
+              {
+                type: "color",
+                field: "y2015",
+                stops: [
+                  { value: 0, color: "#D0D0CB" },
+                  { value: 50, color: "#4F6704" }
+                ]
+              }
+            ]
+          }
+        });
+
+
+        // Reproject the data to the projection selected by the user
+        const wkidSelect = document.getElementById("projectWKID");
+        wkidSelect.addEventListener("change", () => {
+          view.spatialReference = {
+            wkid: wkidSelect.value
+          };
+          centerPoint.spatialReference = {
+            wkid: wkidSelect.value
+          };
+
+          view.center = centerPoint;
+          view.graphics.removeAll();
+
+          const geom = shapePreservingProjectOperator.execute(polygon, view.spatialReference);
+
+          // Create graphics for the centroid point from the centroidOperator
+          centerGraphic = new Graphic({
+            geometry: geom,
+            symbol: greenLineSymbol
+          });
+
+          view.graphics.add(centerGraphic);          
+        });
+
+
+        const viewSpatialReference = new SpatialReference({
+          wkid: wkidSelect.value
+        });
+
+        let centerPoint = {
+          x: 0,
+          y: 0,
+          spatialReference: viewSpatialReference
+        };
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: new Map({
+            layers: [countriesLayer]
+          }),
+          highlightOptions: {
+            fillOpacity: 0
+          },
+          spatialReference: viewSpatialReference,
+          center: centerPoint,
+          scale: 166418924
+        });
+
+        view.graphics.add({
+          symbol: {
+            type: "simple-fill",
+            color: null,
+            outline: {
+              width: 0.5,
+              color: [208, 208, 203, 0.7]
+            }
+          },
+          geometry: {
+            type: "extent",
+            xmin: -180,
+            xmax: 180,
+            ymin: -90,
+            ymax: 90,
+            // This geometry automatically reprojects when added to the view
+            spatialReference: SpatialReference.WGS84
+          }
+        });        
+
+        // Create graphics for the centroid point from the centroidOperator
+        centerGraphic = new Graphic({
+          geometry: polygon,
+          symbol: greenLineSymbol
+        });
+
+        view.graphics.add(centerGraphic);
+
+        document.getElementById("viewSRDiv").innerHTML = `view.SR.wkid = <b>${view.spatialReference.wkid}</b>`;
+
+        view.ui.add(new Legend({ view: view }), "bottom-left");
+
+        view.whenLayerView(countriesLayer).then((layerView) => {
+          reactiveUtils.whenOnce(() => !view.updating)
+            .then(() => {
+              wkidSelect.disabled = false;
+            });
+
+          reactiveUtils.watch(() => view.spatialReference, (spatialReference) => {
+            document.getElementById(
+              "viewSRDiv"
+            ).innerHTML = `view.SR.wkid = <b>${spatialReference.wkid}</b>`;
+          });
+        });
+
+        projectOperator.load();
+        shapePreservingProjectOperator.load();   
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv">
+    <div id="projectionDiv" class="esri-widget">
+      <p>Select a projection</p>
+      <select id="projectWKID" class="esri-widget" disabled>
+        <option value="8857">Equal Earth Greenwich</option>
+        <option value="4326" selected>World Geodetic System 1984</option>
+        <option value="8858">Equal Earth Americas</option>
+        <option value="8859">Equal Earth Asia-Pacific</option>
+        <option value="32621">UTM Zone 21N</option>
+        <option value="54042">Winkel III</option>
+        <option value="54050">World Fuller</option>
+        <option value="54010">World Eckert VI</option>
+        <option value="54021">World Polyconic</option>
+        <option value="54016">World Gall Stereographic</option>
+        <option value="54008">World Sinusoidal</option>
+        <option value="54023">World Loximuthal</option>
+        <option value="54024">World Bonne</option>
+      </select><br /><br />
+      <div id="viewSRDiv" class="esri-widget paddings"></div><br />
+    </div>
+  </div>
+</body>
+
+</html>
