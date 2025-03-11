@@ -40,7 +40,6 @@
       "esri/geometry/Point",
       "esri/geometry/Polyline",
       "esri/geometry/Polygon",  
-      "esri/geometry/operators/projectOperator",
       "esri/geometry/operators/shapePreservingProjectOperator"      
     ],
       (MapView,
@@ -54,7 +53,6 @@
         Point,
         Polyline,
         Polygon,
-        projectOperator,
         shapePreservingProjectOperator
       ) => {
         let centerGraphic;
@@ -253,7 +251,6 @@
           });
         });
 
-        projectOperator.load();
         shapePreservingProjectOperator.load();   
       });
   </script>
