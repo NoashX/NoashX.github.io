@@ -1,0 +1,18 @@
+<a href="https://noashx.github.io/presentations/DS_2025/Geometry-Operators-Dev-Tech-Summit_2025_Demo-Theater-0311.pdf">Demo Theater Slides (pdf)</a>
+
+<a href="https://noashx.github.io/presentations/DS_2025/Geometry%20Operators%20-%20Demo%201.html">Hosted Demo #1</a>
+
+<a href="https://codepen.io/noash/pen/ogNegEG?editors=1000">Codepen Demo #1!</a>
+
+<a href="https://noashx.github.io/presentations/DS_2025/Geometry%20Operators%20-%20Demo%202.html">Hosted Demo #2</a>
+
+<a href="https://codepen.io/noash/pen/zxYdvGM?editors=1000">Codepen Demo #2</a>
+
+<a href="https://noashx.github.io/presentations/DS_2025/Geometry%20Operators%20-%20Demo%203.html">Hosted Demo #3</a>
+
+<a href="https://codepen.io/noash/pen/zxYEOgj?editors=1000">Codepen Demo #3</a>
+
+<a href="https://noashx.github.io/presentations/DS_2025/Geometry%20Operators%20-%20Demo%204.html">Hosted Demo #4</a>
+
+<a href="https://codepen.io/noash/pen/MYWEEdo?editors=1000">Codepen Demo #4</a>
+
