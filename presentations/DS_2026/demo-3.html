@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ArcGIS WebMap with Print Components with JavaScript</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+  </head>
+  <body>
+    <!-- Webmap from ArcGIS Online with blue basemap and ground water features -->
+    <arcgis-map item-id="c9d108f82e79400994bbb937e4abee52">
+      <!-- Place the Print component on the top with defaults -->
+      <arcgis-print label="print" slot="top-right"></arcgis-print>
+      <!-- Add the Zoom component -->
+      <arcgis-zoom slot="top-left"></arcgis-zoom>
+    </arcgis-map>
+   <script type="module">
+    const printElement = document.querySelector("arcgis-print");
+    await printElement.componentOnReady();
+    // Restrict the formats
+    printElement.allowedFormats = ["gif", "png32", "png8"];
+     // Restrict the layouts
+    printElement.allowedLayouts = ["a3-landscape", "a3-portrait"];
+     // Hide advanced options, too advanced
+    printElement.hideAdvancedOptions = true;
+     // Hide the cool organization templates (for now)
+    printElement.excludeOrganizationTemplates = true;
+   </script>
+  </body>
+</html>

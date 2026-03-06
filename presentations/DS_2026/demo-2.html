@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ArcGIS WebMap with Print Component with Expand</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+  </head>
+  <body>
+    <!-- Webmap from ArcGIS Online with blue basemap and ground water features -->
+    <arcgis-map item-id="c9d108f82e79400994bbb937e4abee52">
+      <!-- Place the Print component inside an Expand component -->
+      <arcgis-expand slot="top-right" expand-tooltip="Does it print?">
+        <!-- Restrict the formats and layouts, hide Advanced Options -->
+        <arcgis-print
+          allowed-formats="gif, png32, png8"
+          allowed-layouts="a3-landscape, a3-portrait"
+          hide-advanced-options
+          exclude-organization-templates
+        ></arcgis-print>
+      </arcgis-expand>
+      <!-- Add the Zoom component -->
+      <arcgis-zoom slot="top-left"></arcgis-zoom>
+    </arcgis-map>
+  </body>
+</html>

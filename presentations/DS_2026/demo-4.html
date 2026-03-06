@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>rest/print() with Portal LayoutItem</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+    <!-- Load the ArcGIS Maps SDK for JavaScript (Core, Components, Calcite) -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+  </head>
+  <body>
+    <arcgis-map basemap="streets-relief-vector" center="-118.24856, 34.06273" zoom="16">
+      <!-- Place a print() button on the top-right  -->
+      <calcite-button id="printButton" slot="top-right" scale="l">print()</calcite-button>
+      <!-- Add the Zoom component to the top-left -->
+      <arcgis-zoom slot="top-left"></arcgis-zoom>
+    </arcgis-map>
+    <script type="module">
+      const [print, esriConfig, PortalItem, PrintTemplate, PrintParameters] = await $arcgis.import([
+        "@arcgis/core/rest/print.js",
+        "@arcgis/core/config.js",
+        "@arcgis/core/portal/PortalItem.js",
+        "@arcgis/core/rest/support/PrintTemplate.js",
+        "@arcgis/core/rest/support/PrintParameters.js",
+      ]);
+      // define the Portal to retreive the LayoutItem from
+      esriConfig.portalUrl = "https://myHostName.esri.com/arcgis";
+      const viewElement = document.querySelector("arcgis-map");
+      
+      // West Coast Desert Landscape
+      const layoutItem = new PortalItem({
+        id: "6a52b95dfa497e3f975fc346264e05f5"
+      });
+      // Print service URL
+      const printURL = "https://myHostName.esri.com/server/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map";
+      // template options to assign layout values
+      const template = new PrintTemplate({
+        format: "pdf",
+        layoutItem,
+        layoutOptions: {
+          titleText: "Lovely Southern California Parks",
+          authorText: "Tanu & Noah",
+          copyright: "Esri",
+        }
+      });
+      // package the template with the view and send to the print service
+      const params = new PrintParameters({
+        view: viewElement.map.view,
+        template,
+      });
+      
+      // clicking the print() button will send the print request
+      document.getElementById("printButton").addEventListener("click", () => {
+        // inspect the parameters to be sent to the print service
+        console.log("Let's print together with these parameters: ", params);
+        // sends the print request
+        print.execute(printURL, params).then(printResult, printError);
+        // print it out
+        function printResult(result) {
+          console.log("Let's check the results together: ", result.url);
+          window.open(result.url);
+        }
+        // unless we broke something
+        function printError(err) {
+          console.log("Did Noah break something? ", err);
+          alert("Tanu, please tell Noah to check the browser console!");
+        }
+      });
+    </script>
+  </body>
+</html>
